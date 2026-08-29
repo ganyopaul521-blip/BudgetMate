@@ -34,19 +34,27 @@ The "Pay" tab charges through [Paystack](https://paystack.com) in test mode — 
 3. Put the secret key in `backend/.env` as `PAYSTACK_SECRET_KEY`, and the public key in `frontend/.env` as `VITE_PAYSTACK_PUBLIC_KEY`.
 4. Test mode uses fake card/Mobile Money numbers — see [Paystack's test cards](https://paystack.com/docs/payments/test-payments/) (e.g. card `4084 0840 8408 4081`, any future expiry, CVV `408`, PIN `0000`, OTP `123456`).
 
-### 3. Backend
+### 3. AI assistant (help desk + spending advice)
+
+The chat bubble in the bottom-right corner runs on the [Claude API](https://console.anthropic.com).
+
+1. Sign up / log in at [console.anthropic.com](https://console.anthropic.com) and go to **API Keys**.
+2. Create a key (starts with `sk-ant-...`) and put it in `backend/.env` as `ANTHROPIC_API_KEY`.
+3. This calls a real, billed API (`claude-opus-5`) — each message sent in the chat costs a small amount against your Anthropic account. No frontend key is needed; the key never leaves the backend.
+
+### 4. Backend
 
 ```bash
 cd backend
 npm install
-cp .env.example .env   # fill in DATABASE_URL, JWT_SECRET, PAYSTACK_SECRET_KEY
+cp .env.example .env   # fill in DATABASE_URL, JWT_SECRET, PAYSTACK_SECRET_KEY, ANTHROPIC_API_KEY
 npx prisma generate
 npx prisma db push     # creates collections/indexes from schema.prisma
 npm run seed           # seeds default income/expense categories
 npm run dev            # starts http://localhost:5000
 ```
 
-### 4. Frontend
+### 5. Frontend
 
 ```bash
 cd frontend
@@ -69,7 +77,8 @@ Implements the functional requirements (FR01–FR19) from the project report:
 - Pie/bar/line reports and monthly summary (FR16–FR18)
 - Personalised dashboard (FR19)
 - Real payment gateway (Paystack) with a **pre-payment budget projection check** — warns before you pay if it would push a category to 80%/100% of its budget, then records a linked expense transaction and post-payment alert on success
+- AI assistant (Claude API) that (a) answers "how do I..." questions about the app as a help desk, and (b) gives personalized spending guidance grounded in the user's real current-month income, expenses, and budgets pulled live from the database
 
 **Not implemented (out of scope for this MVP):** FR03 password-reset-via-email (would require an email service like SendGrid).
 
-**Note on scope vs. the report:** the project report (Section 1.6.2, Limitations) states the system will not integrate with banking/Mobile Money APIs and requires manual transaction entry. The Paystack payment feature above goes beyond that documented scope — if this implementation is submitted alongside the report, Chapter 1's scope/limitations section should be updated to reflect it (and Chapter 3's requirements/architecture sections extended to describe the Payment entity and payment flow) so the two stay consistent.
+**Note on scope vs. the report:** the project report (Section 1.6.2, Limitations) states the system will not integrate with banking/Mobile Money APIs and requires manual transaction entry, and doesn't mention an AI advisory feature at all. The Paystack and AI assistant features above go beyond that documented scope — if this implementation is submitted alongside the report, Chapter 1's scope/limitations section should be updated to reflect both (and Chapter 3's requirements/architecture sections extended to describe the Payment entity/payment flow and the AI assistant integration) so the two stay consistent.
