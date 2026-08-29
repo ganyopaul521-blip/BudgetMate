@@ -48,5 +48,5 @@ export const paymentsApi = {
 }
 
 export const aiApi = {
-  chat: (messages) => client.post('/ai/chat', { messages }),
+  chat: (message, interactionId) => client.post('/ai/chat', { message, interactionId }),
 }

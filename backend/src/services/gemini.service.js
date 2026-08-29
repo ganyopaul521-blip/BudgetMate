@@ -1,6 +1,9 @@
-const Anthropic = require("@anthropic-ai/sdk");
+const { GoogleGenAI } = require("@google/genai");
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+// Flash tier - fast and inexpensive, well suited to a short chat/advice assistant.
+const MODEL = "gemini-3.7-flash";
 
 const SYSTEM_PROMPT_BASE = `You are the in-app assistant for BudgetMate, a personal budget tracker built for students and young professionals in Ghana. You have two jobs:
 
@@ -40,18 +43,22 @@ Budgets:
 ${budgetLines}`;
 }
 
-async function chat({ messages, financialContext }) {
-  const system = `${SYSTEM_PROMPT_BASE}\n\n${buildFinancialContextBlock(financialContext)}`;
+/**
+ * Uses the Gemini Interactions API: Google keeps the conversation thread server-side,
+ * keyed by the returned interaction id, so we only ever send the newest message plus
+ * a fresh system instruction (financial context can change between turns).
+ */
+async function chat({ message, previousInteractionId, financialContext }) {
+  const systemInstruction = `${SYSTEM_PROMPT_BASE}\n\n${buildFinancialContextBlock(financialContext)}`;
 
-  const response = await client.messages.create({
-    model: "claude-opus-5",
-    max_tokens: 1024,
-    system,
-    messages,
+  const interaction = await ai.interactions.create({
+    model: MODEL,
+    input: message,
+    system_instruction: systemInstruction,
+    ...(previousInteractionId ? { previous_interaction_id: previousInteractionId } : {}),
   });
 
-  const textBlock = response.content.find((block) => block.type === "text");
-  return textBlock ? textBlock.text : "";
+  return { reply: interaction.output_text, interactionId: interaction.id };
 }
 
-module.exports = { chat, Anthropic };
+module.exports = { chat };

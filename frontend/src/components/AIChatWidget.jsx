@@ -13,6 +13,7 @@ const QUICK_PROMPT = 'Based on my income and spending this month, how should I b
 export default function AIChatWidget() {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState([GREETING])
+  const [interactionId, setInteractionId] = useState(null)
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
   const [error, setError] = useState('')
@@ -29,14 +30,16 @@ export default function AIChatWidget() {
     if (!trimmed || sending) return
 
     setError('')
-    const nextMessages = [...messages, { role: 'user', content: trimmed }]
-    setMessages(nextMessages)
+    setMessages((prev) => [...prev, { role: 'user', content: trimmed }])
     setInput('')
     setSending(true)
 
     try {
-      const res = await aiApi.chat(nextMessages.map(({ role, content }) => ({ role, content })))
-      setMessages([...nextMessages, { role: 'assistant', content: res.data.reply }])
+      // Gemini keeps the conversation thread server-side via interactionId,
+      // so we only ever send the newest message.
+      const res = await aiApi.chat(trimmed, interactionId)
+      setMessages((prev) => [...prev, { role: 'assistant', content: res.data.reply }])
+      setInteractionId(res.data.interactionId)
     } catch (err) {
       setError(err.response?.data?.message || "Couldn't reach the assistant. Try again in a moment.")
     } finally {
