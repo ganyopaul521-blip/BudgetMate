@@ -46,3 +46,7 @@ export const paymentsApi = {
   verify: (reference) => client.get(`/payments/verify/${reference}`),
   list: () => client.get('/payments'),
 }
+
+export const aiApi = {
+  chat: (messages) => client.post('/ai/chat', { messages }),
+}
