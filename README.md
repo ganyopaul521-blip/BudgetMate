@@ -42,21 +42,21 @@ The chat bubble in the bottom-right corner runs on the [Gemini API](https://aist
 2. Click **Create API key** and put it in `backend/.env` as `GEMINI_API_KEY`.
 3. Uses `gemini-3.7-flash`. Google AI Studio has a free tier (rate-limited), so this can run at no cost for typical student-project usage — check [ai.google.dev/pricing](https://ai.google.dev/gemini-api/docs/pricing) if you exceed it. No frontend key is needed; the key never leaves the backend.
 
-### 4. SendGrid (for password reset emails)
+### 4. Brevo (for password reset emails)
 
-"Forgot password?" on the login page sends a real email via [SendGrid](https://sendgrid.com).
+"Forgot password?" on the login page sends a real email via [Brevo](https://www.brevo.com) (free tier: 300 emails/day, no time limit — unlike some competitors this isn't a trial).
 
-1. Sign up free at [signup.sendgrid.com](https://signup.sendgrid.com).
-2. Go to **Settings → Sender Authentication → Single Sender Verification** and verify one email address you own (click the confirmation link SendGrid emails you) — this is enough to send from, no domain purchase needed.
-3. Go to **Settings → API Keys → Create API Key** and put it in `backend/.env` as `SENDGRID_API_KEY`.
-4. Put the exact address you verified in step 2 into `backend/.env` as `SENDGRID_FROM_EMAIL`.
+1. Sign up free at [app.brevo.com/account/register](https://app.brevo.com/account/register).
+2. Go to **Senders, Domains & Dedicated IPs → Senders** and add + verify one email address you own (click the confirmation link Brevo emails you) — no domain purchase needed.
+3. Go to **SMTP & API → API Keys → Generate a new API key** and put it in `backend/.env` as `BREVO_API_KEY`.
+4. Put the exact address you verified in step 2 into `backend/.env` as `BREVO_FROM_EMAIL`.
 
 ### 5. Backend
 
 ```bash
 cd backend
 npm install
-cp .env.example .env   # fill in DATABASE_URL, JWT_SECRET, PAYSTACK_SECRET_KEY, GEMINI_API_KEY, SENDGRID_API_KEY, SENDGRID_FROM_EMAIL
+cp .env.example .env   # fill in DATABASE_URL, JWT_SECRET, PAYSTACK_SECRET_KEY, GEMINI_API_KEY, BREVO_API_KEY, BREVO_FROM_EMAIL
 npx prisma generate
 npx prisma db push     # creates collections/indexes from schema.prisma
 npm run seed           # seeds default income/expense categories
@@ -79,7 +79,7 @@ Register a new account in the browser, then add transactions, set budgets, view 
 Implements the functional requirements (FR01–FR19) from the project report:
 
 - User registration/login with bcrypt + JWT (FR01, FR02)
-- Password reset via a SendGrid-emailed, single-use, 1-hour-expiring token (FR03)
+- Password reset via a Brevo-emailed, single-use, 1-hour-expiring token (FR03)
 - Session expiry after 30 minutes of **inactivity** — a sliding window that refreshes on every request, not a flat timer from login (FR05)
 - Profile updates (FR04)
 - Income/expense transaction CRUD with category, payment method, filtering & pagination (FR06–FR10)
