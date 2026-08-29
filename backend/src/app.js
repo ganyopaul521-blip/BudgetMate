@@ -8,6 +8,7 @@ const categoryRoutes = require("./routes/category.routes");
 const reportRoutes = require("./routes/report.routes");
 const alertRoutes = require("./routes/alert.routes");
 const paymentRoutes = require("./routes/payment.routes");
+const aiRoutes = require("./routes/ai.routes");
 const { notFound, errorHandler } = require("./middleware/error.middleware");
 
 const app = express();
@@ -24,6 +25,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/alerts", alertRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/ai", aiRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

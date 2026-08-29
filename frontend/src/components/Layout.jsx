@@ -1,6 +1,7 @@
 import { CreditCard, LayoutDashboard, ListChecks, LogOut, PiggyBank, PieChart, Settings, Wallet } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import AIChatWidget from './AIChatWidget'
 import NotificationBell from './NotificationBell'
 
 const NAV_ITEMS = [
@@ -77,6 +78,8 @@ export default function Layout() {
       <main className="mx-auto max-w-6xl px-4 py-6">
         <Outlet />
       </main>
+
+      <AIChatWidget />
     </div>
   )
 }

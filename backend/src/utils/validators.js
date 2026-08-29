@@ -55,6 +55,18 @@ const paymentInitSchema = z.object({
   channel: z.enum(["card", "mobile_money"]),
 });
 
+const aiChatSchema = z.object({
+  messages: z
+    .array(
+      z.object({
+        role: z.enum(["user", "assistant"]),
+        content: z.string().trim().min(1).max(4000),
+      })
+    )
+    .min(1)
+    .max(50),
+});
+
 module.exports = {
   registerSchema,
   loginSchema,
@@ -64,4 +76,5 @@ module.exports = {
   categorySchema,
   budgetCheckSchema,
   paymentInitSchema,
+  aiChatSchema,
 };
