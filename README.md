@@ -36,18 +36,18 @@ The "Pay" tab charges through [Paystack](https://paystack.com) in test mode — 
 
 ### 3. AI assistant (help desk + spending advice)
 
-The chat bubble in the bottom-right corner runs on the [Claude API](https://console.anthropic.com).
+The chat bubble in the bottom-right corner runs on the [Gemini API](https://aistudio.google.com).
 
-1. Sign up / log in at [console.anthropic.com](https://console.anthropic.com) and go to **API Keys**.
-2. Create a key (starts with `sk-ant-...`) and put it in `backend/.env` as `ANTHROPIC_API_KEY`.
-3. This calls a real, billed API (`claude-opus-5`) — each message sent in the chat costs a small amount against your Anthropic account. No frontend key is needed; the key never leaves the backend.
+1. Go to [aistudio.google.com/apikey](https://aistudio.google.com/apikey) and sign in with a Google account.
+2. Click **Create API key** and put it in `backend/.env` as `GEMINI_API_KEY`.
+3. Uses `gemini-3.7-flash`. Google AI Studio has a free tier (rate-limited), so this can run at no cost for typical student-project usage — check [ai.google.dev/pricing](https://ai.google.dev/gemini-api/docs/pricing) if you exceed it. No frontend key is needed; the key never leaves the backend.
 
 ### 4. Backend
 
 ```bash
 cd backend
 npm install
-cp .env.example .env   # fill in DATABASE_URL, JWT_SECRET, PAYSTACK_SECRET_KEY, ANTHROPIC_API_KEY
+cp .env.example .env   # fill in DATABASE_URL, JWT_SECRET, PAYSTACK_SECRET_KEY, GEMINI_API_KEY
 npx prisma generate
 npx prisma db push     # creates collections/indexes from schema.prisma
 npm run seed           # seeds default income/expense categories
@@ -77,7 +77,7 @@ Implements the functional requirements (FR01–FR19) from the project report:
 - Pie/bar/line reports and monthly summary (FR16–FR18)
 - Personalised dashboard (FR19)
 - Real payment gateway (Paystack) with a **pre-payment budget projection check** — warns before you pay if it would push a category to 80%/100% of its budget, then records a linked expense transaction and post-payment alert on success
-- AI assistant (Claude API) that (a) answers "how do I..." questions about the app as a help desk, and (b) gives personalized spending guidance grounded in the user's real current-month income, expenses, and budgets pulled live from the database
+- AI assistant (Gemini API) that (a) answers "how do I..." questions about the app as a help desk, and (b) gives personalized spending guidance grounded in the user's real current-month income, expenses, and budgets pulled live from the database
 
 **Not implemented (out of scope for this MVP):** FR03 password-reset-via-email (would require an email service like SendGrid).
 
