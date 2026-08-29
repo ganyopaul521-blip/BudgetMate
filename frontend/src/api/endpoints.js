@@ -39,3 +39,10 @@ export const alertsApi = {
   markRead: (id) => client.patch(`/alerts/${id}/read`),
   markAllRead: () => client.patch('/alerts/read-all'),
 }
+
+export const paymentsApi = {
+  budgetCheck: (data) => client.post('/payments/budget-check', data),
+  initialize: (data) => client.post('/payments/initialize', data),
+  verify: (reference) => client.get(`/payments/verify/${reference}`),
+  list: () => client.get('/payments'),
+}

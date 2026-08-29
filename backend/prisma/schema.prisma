@@ -22,6 +22,7 @@ model User {
   budgets      Budget[]
   categories   Category[]
   alerts       Alert[]
+  payments     Payment[]
 }
 
 enum CategoryType {
@@ -41,6 +42,7 @@ model Category {
 
   transactions Transaction[]
   budgets      Budget[]
+  payments     Payment[]
 }
 
 enum TransactionType {
@@ -104,4 +106,35 @@ model Alert {
   createdAt    DateTime  @default(now())
 
   @@index([userId, isRead])
+}
+
+enum PaymentChannel {
+  card
+  mobile_money
+}
+
+enum PaymentStatus {
+  pending
+  success
+  failed
+}
+
+// Real payments made via the Paystack gateway. On successful verification a
+// matching expense Transaction is created and linked via transactionId.
+model Payment {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String         @db.ObjectId
+  user          User           @relation(fields: [userId], references: [id])
+  categoryId    String         @db.ObjectId
+  category      Category       @relation(fields: [categoryId], references: [id])
+  amount        Float
+  description   String?
+  channel       PaymentChannel
+  status        PaymentStatus  @default(pending)
+  reference     String         @unique
+  transactionId String?        @db.ObjectId
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([userId, createdAt])
 }

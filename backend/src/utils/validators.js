@@ -43,6 +43,18 @@ const categorySchema = z.object({
   iconRef: z.string().trim().max(50).optional().nullable(),
 });
 
+const budgetCheckSchema = z.object({
+  categoryId: z.string().min(1, "Category is required"),
+  amount: z.number().positive("Amount must be greater than 0"),
+});
+
+const paymentInitSchema = z.object({
+  categoryId: z.string().min(1, "Category is required"),
+  amount: z.number().positive("Amount must be greater than 0"),
+  description: z.string().trim().max(500).optional().nullable(),
+  channel: z.enum(["card", "mobile_money"]),
+});
+
 module.exports = {
   registerSchema,
   loginSchema,
@@ -50,4 +62,6 @@ module.exports = {
   transactionSchema,
   budgetSchema,
   categorySchema,
+  budgetCheckSchema,
+  paymentInitSchema,
 };

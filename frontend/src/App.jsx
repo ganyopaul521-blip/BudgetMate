@@ -5,6 +5,7 @@ import { useAuth } from './context/AuthContext'
 import Budgets from './pages/Budgets'
 import Dashboard from './pages/Dashboard'
 import Login from './pages/Login'
+import MakePayment from './pages/MakePayment'
 import Register from './pages/Register'
 import Reports from './pages/Reports'
 import Settings from './pages/Settings'
@@ -46,6 +47,7 @@ export default function App() {
       >
         <Route path="/" element={<Dashboard />} />
         <Route path="/transactions" element={<Transactions />} />
+        <Route path="/pay" element={<MakePayment />} />
         <Route path="/budgets" element={<Budgets />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/settings" element={<Settings />} />

@@ -1,4 +1,4 @@
-import { LayoutDashboard, ListChecks, LogOut, PiggyBank, PieChart, Settings, Wallet } from 'lucide-react'
+import { CreditCard, LayoutDashboard, ListChecks, LogOut, PiggyBank, PieChart, Settings, Wallet } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import NotificationBell from './NotificationBell'
@@ -6,6 +6,7 @@ import NotificationBell from './NotificationBell'
 const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/transactions', label: 'Transactions', icon: ListChecks },
+  { to: '/pay', label: 'Pay', icon: CreditCard },
   { to: '/budgets', label: 'Budgets', icon: PiggyBank },
   { to: '/reports', label: 'Reports', icon: PieChart },
   { to: '/settings', label: 'Settings', icon: Settings },
