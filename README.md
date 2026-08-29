@@ -42,19 +42,28 @@ The chat bubble in the bottom-right corner runs on the [Gemini API](https://aist
 2. Click **Create API key** and put it in `backend/.env` as `GEMINI_API_KEY`.
 3. Uses `gemini-3.7-flash`. Google AI Studio has a free tier (rate-limited), so this can run at no cost for typical student-project usage — check [ai.google.dev/pricing](https://ai.google.dev/gemini-api/docs/pricing) if you exceed it. No frontend key is needed; the key never leaves the backend.
 
-### 4. Backend
+### 4. SendGrid (for password reset emails)
+
+"Forgot password?" on the login page sends a real email via [SendGrid](https://sendgrid.com).
+
+1. Sign up free at [signup.sendgrid.com](https://signup.sendgrid.com).
+2. Go to **Settings → Sender Authentication → Single Sender Verification** and verify one email address you own (click the confirmation link SendGrid emails you) — this is enough to send from, no domain purchase needed.
+3. Go to **Settings → API Keys → Create API Key** and put it in `backend/.env` as `SENDGRID_API_KEY`.
+4. Put the exact address you verified in step 2 into `backend/.env` as `SENDGRID_FROM_EMAIL`.
+
+### 5. Backend
 
 ```bash
 cd backend
 npm install
-cp .env.example .env   # fill in DATABASE_URL, JWT_SECRET, PAYSTACK_SECRET_KEY, GEMINI_API_KEY
+cp .env.example .env   # fill in DATABASE_URL, JWT_SECRET, PAYSTACK_SECRET_KEY, GEMINI_API_KEY, SENDGRID_API_KEY, SENDGRID_FROM_EMAIL
 npx prisma generate
 npx prisma db push     # creates collections/indexes from schema.prisma
 npm run seed           # seeds default income/expense categories
 npm run dev            # starts http://localhost:5000
 ```
 
-### 5. Frontend
+### 6. Frontend
 
 ```bash
 cd frontend
@@ -69,7 +78,9 @@ Register a new account in the browser, then add transactions, set budgets, view 
 
 Implements the functional requirements (FR01–FR19) from the project report:
 
-- User registration/login with bcrypt + JWT (FR01, FR02, FR05)
+- User registration/login with bcrypt + JWT (FR01, FR02)
+- Password reset via a SendGrid-emailed, single-use, 1-hour-expiring token (FR03)
+- Session expiry after 30 minutes of **inactivity** — a sliding window that refreshes on every request, not a flat timer from login (FR05)
 - Profile updates (FR04)
 - Income/expense transaction CRUD with category, payment method, filtering & pagination (FR06–FR10)
 - Monthly per-category budgets with live spend tracking (FR11, FR12)
@@ -79,6 +90,6 @@ Implements the functional requirements (FR01–FR19) from the project report:
 - Real payment gateway (Paystack) with a **pre-payment budget projection check** — warns before you pay if it would push a category to 80%/100% of its budget, then records a linked expense transaction and post-payment alert on success
 - AI assistant (Gemini API) that (a) answers "how do I..." questions about the app as a help desk, and (b) gives personalized spending guidance grounded in the user's real current-month income, expenses, and budgets pulled live from the database
 
-**Not implemented (out of scope for this MVP):** FR03 password-reset-via-email (would require an email service like SendGrid).
+All 19 functional requirements from the report (FR01–FR19) are now implemented.
 
 **Note on scope vs. the report:** the project report (Section 1.6.2, Limitations) states the system will not integrate with banking/Mobile Money APIs and requires manual transaction entry, and doesn't mention an AI advisory feature at all. The Paystack and AI assistant features above go beyond that documented scope — if this implementation is submitted alongside the report, Chapter 1's scope/limitations section should be updated to reflect both (and Chapter 3's requirements/architecture sections extended to describe the Payment entity/payment flow and the AI assistant integration) so the two stay consistent.
