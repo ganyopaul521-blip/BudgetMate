@@ -13,7 +13,16 @@ client.interceptors.request.use((config) => {
 })
 
 client.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Sliding session: the backend reissues a token stamped with the current
+    // activity time on every authenticated request - persist it so the 30-minute
+    // window keeps sliding forward instead of expiring on a flat timer.
+    const refreshed = response.headers['x-refreshed-token']
+    if (refreshed) {
+      localStorage.setItem('budgetmate_token', refreshed)
+    }
+    return response
+  },
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('budgetmate_token')
