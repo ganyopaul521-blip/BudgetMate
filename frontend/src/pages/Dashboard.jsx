@@ -1,11 +1,19 @@
-import { Minus, Plus } from 'lucide-react'
+import { Minus, PiggyBank, Plus, Receipt, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { reportsApi } from '../api/endpoints'
 import AlertBanner from '../components/AlertBanner'
-import BudgetProgressBar from '../components/BudgetProgressBar'
+import Button from '../components/Button'
+import Card from '../components/Card'
+import EmptyState from '../components/EmptyState'
+import LoadingState from '../components/LoadingState'
+import PageHeader from '../components/PageHeader'
+import ProgressBar from '../components/ProgressBar'
+import StatCard from '../components/StatCard'
+import TransactionCard from '../components/TransactionCard'
 import TransactionForm from '../components/TransactionForm'
 import { useAuth } from '../context/AuthContext'
-import { formatCurrency, formatDate } from '../utils/format'
+import { formatCurrency } from '../utils/format'
 
 export default function Dashboard() {
   const { user } = useAuth()
@@ -36,95 +44,108 @@ export default function Dashboard() {
     load()
   }
 
-  if (loading || !data) {
-    return <p className="text-slate-500">Loading dashboard...</p>
-  }
-
-  const { balance, recentTransactions, budgetStatus } = data
-
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-800">
-          Welcome back{user?.fullName ? `, ${user.fullName.split(' ')[0]}` : ''}
-        </h1>
-        <p className="text-sm text-slate-500">Here's your financial snapshot for this month.</p>
-      </div>
+    <div>
+      <PageHeader
+        title={`Welcome back${user?.fullName ? `, ${user.fullName.split(' ')[0]}` : ''}`}
+        description="Here's your financial snapshot for this month."
+        actions={
+          <>
+            <Button variant="success" leftIcon={Plus} onClick={() => openForm('income')}>
+              Add Income
+            </Button>
+            <Button variant="danger" leftIcon={Minus} onClick={() => openForm('expense')}>
+              Add Expense
+            </Button>
+          </>
+        }
+      />
 
       <AlertBanner alert={alert} onDismiss={() => setAlert(null)} />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-slate-500">Total Income</p>
-          <p className="mt-1 text-2xl font-bold text-emerald-600">{formatCurrency(balance.totalIncome)}</p>
+      {loading || !data ? (
+        <div className="space-y-6">
+          <LoadingState variant="stats" />
+          <LoadingState variant="cards" />
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-slate-500">Total Expenses</p>
-          <p className="mt-1 text-2xl font-bold text-red-600">{formatCurrency(balance.totalExpense)}</p>
-        </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-slate-500">Net Balance</p>
-          <p className={`mt-1 text-2xl font-bold ${balance.net >= 0 ? 'text-slate-800' : 'text-red-600'}`}>
-            {formatCurrency(balance.net)}
-          </p>
-        </div>
-      </div>
-
-      <div className="flex gap-3">
-        <button
-          onClick={() => openForm('income')}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-emerald-600 py-3 text-sm font-semibold text-white hover:bg-emerald-700"
-        >
-          <Plus size={16} /> Add Income
-        </button>
-        <button
-          onClick={() => openForm('expense')}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-red-600 py-3 text-sm font-semibold text-white hover:bg-red-700"
-        >
-          <Minus size={16} /> Add Expense
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="mb-3 font-semibold text-slate-800">Budget Status</h2>
-          {budgetStatus.length === 0 && (
-            <p className="text-sm text-slate-400">No budgets set for this month yet.</p>
-          )}
-          <div className="space-y-4">
-            {budgetStatus.map((b) => (
-              <BudgetProgressBar
-                key={b.categoryId}
-                categoryName={b.categoryName}
-                spent={b.spent}
-                amountLimit={b.amountLimit}
-                percentUsed={b.percentUsed}
-              />
-            ))}
+      ) : (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <StatCard label="Total Income" value={formatCurrency(data.balance.totalIncome)} icon={TrendingUp} tone="success" />
+            <StatCard label="Total Expenses" value={formatCurrency(data.balance.totalExpense)} icon={TrendingDown} tone="danger" />
+            <StatCard
+              label="Net Balance"
+              value={formatCurrency(data.balance.net)}
+              icon={Wallet}
+              tone={data.balance.net >= 0 ? 'brand' : 'danger'}
+            />
           </div>
-        </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="mb-3 font-semibold text-slate-800">Recent Transactions</h2>
-          {recentTransactions.length === 0 && (
-            <p className="text-sm text-slate-400">No transactions recorded yet.</p>
-          )}
-          <div className="divide-y divide-slate-100">
-            {recentTransactions.map((t) => (
-              <div key={t.id} className="flex items-center justify-between py-2.5">
-                <div>
-                  <p className="text-sm font-medium text-slate-700">{t.category.name}</p>
-                  <p className="text-xs text-slate-400">{t.description || formatDate(t.transactionDate)}</p>
-                </div>
-                <span className={`text-sm font-semibold ${t.type === 'income' ? 'text-emerald-600' : 'text-red-600'}`}>
-                  {t.type === 'income' ? '+' : '-'}
-                  {formatCurrency(t.amount)}
-                </span>
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <Card padded={false}>
+              <div className="flex items-center justify-between px-5 pt-5 sm:px-6 sm:pt-6">
+                <h2 className="font-semibold text-slate-900">Budget Status</h2>
+                <Link to="/budgets" className="text-xs font-medium text-indigo-600 hover:underline">
+                  Manage
+                </Link>
               </div>
-            ))}
+              {data.budgetStatus.length === 0 ? (
+                <EmptyState
+                  icon={PiggyBank}
+                  title="No budgets set yet"
+                  description="Set a monthly limit per category to track your spending."
+                  action={
+                    <Button as={Link} to="/budgets" variant="secondary" size="sm">
+                      Set a budget
+                    </Button>
+                  }
+                />
+              ) : (
+                <div className="space-y-4 px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
+                  {data.budgetStatus.map((b) => (
+                    <div key={b.categoryId}>
+                      <div className="mb-1 flex items-center justify-between text-sm">
+                        <span className="font-medium text-slate-700">{b.categoryName}</span>
+                        <span className="text-slate-500 tabular-nums">
+                          {formatCurrency(b.spent)} / {formatCurrency(b.amountLimit)}
+                        </span>
+                      </div>
+                      <ProgressBar percent={b.percentUsed} label={`${b.categoryName} budget usage`} />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+
+            <Card padded={false}>
+              <div className="flex items-center justify-between px-5 pt-5 sm:px-6 sm:pt-6">
+                <h2 className="font-semibold text-slate-900">Recent Transactions</h2>
+                <Link to="/transactions" className="text-xs font-medium text-indigo-600 hover:underline">
+                  View all
+                </Link>
+              </div>
+              {data.recentTransactions.length === 0 ? (
+                <EmptyState
+                  icon={Receipt}
+                  title="No transactions yet"
+                  description="Add your first income or expense to get started."
+                  action={
+                    <Button variant="secondary" size="sm" onClick={() => openForm('expense')}>
+                      Add transaction
+                    </Button>
+                  }
+                />
+              ) : (
+                <div className="mt-2">
+                  {data.recentTransactions.map((t) => (
+                    <TransactionCard key={t.id} transaction={t} />
+                  ))}
+                </div>
+              )}
+            </Card>
           </div>
         </div>
-      </div>
+      )}
 
       {formOpen && (
         <TransactionForm initialType={formType} onClose={() => setFormOpen(false)} onSaved={handleSaved} />

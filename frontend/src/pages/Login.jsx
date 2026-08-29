@@ -1,6 +1,10 @@
-import { Wallet } from 'lucide-react'
+import { Lock, Mail } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import AuthLayout from '../components/AuthLayout'
+import Button from '../components/Button'
+import Card from '../components/Card'
+import Input from '../components/Input'
 import { useAuth } from '../context/AuthContext'
 
 export default function Login() {
@@ -25,64 +29,59 @@ export default function Login() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-sm">
-        <div className="mb-6 flex flex-col items-center gap-2">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 text-white">
-            <Wallet size={24} />
-          </div>
-          <h1 className="text-xl font-bold text-slate-800">Welcome back</h1>
-          <p className="text-sm text-slate-500">Log in to BudgetMate</p>
-        </div>
+    <AuthLayout title="Welcome back" subtitle="Log in to your BudgetMate account">
+      <Card>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600">
+              {error}
+            </p>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>}
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Email</label>
-            <input
-              type="email"
-              required
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-              placeholder="you@example.com"
-            />
-          </div>
+          <Input
+            label="Email"
+            type="email"
+            required
+            leftIcon={Mail}
+            autoComplete="email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            placeholder="you@example.com"
+          />
 
           <div>
-            <div className="mb-1 flex items-center justify-between">
-              <label className="block text-sm font-medium text-slate-700">Password</label>
-              <Link to="/forgot-password" className="text-xs font-medium text-emerald-600 hover:underline">
+            <div className="mb-1.5 flex items-center justify-between">
+              <label htmlFor="login-password" className="block text-sm font-medium text-slate-700">
+                Password
+              </label>
+              <Link to="/forgot-password" className="text-xs font-medium text-indigo-600 hover:underline">
                 Forgot password?
               </Link>
             </div>
-            <input
+            <Input
+              id="login-password"
               type="password"
               required
+              leftIcon={Lock}
+              autoComplete="current-password"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
               placeholder="••••••••"
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full rounded-lg bg-emerald-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
-          >
-            {submitting ? 'Logging in...' : 'Log In'}
-          </button>
+          <Button type="submit" fullWidth loading={submitting} className="mt-1">
+            Log In
+          </Button>
         </form>
+      </Card>
 
-        <p className="mt-4 text-center text-sm text-slate-500">
-          Don&apos;t have an account?{' '}
-          <Link to="/register" className="font-medium text-emerald-600 hover:underline">
-            Create one
-          </Link>
-        </p>
-      </div>
-    </div>
+      <p className="mt-5 text-center text-sm text-slate-500">
+        Don&apos;t have an account?{' '}
+        <Link to="/register" className="font-medium text-indigo-600 hover:underline">
+          Create one
+        </Link>
+      </p>
+    </AuthLayout>
   )
 }
