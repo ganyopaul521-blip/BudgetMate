@@ -1,13 +1,7 @@
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const prisma = require("../lib/prisma");
-
-function signToken(userId) {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN || "30m",
-  });
-}
+const { signSessionToken } = require("../utils/token");
 
 function toPublicUser(user) {
   return {
@@ -34,7 +28,7 @@ const register = asyncHandler(async (req, res) => {
     data: { fullName, email, passwordHash },
   });
 
-  const token = signToken(user.id);
+  const token = signSessionToken(user.id);
   res.status(201).json({ token, user: toPublicUser(user) });
 });
 
@@ -54,7 +48,7 @@ const login = asyncHandler(async (req, res) => {
     throw new Error("Invalid email or password");
   }
 
-  const token = signToken(user.id);
+  const token = signSessionToken(user.id);
   res.json({ token, user: toPublicUser(user) });
 });
 
