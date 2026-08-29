@@ -4,12 +4,18 @@ function notFound(req, res) {
 
 function errorHandler(err, req, res, next) {
   console.error(err);
-  // Controllers call res.status(x) before throwing so the status survives here -
-  // fall back to err.status, then 500, only if that wasn't set.
-  const status = err.status || (res.statusCode && res.statusCode !== 200 ? res.statusCode : 500);
+
+  // Controllers call res.status(x) before throwing a curated, user-safe message -
+  // that explicit status is our signal that err.message is meant to be shown.
+  // No explicit status means an unexpected exception (e.g. a DB driver error)
+  // bubbled up unhandled - its message/stack must never reach the client.
+  const explicitStatus = err.status || (res.statusCode && res.statusCode !== 200 ? res.statusCode : null);
+  const status = explicitStatus || 500;
+  const message = explicitStatus ? err.message || "An error occurred" : "Something went wrong. Please try again.";
+
   res.status(status).json({
-    message: err.message || "Internal server error",
-    ...(err.details ? { details: err.details } : {}),
+    message,
+    ...(explicitStatus && err.details ? { details: err.details } : {}),
   });
 }
 
