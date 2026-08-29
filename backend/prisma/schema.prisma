@@ -1,0 +1,107 @@
+// Personal Budget Tracker - Prisma schema (MongoDB)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  fullName     String
+  email        String   @unique
+  passwordHash String
+  currency     String   @default("GHS")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  transactions Transaction[]
+  budgets      Budget[]
+  categories   Category[]
+  alerts       Alert[]
+}
+
+enum CategoryType {
+  income
+  expense
+}
+
+model Category {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String?      @db.ObjectId
+  user      User?        @relation(fields: [userId], references: [id])
+  name      String
+  type      CategoryType
+  iconRef   String?
+  isSystem  Boolean      @default(false)
+  createdAt DateTime     @default(now())
+
+  transactions Transaction[]
+  budgets      Budget[]
+}
+
+enum TransactionType {
+  income
+  expense
+}
+
+enum PaymentMethod {
+  cash
+  mobile_money
+  bank_transfer
+  card
+  other
+}
+
+model Transaction {
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String          @db.ObjectId
+  user            User            @relation(fields: [userId], references: [id])
+  categoryId      String          @db.ObjectId
+  category        Category        @relation(fields: [categoryId], references: [id])
+  type            TransactionType
+  amount          Float
+  transactionDate DateTime
+  description     String?
+  paymentMethod   PaymentMethod
+  createdAt       DateTime        @default(now())
+
+  @@index([userId, transactionDate])
+}
+
+model Budget {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id])
+  categoryId  String   @db.ObjectId
+  category    Category @relation(fields: [categoryId], references: [id])
+  month       Int
+  year        Int
+  amountLimit Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, categoryId, month, year])
+}
+
+enum AlertType {
+  warning
+  exceeded
+}
+
+model Alert {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String    @db.ObjectId
+  user         User      @relation(fields: [userId], references: [id])
+  categoryId   String    @db.ObjectId
+  categoryName String
+  alertType    AlertType
+  percentUsed  Float
+  isRead       Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+
+  @@index([userId, isRead])
+}
