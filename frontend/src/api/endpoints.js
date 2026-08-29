@@ -5,6 +5,8 @@ export const authApi = {
   login: (data) => client.post('/auth/login', data),
   me: () => client.get('/auth/me'),
   updateProfile: (data) => client.patch('/auth/me', data),
+  forgotPassword: (email) => client.post('/auth/forgot-password', { email }),
+  resetPassword: (token, newPassword) => client.post('/auth/reset-password', { token, newPassword }),
 }
 
 export const categoriesApi = {

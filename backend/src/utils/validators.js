@@ -1,13 +1,15 @@
 const { z } = require("zod");
 
+const passwordSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters")
+  .regex(/[0-9]/, "Password must contain at least one number")
+  .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character");
+
 const registerSchema = z.object({
   fullName: z.string().trim().min(2, "Full name must be at least 2 characters"),
   email: z.string().trim().toLowerCase().email("Enter a valid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
+  password: passwordSchema,
 });
 
 const loginSchema = z.object({
@@ -60,6 +62,15 @@ const aiChatSchema = z.object({
   interactionId: z.string().trim().min(1).optional().nullable(),
 });
 
+const forgotPasswordSchema = z.object({
+  email: z.string().trim().toLowerCase().email("Enter a valid email address"),
+});
+
+const resetPasswordSchema = z.object({
+  token: z.string().min(1, "Reset token is required"),
+  newPassword: passwordSchema,
+});
+
 module.exports = {
   registerSchema,
   loginSchema,
@@ -70,4 +81,6 @@ module.exports = {
   budgetCheckSchema,
   paymentInitSchema,
   aiChatSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
 };

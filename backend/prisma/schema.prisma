@@ -10,19 +10,23 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  fullName     String
-  email        String   @unique
-  passwordHash String
-  currency     String   @default("GHS")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                   String    @id @default(auto()) @map("_id") @db.ObjectId
+  fullName             String
+  email                String    @unique
+  passwordHash         String
+  currency             String    @default("GHS")
+  resetTokenHash       String?
+  resetTokenExpiresAt  DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 
   transactions Transaction[]
   budgets      Budget[]
   categories   Category[]
   alerts       Alert[]
   payments     Payment[]
+
+  @@index([resetTokenHash])
 }
 
 enum CategoryType {

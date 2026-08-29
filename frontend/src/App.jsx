@@ -4,9 +4,11 @@ import ProtectedRoute from './components/ProtectedRoute'
 import { useAuth } from './context/AuthContext'
 import Budgets from './pages/Budgets'
 import Dashboard from './pages/Dashboard'
+import ForgotPassword from './pages/ForgotPassword'
 import Login from './pages/Login'
 import MakePayment from './pages/MakePayment'
 import Register from './pages/Register'
+import ResetPassword from './pages/ResetPassword'
 import Reports from './pages/Reports'
 import Settings from './pages/Settings'
 import Transactions from './pages/Transactions'
@@ -37,6 +39,8 @@ export default function App() {
           </PublicOnlyRoute>
         }
       />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       <Route
         element={
