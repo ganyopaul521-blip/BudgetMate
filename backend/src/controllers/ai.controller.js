@@ -63,17 +63,21 @@ const chatHandler = asyncHandler(async (req, res) => {
     const result = await gemini.chat({ message, previousInteractionId: interactionId, financialContext });
     res.json(result);
   } catch (err) {
-    // Google returns 400 INVALID_ARGUMENT (not 401/403) for a missing or bad API key,
-    // with the actual reason nested in err.body rather than err.message.
+    // Google returns 400 INVALID_ARGUMENT (not 401) for a missing/bad API key, with the
+    // actual reason nested in err.body rather than err.message.
     const errorText = `${err.message || ""} ${err.body || ""}`;
-    const isBadKey = err.status === 401 || err.status === 403 || (err.status === 400 && /api key/i.test(errorText));
+    const isBadKey = err.status === 401 || (err.status === 400 && /api key/i.test(errorText));
     if (isBadKey) {
       res.status(503);
       throw new Error("The AI assistant isn't configured yet — add a valid GEMINI_API_KEY in backend/.env.");
     }
-    if (err.status === 429) {
-      res.status(429);
-      throw new Error("The AI assistant is receiving too many requests right now. Try again shortly.");
+    if (err.status === 429 || err.status === 503) {
+      res.status(503);
+      throw new Error("The AI assistant is busy right now. Please try again in a moment.");
+    }
+    if (err.status === 403) {
+      res.status(409);
+      throw new Error("That didn't go through — please try sending your message again.");
     }
     throw err;
   }
