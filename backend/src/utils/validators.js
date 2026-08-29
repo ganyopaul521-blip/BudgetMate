@@ -56,15 +56,8 @@ const paymentInitSchema = z.object({
 });
 
 const aiChatSchema = z.object({
-  messages: z
-    .array(
-      z.object({
-        role: z.enum(["user", "assistant"]),
-        content: z.string().trim().min(1).max(4000),
-      })
-    )
-    .min(1)
-    .max(50),
+  message: z.string().trim().min(1).max(4000),
+  interactionId: z.string().trim().min(1).optional().nullable(),
 });
 
 module.exports = {

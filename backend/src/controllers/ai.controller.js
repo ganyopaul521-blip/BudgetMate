@@ -1,8 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const prisma = require("../lib/prisma");
-const claude = require("../services/claude.service");
-
-const MAX_HISTORY = 12;
+const gemini = require("../services/gemini.service");
 
 function monthRangeNow() {
   const now = new Date();
@@ -58,19 +56,22 @@ async function buildFinancialContext(userId) {
 }
 
 const chatHandler = asyncHandler(async (req, res) => {
-  const { messages } = req.body;
-  const trimmed = messages.slice(-MAX_HISTORY);
+  const { message, interactionId } = req.body;
   const financialContext = await buildFinancialContext(req.userId);
 
   try {
-    const reply = await claude.chat({ messages: trimmed, financialContext });
-    res.json({ reply });
+    const result = await gemini.chat({ message, previousInteractionId: interactionId, financialContext });
+    res.json(result);
   } catch (err) {
-    if (err instanceof claude.Anthropic.AuthenticationError) {
+    // Google returns 400 INVALID_ARGUMENT (not 401/403) for a missing or bad API key,
+    // with the actual reason nested in err.body rather than err.message.
+    const errorText = `${err.message || ""} ${err.body || ""}`;
+    const isBadKey = err.status === 401 || err.status === 403 || (err.status === 400 && /api key/i.test(errorText));
+    if (isBadKey) {
       res.status(503);
-      throw new Error("The AI assistant isn't configured yet — add a valid ANTHROPIC_API_KEY in backend/.env.");
+      throw new Error("The AI assistant isn't configured yet — add a valid GEMINI_API_KEY in backend/.env.");
     }
-    if (err instanceof claude.Anthropic.RateLimitError) {
+    if (err.status === 429) {
       res.status(429);
       throw new Error("The AI assistant is receiving too many requests right now. Try again shortly.");
     }
