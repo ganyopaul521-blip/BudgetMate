@@ -115,9 +115,12 @@ const forgotPassword = asyncHandler(async (req, res) => {
     try {
       await sendPasswordResetEmail(user.email, resetUrl);
     } catch (err) {
-      if (err.code === 401 || err.code === 403) {
+      const status = err.response?.status;
+      if (status === 401 || status === 403) {
         res.status(503);
-        throw new Error("Password reset emails aren't configured yet — add a valid SENDGRID_API_KEY in backend/.env.");
+        throw new Error(
+          "Password reset emails aren't configured yet — add a valid BREVO_API_KEY and a verified BREVO_FROM_EMAIL in backend/.env."
+        );
       }
       throw err;
     }
