@@ -3,7 +3,8 @@ const { GoogleGenAI } = require("@google/genai");
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 // Flash tier - fast and inexpensive, well suited to a short chat/advice assistant.
-const MODEL = "gemini-3.7-flash";
+// (gemini-3.7-flash returned 503 UNAVAILABLE under load during testing; 3.6 was stable.)
+const MODEL = "gemini-3.6-flash";
 
 const SYSTEM_PROMPT_BASE = `You are the in-app assistant for BudgetMate, a personal budget tracker built for students and young professionals in Ghana. You have two jobs:
 
