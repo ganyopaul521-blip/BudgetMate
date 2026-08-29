@@ -1,13 +1,21 @@
 const express = require("express");
-const { register, login, me, updateProfile } = require("../controllers/auth.controller");
+const { register, login, me, updateProfile, forgotPassword, resetPassword } = require("../controllers/auth.controller");
 const { requireAuth } = require("../middleware/auth.middleware");
 const { validateBody } = require("../middleware/validate.middleware");
-const { registerSchema, loginSchema, updateProfileSchema } = require("../utils/validators");
+const {
+  registerSchema,
+  loginSchema,
+  updateProfileSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+} = require("../utils/validators");
 
 const router = express.Router();
 
 router.post("/register", validateBody(registerSchema), register);
 router.post("/login", validateBody(loginSchema), login);
+router.post("/forgot-password", validateBody(forgotPasswordSchema), forgotPassword);
+router.post("/reset-password", validateBody(resetPasswordSchema), resetPassword);
 router.get("/me", requireAuth, me);
 router.patch("/me", requireAuth, validateBody(updateProfileSchema), updateProfile);
 
