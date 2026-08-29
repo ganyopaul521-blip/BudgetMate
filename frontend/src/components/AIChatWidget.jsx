@@ -1,6 +1,7 @@
 import { Bot, MessageCircle, Send, Sparkles, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { aiApi } from '../api/endpoints'
+import Button from './Button'
 
 const GREETING = {
   role: 'assistant',
@@ -55,23 +56,31 @@ export default function AIChatWidget() {
   return (
     <>
       {open && (
-        <div className="fixed bottom-24 right-4 z-40 flex h-[32rem] w-[22rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
-          <div className="flex items-center justify-between border-b border-slate-100 bg-emerald-600 px-4 py-3 text-white">
+        <div
+          role="dialog"
+          aria-label="BudgetMate assistant chat"
+          className="fixed bottom-24 right-4 z-40 flex h-[32rem] max-h-[calc(100vh-7rem)] w-[22rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+        >
+          <div className="flex items-center justify-between border-b border-slate-100 bg-indigo-600 px-4 py-3 text-white">
             <div className="flex items-center gap-2">
-              <Bot size={18} />
+              <Bot size={18} aria-hidden="true" />
               <span className="font-semibold">BudgetMate Assistant</span>
             </div>
-            <button onClick={() => setOpen(false)} className="rounded-full p-1 hover:bg-white/10">
+            <button
+              onClick={() => setOpen(false)}
+              aria-label="Close assistant"
+              className="rounded-full p-1 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
               <X size={16} />
             </button>
           </div>
 
-          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3">
+          <div ref={scrollRef} role="log" aria-live="polite" className="flex-1 space-y-3 overflow-y-auto px-3 py-3">
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
                   className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm ${
-                    m.role === 'user' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-700'
+                    m.role === 'user' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'
                   }`}
                 >
                   {m.content}
@@ -83,7 +92,11 @@ export default function AIChatWidget() {
                 <div className="rounded-2xl bg-slate-100 px-3 py-2 text-sm text-slate-400">Thinking...</div>
               </div>
             )}
-            {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600">{error}</p>}
+            {error && (
+              <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-600">
+                {error}
+              </p>
+            )}
           </div>
 
           {messages.length <= 1 && (
@@ -91,35 +104,36 @@ export default function AIChatWidget() {
               <button
                 onClick={() => send(QUICK_PROMPT)}
                 disabled={sending}
-                className="flex w-full items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50"
+                className="flex w-full items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-medium text-indigo-700 hover:bg-indigo-100 disabled:opacity-50"
               >
-                <Sparkles size={13} /> Get a spending plan based on my income
+                <Sparkles size={13} aria-hidden="true" /> Get a spending plan based on my income
               </button>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-slate-100 p-3">
+            <label htmlFor="ai-chat-input" className="sr-only">
+              Message the assistant
+            </label>
             <input
+              id="ai-chat-input"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask a question..."
-              className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none"
+              className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
             />
-            <button
-              type="submit"
-              disabled={sending || !input.trim()}
-              className="rounded-lg bg-emerald-600 p-2 text-white hover:bg-emerald-700 disabled:opacity-50"
-            >
-              <Send size={16} />
-            </button>
+            <Button type="submit" size="md" disabled={sending || !input.trim()} aria-label="Send message" className="px-3">
+              <Send size={16} aria-hidden="true" />
+            </Button>
           </form>
         </div>
       )}
 
       <button
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-4 right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg transition-transform hover:scale-105 hover:bg-emerald-700"
-        aria-label="Open assistant"
+        className="fixed bottom-4 right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg transition-transform hover:scale-105 hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2"
+        aria-label={open ? 'Close assistant' : 'Open assistant'}
+        aria-expanded={open}
       >
         {open ? <X size={22} /> : <MessageCircle size={22} />}
       </button>

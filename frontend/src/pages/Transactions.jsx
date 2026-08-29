@@ -1,9 +1,19 @@
-import { Pencil, Plus, Search, Trash2 } from 'lucide-react'
+import { Plus, Receipt, Search } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { categoriesApi, transactionsApi } from '../api/endpoints'
 import AlertBanner from '../components/AlertBanner'
+import Button from '../components/Button'
+import Card from '../components/Card'
+import ConfirmDialog from '../components/ConfirmDialog'
+import EmptyState from '../components/EmptyState'
+import Input from '../components/Input'
+import LoadingState from '../components/LoadingState'
+import PageHeader from '../components/PageHeader'
+import Select from '../components/Select'
+import TransactionCard from '../components/TransactionCard'
 import TransactionForm from '../components/TransactionForm'
-import { formatCurrency, formatDate, PAYMENT_METHOD_LABELS } from '../utils/format'
+import TransactionTable from '../components/TransactionTable'
+import { formatCurrency } from '../utils/format'
 
 const emptyFilters = { type: '', categoryId: '', from: '', to: '', search: '' }
 
@@ -13,16 +23,21 @@ export default function Transactions() {
   const [filters, setFilters] = useState(emptyFilters)
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(0)
+  const [loading, setLoading] = useState(true)
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState(null)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [deleting, setDeleting] = useState(false)
   const [alert, setAlert] = useState(null)
   const pageSize = 20
 
   const load = async () => {
+    setLoading(true)
     const params = { page, pageSize, ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v)) }
     const res = await transactionsApi.list(params)
     setTransactions(res.data.transactions)
     setTotal(res.data.total)
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -42,175 +57,175 @@ export default function Transactions() {
     load()
   }
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Delete this transaction?')) return
-    await transactionsApi.remove(id)
-    load()
+  const handleDelete = async () => {
+    setDeleting(true)
+    try {
+      await transactionsApi.remove(deleteTarget.id)
+      setDeleteTarget(null)
+      load()
+    } finally {
+      setDeleting(false)
+    }
   }
 
+  const hasFilters = Object.values(filters).some(Boolean)
   const totalPages = Math.max(Math.ceil(total / pageSize), 1)
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-800">Transactions</h1>
-        <button
-          onClick={() => {
-            setEditing(null)
-            setFormOpen(true)
-          }}
-          className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
-        >
-          <Plus size={16} /> Add Transaction
-        </button>
-      </div>
+    <div>
+      <PageHeader
+        title="Transactions"
+        description="Every income and expense you've recorded."
+        actions={
+          <Button
+            leftIcon={Plus}
+            onClick={() => {
+              setEditing(null)
+              setFormOpen(true)
+            }}
+          >
+            Add Transaction
+          </Button>
+        }
+      />
 
       <AlertBanner alert={alert} onDismiss={() => setAlert(null)} />
 
-      <div className="grid grid-cols-2 gap-2 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-3 lg:grid-cols-5">
-        <div className="relative col-span-2 sm:col-span-1 lg:col-span-2">
-          <Search size={14} className="absolute left-2.5 top-2.5 text-slate-400" />
-          <input
-            placeholder="Search description..."
-            value={filters.search}
+      <Card className="mb-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="sm:col-span-1 lg:col-span-2">
+            <Input
+              leftIcon={Search}
+              placeholder="Search description..."
+              aria-label="Search transactions by description"
+              value={filters.search}
+              onChange={(e) => {
+                setPage(1)
+                setFilters({ ...filters, search: e.target.value })
+              }}
+            />
+          </div>
+          <Select
+            aria-label="Filter by type"
+            value={filters.type}
             onChange={(e) => {
               setPage(1)
-              setFilters({ ...filters, search: e.target.value })
+              setFilters({ ...filters, type: e.target.value })
             }}
-            className="w-full rounded-lg border border-slate-300 py-2 pl-8 pr-2 text-sm focus:border-emerald-500 focus:outline-none"
+          >
+            <option value="">All types</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </Select>
+          <Select
+            aria-label="Filter by category"
+            value={filters.categoryId}
+            onChange={(e) => {
+              setPage(1)
+              setFilters({ ...filters, categoryId: e.target.value })
+            }}
+          >
+            <option value="">All categories</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </Select>
+          <Input
+            type="date"
+            aria-label="From date"
+            value={filters.from}
+            onChange={(e) => {
+              setPage(1)
+              setFilters({ ...filters, from: e.target.value })
+            }}
+          />
+          <Input
+            type="date"
+            aria-label="To date"
+            value={filters.to}
+            onChange={(e) => {
+              setPage(1)
+              setFilters({ ...filters, to: e.target.value })
+            }}
           />
         </div>
-        <select
-          value={filters.type}
-          onChange={(e) => {
-            setPage(1)
-            setFilters({ ...filters, type: e.target.value })
-          }}
-          className="rounded-lg border border-slate-300 px-2 py-2 text-sm focus:border-emerald-500 focus:outline-none"
-        >
-          <option value="">All types</option>
-          <option value="income">Income</option>
-          <option value="expense">Expense</option>
-        </select>
-        <select
-          value={filters.categoryId}
-          onChange={(e) => {
-            setPage(1)
-            setFilters({ ...filters, categoryId: e.target.value })
-          }}
-          className="rounded-lg border border-slate-300 px-2 py-2 text-sm focus:border-emerald-500 focus:outline-none"
-        >
-          <option value="">All categories</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-        <input
-          type="date"
-          value={filters.from}
-          onChange={(e) => {
-            setPage(1)
-            setFilters({ ...filters, from: e.target.value })
-          }}
-          className="rounded-lg border border-slate-300 px-2 py-2 text-sm focus:border-emerald-500 focus:outline-none"
-        />
-        <input
-          type="date"
-          value={filters.to}
-          onChange={(e) => {
-            setPage(1)
-            setFilters({ ...filters, to: e.target.value })
-          }}
-          className="rounded-lg border border-slate-300 px-2 py-2 text-sm focus:border-emerald-500 focus:outline-none"
-        />
-      </div>
+      </Card>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
-              <tr>
-                <th className="px-4 py-3">Date</th>
-                <th className="px-4 py-3">Category</th>
-                <th className="px-4 py-3">Description</th>
-                <th className="px-4 py-3">Method</th>
-                <th className="px-4 py-3 text-right">Amount</th>
-                <th className="px-4 py-3"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {transactions.map((t) => (
-                <tr key={t.id} className="hover:bg-slate-50">
-                  <td className="whitespace-nowrap px-4 py-3 text-slate-600">{formatDate(t.transactionDate)}</td>
-                  <td className="whitespace-nowrap px-4 py-3 font-medium text-slate-700">{t.category.name}</td>
-                  <td className="px-4 py-3 text-slate-500">{t.description || '—'}</td>
-                  <td className="whitespace-nowrap px-4 py-3 text-slate-500">
-                    {PAYMENT_METHOD_LABELS[t.paymentMethod]}
-                  </td>
-                  <td
-                    className={`whitespace-nowrap px-4 py-3 text-right font-semibold ${
-                      t.type === 'income' ? 'text-emerald-600' : 'text-red-600'
-                    }`}
+      {loading ? (
+        <LoadingState variant="table" rows={6} />
+      ) : (
+        <Card padded={false} className="overflow-hidden">
+          {transactions.length === 0 ? (
+            <EmptyState
+              icon={Receipt}
+              title={hasFilters ? 'No matching transactions' : 'No transactions yet'}
+              description={
+                hasFilters
+                  ? 'Try adjusting or clearing your filters.'
+                  : 'Add your first income or expense to start tracking.'
+              }
+              action={
+                hasFilters ? (
+                  <Button variant="secondary" size="sm" onClick={() => setFilters(emptyFilters)}>
+                    Clear filters
+                  </Button>
+                ) : (
+                  <Button size="sm" leftIcon={Plus} onClick={() => setFormOpen(true)}>
+                    Add transaction
+                  </Button>
+                )
+              }
+            />
+          ) : (
+            <>
+              <div className="hidden md:block">
+                <TransactionTable
+                  transactions={transactions}
+                  onEdit={(t) => {
+                    setEditing(t)
+                    setFormOpen(true)
+                  }}
+                  onDelete={setDeleteTarget}
+                />
+              </div>
+              <div className="divide-y divide-slate-100 md:hidden">
+                {transactions.map((t) => (
+                  <TransactionCard
+                    key={t.id}
+                    transaction={t}
+                    onEdit={(tx) => {
+                      setEditing(tx)
+                      setFormOpen(true)
+                    }}
+                    onDelete={setDeleteTarget}
+                  />
+                ))}
+              </div>
+
+              <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm text-slate-500">
+                <span>
+                  Page {page} of {totalPages} &middot; {total} total
+                </span>
+                <div className="flex gap-2">
+                  <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+                    Prev
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={page >= totalPages}
+                    onClick={() => setPage((p) => p + 1)}
                   >
-                    {t.type === 'income' ? '+' : '-'}
-                    {formatCurrency(t.amount)}
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-3">
-                    <div className="flex justify-end gap-1">
-                      <button
-                        onClick={() => {
-                          setEditing(t)
-                          setFormOpen(true)
-                        }}
-                        className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-emerald-600"
-                      >
-                        <Pencil size={14} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(t.id)}
-                        className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-red-600"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {transactions.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-4 py-10 text-center text-slate-400">
-                    No transactions found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm text-slate-500">
-          <span>
-            Page {page} of {totalPages} ({total} total)
-          </span>
-          <div className="flex gap-2">
-            <button
-              disabled={page <= 1}
-              onClick={() => setPage((p) => p - 1)}
-              className="rounded-lg border border-slate-200 px-3 py-1 disabled:opacity-40"
-            >
-              Prev
-            </button>
-            <button
-              disabled={page >= totalPages}
-              onClick={() => setPage((p) => p + 1)}
-              className="rounded-lg border border-slate-200 px-3 py-1 disabled:opacity-40"
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      </div>
+                    Next
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
+        </Card>
+      )}
 
       {formOpen && (
         <TransactionForm
@@ -222,6 +237,20 @@ export default function Transactions() {
           onSaved={handleSaved}
         />
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        loading={deleting}
+        title="Delete this transaction?"
+        message={
+          deleteTarget
+            ? `This will permanently remove the ${deleteTarget.type} of ${formatCurrency(deleteTarget.amount)} for ${deleteTarget.category.name}.`
+            : ''
+        }
+        confirmLabel="Delete"
+      />
     </div>
   )
 }

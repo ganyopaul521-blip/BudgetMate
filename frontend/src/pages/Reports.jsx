@@ -1,3 +1,4 @@
+import { PieChart as PieChartIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import {
   Bar,
@@ -15,21 +16,27 @@ import {
   YAxis,
 } from 'recharts'
 import { categoriesApi, reportsApi } from '../api/endpoints'
+import Card from '../components/Card'
+import EmptyState from '../components/EmptyState'
+import LoadingState from '../components/LoadingState'
+import PageHeader from '../components/PageHeader'
+import Select from '../components/Select'
+import StatCard from '../components/StatCard'
 import { formatCurrency, MONTH_NAMES } from '../utils/format'
 
-const COLORS = ['#059669', '#dc2626', '#d97706', '#2563eb', '#7c3aed', '#db2777', '#0891b2', '#65a30d', '#ea580c', '#4f46e5']
+const COLORS = ['#4f46e5', '#e11d48', '#059669', '#d97706', '#0891b2', '#7c3aed', '#db2777', '#65a30d', '#2563eb', '#ea580c']
 
 const now = new Date()
 
 export default function Reports() {
   const [month, setMonth] = useState(now.getMonth() + 1)
   const [year, setYear] = useState(now.getFullYear())
-  const [distribution, setDistribution] = useState([])
-  const [comparison, setComparison] = useState([])
+  const [distribution, setDistribution] = useState(null)
+  const [comparison, setComparison] = useState(null)
   const [summary, setSummary] = useState(null)
   const [categories, setCategories] = useState([])
   const [trendCategoryId, setTrendCategoryId] = useState('')
-  const [trend, setTrend] = useState([])
+  const [trend, setTrend] = useState(null)
 
   useEffect(() => {
     categoriesApi.list('expense').then((res) => {
@@ -40,60 +47,61 @@ export default function Reports() {
   }, [])
 
   useEffect(() => {
+    setDistribution(null)
+    setSummary(null)
     reportsApi.expenseDistribution({ month, year }).then((res) => setDistribution(res.data.distribution))
     reportsApi.summary({ month, year }).then((res) => setSummary(res.data))
   }, [month, year])
 
   useEffect(() => {
     if (trendCategoryId) {
+      setTrend(null)
       reportsApi.categoryTrend(trendCategoryId).then((res) => setTrend(res.data.data))
     }
   }, [trendCategoryId])
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-slate-800">Reports</h1>
-        <div className="flex gap-2">
-          <select value={month} onChange={(e) => setMonth(Number(e.target.value))} className="rounded-lg border border-slate-300 px-3 py-2 text-sm">
-            {MONTH_NAMES.map((name, i) => (
-              <option key={name} value={i + 1}>
-                {name}
-              </option>
-            ))}
-          </select>
-          <select value={year} onChange={(e) => setYear(Number(e.target.value))} className="rounded-lg border border-slate-300 px-3 py-2 text-sm">
-            {[year - 1, year, year + 1].map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
+    <div>
+      <PageHeader
+        title="Reports"
+        description="Visualise your spending patterns and trends."
+        actions={
+          <div className="flex gap-2">
+            <Select aria-label="Select month" value={month} onChange={(e) => setMonth(Number(e.target.value))}>
+              {MONTH_NAMES.map((name, i) => (
+                <option key={name} value={i + 1}>
+                  {name}
+                </option>
+              ))}
+            </Select>
+            <Select aria-label="Select year" value={year} onChange={(e) => setYear(Number(e.target.value))}>
+              {[year - 1, year, year + 1].map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </Select>
+          </div>
+        }
+      />
 
-      {summary && (
+      {!summary ? (
+        <LoadingState variant="stats" />
+      ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-slate-500">Total Income</p>
-            <p className="mt-1 text-xl font-bold text-emerald-600">{formatCurrency(summary.totalIncome)}</p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-slate-500">Total Expenditure</p>
-            <p className="mt-1 text-xl font-bold text-red-600">{formatCurrency(summary.totalExpense)}</p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-slate-500">Net Balance</p>
-            <p className="mt-1 text-xl font-bold text-slate-800">{formatCurrency(summary.netBalance)}</p>
-          </div>
+          <StatCard label="Total Income" value={formatCurrency(summary.totalIncome)} tone="success" />
+          <StatCard label="Total Expenditure" value={formatCurrency(summary.totalExpense)} tone="danger" />
+          <StatCard label="Net Balance" value={formatCurrency(summary.netBalance)} tone="brand" />
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="mb-3 font-semibold text-slate-800">Expenditure Distribution</h2>
-          {distribution.length === 0 ? (
-            <p className="text-sm text-slate-400">No expenses recorded for this period.</p>
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Card>
+          <h2 className="mb-3 font-semibold text-slate-900">Expenditure Distribution</h2>
+          {distribution === null ? (
+            <LoadingState variant="page" />
+          ) : distribution.length === 0 ? (
+            <EmptyState icon={PieChartIcon} title="No expenses this period" description="Add expenses to see the breakdown." />
           ) : (
             <ResponsiveContainer width="100%" height={280}>
               <PieChart>
@@ -115,61 +123,70 @@ export default function Reports() {
               </PieChart>
             </ResponsiveContainer>
           )}
-        </div>
+        </Card>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="mb-3 font-semibold text-slate-800">Income vs Expenditure (6 months)</h2>
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={comparison}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-              <YAxis tick={{ fontSize: 12 }} />
-              <Tooltip formatter={(value) => formatCurrency(value)} />
-              <Legend />
-              <Bar dataKey="income" name="Income" fill="#059669" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="expense" name="Expenditure" fill="#dc2626" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        <Card>
+          <h2 className="mb-3 font-semibold text-slate-900">Income vs Expenditure (6 months)</h2>
+          {comparison === null ? (
+            <LoadingState variant="page" />
+          ) : (
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={comparison}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} />
+                <Tooltip formatter={(value) => formatCurrency(value)} />
+                <Legend />
+                <Bar dataKey="income" name="Income" fill="#059669" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="expense" name="Expenditure" fill="#e11d48" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </Card>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm lg:col-span-2">
+        <Card className="lg:col-span-2">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <h2 className="font-semibold text-slate-800">Category Spending Trend (6 months)</h2>
-            <select
+            <h2 className="font-semibold text-slate-900">Category Spending Trend (6 months)</h2>
+            <Select
+              aria-label="Select category for trend"
               value={trendCategoryId}
               onChange={(e) => setTrendCategoryId(e.target.value)}
-              className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+              className="w-auto"
             >
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
-          <ResponsiveContainer width="100%" height={260}>
-            <LineChart data={trend}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-              <YAxis tick={{ fontSize: 12 }} />
-              <Tooltip formatter={(value) => formatCurrency(value)} />
-              <Line type="monotone" dataKey="amount" name="Spending" stroke="#2563eb" strokeWidth={2} dot={{ r: 3 }} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+          {trend === null ? (
+            <LoadingState variant="page" />
+          ) : (
+            <ResponsiveContainer width="100%" height={260}>
+              <LineChart data={trend}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} />
+                <Tooltip formatter={(value) => formatCurrency(value)} />
+                <Line type="monotone" dataKey="amount" name="Spending" stroke="#4f46e5" strokeWidth={2} dot={{ r: 3 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
+        </Card>
 
         {summary?.topCategories?.length > 0 && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm lg:col-span-2">
-            <h2 className="mb-3 font-semibold text-slate-800">Top Spending Categories</h2>
+          <Card className="lg:col-span-2">
+            <h2 className="mb-3 font-semibold text-slate-900">Top Spending Categories</h2>
             <div className="divide-y divide-slate-100">
               {summary.topCategories.map((c) => (
                 <div key={c.category} className="flex items-center justify-between py-2 text-sm">
                   <span className="text-slate-600">{c.category}</span>
-                  <span className="font-semibold text-slate-800">{formatCurrency(c.amount)}</span>
+                  <span className="font-semibold tabular-nums text-slate-800">{formatCurrency(c.amount)}</span>
                 </div>
               ))}
             </div>
-          </div>
+          </Card>
         )}
       </div>
     </div>
