@@ -1,28 +1,58 @@
-import { Lock, Mail } from 'lucide-react'
+import { Mail } from 'lucide-react'
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout'
 import Button from '../components/Button'
 import Card from '../components/Card'
+import FormError from '../components/FormError'
 import Input from '../components/Input'
+import PasswordInput from '../components/PasswordInput'
 import { useAuth } from '../context/AuthContext'
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function Login() {
   const { login } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const redirectTo = location.state?.from?.pathname || '/dashboard'
+
   const [form, setForm] = useState({ email: '', password: '' })
-  const [error, setError] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [formError, setFormError] = useState(null)
   const [submitting, setSubmitting] = useState(false)
+
+  const validateEmail = (value) => {
+    if (!value) return 'Email is required.'
+    if (!EMAIL_PATTERN.test(value)) return 'Enter a valid email address.'
+    return ''
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError('')
+    setFormError(null)
+
+    const emailValidation = validateEmail(form.email)
+    setEmailError(emailValidation)
+    if (emailValidation) return
+
+    if (!form.password) {
+      setFormError({ title: 'Unable to log in', message: 'Please enter your password.' })
+      return
+    }
+
     setSubmitting(true)
     try {
       await login(form.email, form.password)
-      navigate('/dashboard')
+      navigate(redirectTo, { replace: true })
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.')
+      if (err.response?.status === 401) {
+        setFormError({ title: 'Unable to log in', message: 'Please check your email and password and try again.' })
+      } else if (err.response?.data?.message) {
+        setFormError({ message: err.response.data.message })
+      } else {
+        setFormError({ title: 'Unable to log in', message: 'Something went wrong. Please check your connection and try again.' })
+      }
     } finally {
       setSubmitting(false)
     }
@@ -31,12 +61,8 @@ export default function Login() {
   return (
     <AuthLayout title="Welcome back" subtitle="Log in to your BudgetMate account">
       <Card>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
-              {error}
-            </p>
-          )}
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
+          <FormError title={formError?.title} message={formError?.message} />
 
           <Input
             label="Email"
@@ -45,7 +71,12 @@ export default function Login() {
             leftIcon={Mail}
             autoComplete="email"
             value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            onChange={(e) => {
+              setForm({ ...form, email: e.target.value })
+              if (emailError) setEmailError('')
+            }}
+            onBlur={(e) => setEmailError(validateEmail(e.target.value))}
+            error={emailError}
             placeholder="you@example.com"
           />
 
@@ -58,11 +89,9 @@ export default function Login() {
                 Forgot password?
               </Link>
             </div>
-            <Input
+            <PasswordInput
               id="login-password"
-              type="password"
               required
-              leftIcon={Lock}
               autoComplete="current-password"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -71,7 +100,7 @@ export default function Login() {
           </div>
 
           <Button type="submit" fullWidth loading={submitting} className="mt-1">
-            Log In
+            {submitting ? 'Logging in...' : 'Log In'}
           </Button>
         </form>
       </Card>

@@ -1,30 +1,60 @@
-import { Lock, Mail, User } from 'lucide-react'
+import { Mail, User } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout'
 import Button from '../components/Button'
 import Card from '../components/Card'
+import FormError from '../components/FormError'
 import Input from '../components/Input'
+import PasswordInput from '../components/PasswordInput'
 import { useAuth } from '../context/AuthContext'
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function Register() {
   const { register } = useAuth()
   const navigate = useNavigate()
   const [form, setForm] = useState({ fullName: '', email: '', password: '' })
-  const [error, setError] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [formError, setFormError] = useState(null)
   const [submitting, setSubmitting] = useState(false)
+
+  const validateEmail = (value) => {
+    if (!value) return 'Email is required.'
+    if (!EMAIL_PATTERN.test(value)) return 'Enter a valid email address.'
+    return ''
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError('')
+    setFormError(null)
+
+    const emailValidation = validateEmail(form.email)
+    setEmailError(emailValidation)
+    if (emailValidation) return
+
+    if (!form.fullName.trim()) {
+      setFormError({ title: 'Unable to create account', message: 'Please enter your full name.' })
+      return
+    }
+    if (!form.password) {
+      setFormError({ title: 'Unable to create account', message: 'Please choose a password.' })
+      return
+    }
+
     setSubmitting(true)
     try {
       await register(form.fullName, form.email, form.password)
-      navigate('/dashboard')
+      navigate('/dashboard', { replace: true })
     } catch (err) {
       const details = err.response?.data?.details
       const detailMsg = details ? Object.values(details).flat().join(' ') : ''
-      setError(detailMsg || err.response?.data?.message || 'Registration failed. Please try again.')
+      const message = detailMsg || err.response?.data?.message
+      setFormError(
+        message
+          ? { message }
+          : { title: 'Unable to create account', message: 'Something went wrong. Please check your connection and try again.' }
+      )
     } finally {
       setSubmitting(false)
     }
@@ -33,12 +63,8 @@ export default function Register() {
   return (
     <AuthLayout title="Create your account" subtitle="Free, and built for Ghana">
       <Card>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
-              {error}
-            </p>
-          )}
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
+          <FormError title={formError?.title} message={formError?.message} />
 
           <Input
             label="Full name"
@@ -57,15 +83,18 @@ export default function Register() {
             leftIcon={Mail}
             autoComplete="email"
             value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            onChange={(e) => {
+              setForm({ ...form, email: e.target.value })
+              if (emailError) setEmailError('')
+            }}
+            onBlur={(e) => setEmailError(validateEmail(e.target.value))}
+            error={emailError}
             placeholder="you@example.com"
           />
 
-          <Input
+          <PasswordInput
             label="Password"
-            type="password"
             required
-            leftIcon={Lock}
             autoComplete="new-password"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -74,7 +103,7 @@ export default function Register() {
           />
 
           <Button type="submit" fullWidth loading={submitting} className="mt-1">
-            Create Account
+            {submitting ? 'Creating account...' : 'Create Account'}
           </Button>
         </form>
       </Card>
