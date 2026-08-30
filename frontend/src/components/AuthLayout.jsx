@@ -1,11 +1,8 @@
-import { BarChart3, ShieldCheck, Sparkles, Wallet } from 'lucide-react'
+import { Check, Wallet } from 'lucide-react'
+import DashboardPreview from './landing/DashboardPreview'
 import ThemeToggle from './ThemeToggle'
 
-const FEATURES = [
-  { icon: BarChart3, text: 'Visual spending reports and budget tracking' },
-  { icon: ShieldCheck, text: 'Real-time alerts before you overspend' },
-  { icon: Sparkles, text: 'AI-powered spending guidance, built for Ghana' },
-]
+const BENEFITS = ['Track income and expenses', 'Monitor your budgets', 'Understand your spending']
 
 export default function AuthLayout({ title, subtitle, children }) {
   return (
@@ -19,24 +16,33 @@ export default function AuthLayout({ title, subtitle, children }) {
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/15">
             <Wallet size={19} />
           </div>
-          <span className="text-xl">BudgetMate</span>
+          <div>
+            <span className="block text-xl leading-tight">BudgetMate</span>
+            <span className="block text-xs font-normal text-indigo-200">Your smarter way to manage money.</span>
+          </div>
         </div>
 
         <div>
           <h2 className="text-3xl font-bold leading-tight">Take control of your money, on your terms.</h2>
           <p className="mt-3 max-w-sm text-indigo-100">
-            Built for students and young professionals in Ghana — track spending in Ghana Cedi, manage Mobile Money, and stay ahead of your budget.
+            Track your spending, manage your budgets, and understand your financial habits — all in one place.
           </p>
           <ul className="mt-8 space-y-4">
-            {FEATURES.map(({ icon: Icon, text }) => (
+            {BENEFITS.map((text) => (
               <li key={text} className="flex items-center gap-3 text-sm text-indigo-50">
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/15">
-                  <Icon size={15} aria-hidden="true" />
+                  <Check size={15} aria-hidden="true" />
                 </span>
                 {text}
               </li>
             ))}
           </ul>
+
+          <div className="mt-10 hidden max-w-xs opacity-90 xl:block" aria-hidden="true">
+            <div className="pointer-events-none scale-95 origin-top">
+              <DashboardPreview variant="compact" />
+            </div>
+          </div>
         </div>
 
         <p className="text-xs text-indigo-200">&copy; {new Date().getFullYear()} BudgetMate. Built for the University of Ghana final year project.</p>

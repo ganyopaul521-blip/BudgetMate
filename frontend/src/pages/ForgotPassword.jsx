@@ -5,6 +5,7 @@ import { authApi } from '../api/endpoints'
 import AuthLayout from '../components/AuthLayout'
 import Button from '../components/Button'
 import Card from '../components/Card'
+import FormError from '../components/FormError'
 import Input from '../components/Input'
 
 export default function ForgotPassword() {
@@ -42,11 +43,7 @@ export default function ForgotPassword() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
-                {error}
-              </p>
-            )}
+            <FormError message={error} />
 
             <Input
               label="Email"

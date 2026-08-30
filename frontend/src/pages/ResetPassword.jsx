@@ -1,11 +1,12 @@
-import { CheckCircle2, Lock } from 'lucide-react'
+import { CheckCircle2 } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { authApi } from '../api/endpoints'
 import AuthLayout from '../components/AuthLayout'
 import Button from '../components/Button'
 import Card from '../components/Card'
-import Input from '../components/Input'
+import FormError from '../components/FormError'
+import PasswordInput from '../components/PasswordInput'
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams()
@@ -42,9 +43,7 @@ export default function ResetPassword() {
     <AuthLayout title="Choose a new password">
       <Card>
         {!token && (
-          <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
-            This link is missing its reset token. Please use the link from your email, or request a new one.
-          </p>
+          <FormError message="This link is missing its reset token. Please use the link from your email, or request a new one." />
         )}
 
         {token && done && (
@@ -56,17 +55,11 @@ export default function ResetPassword() {
 
         {token && !done && (
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
-                {error}
-              </p>
-            )}
+            <FormError message={error} />
 
-            <Input
+            <PasswordInput
               label="New password"
-              type="password"
               required
-              leftIcon={Lock}
               autoComplete="new-password"
               value={form.newPassword}
               onChange={(e) => setForm({ ...form, newPassword: e.target.value })}
@@ -74,11 +67,9 @@ export default function ResetPassword() {
               hint="Must include at least one number and one special character."
             />
 
-            <Input
+            <PasswordInput
               label="Confirm new password"
-              type="password"
               required
-              leftIcon={Lock}
               autoComplete="new-password"
               value={form.confirmPassword}
               onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
