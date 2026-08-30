@@ -11,7 +11,7 @@ import {
 import { NavLink } from 'react-router-dom'
 
 const NAV_ITEMS = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/transactions', label: 'Transactions', icon: ListChecks },
   { to: '/pay', label: 'Pay', icon: CreditCard },
   { to: '/budgets', label: 'Budgets', icon: PiggyBank },
