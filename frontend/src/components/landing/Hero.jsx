@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Badge from '../Badge'
 import Button from '../Button'
 import Reveal from '../Reveal'
-import DashboardPreview from './DashboardPreview'
+import HeroImage from './HeroImage'
 
 export default function Hero({ isAuthed }) {
   return (
@@ -49,7 +49,7 @@ export default function Hero({ isAuthed }) {
         </Reveal>
 
         <Reveal delay={120}>
-          <DashboardPreview variant="compact" />
+          <HeroImage />
         </Reveal>
       </div>
     </section>
