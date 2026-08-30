@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom'
 import Badge from '../components/Badge'
 import Button from '../components/Button'
 import Card from '../components/Card'
+import ThemeToggle from '../components/ThemeToggle'
 
 const FEATURES = [
   {
@@ -63,9 +64,9 @@ function PublicHeader() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6">
-        <div className="flex items-center gap-2 font-bold text-slate-900">
+        <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
             <Wallet size={17} />
           </div>
@@ -73,6 +74,7 @@ function PublicHeader() {
         </div>
 
         <div className="hidden items-center gap-2 sm:flex">
+          <ThemeToggle />
           <Button as={Link} to="/login" variant="ghost">
             Log In
           </Button>
@@ -81,18 +83,21 @@ function PublicHeader() {
           </Button>
         </div>
 
-        <button
-          onClick={() => setOpen((v) => !v)}
-          aria-label={open ? 'Close menu' : 'Open menu'}
-          aria-expanded={open}
-          className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 sm:hidden"
-        >
-          {open ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        <div className="flex items-center gap-1 sm:hidden">
+          <ThemeToggle />
+          <button
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+          >
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
 
       {open && (
-        <div className="flex flex-col gap-2 border-t border-slate-100 px-4 py-3 sm:hidden">
+        <div className="flex flex-col gap-2 border-t border-slate-100 px-4 py-3 dark:border-slate-800 sm:hidden">
           <Button as={Link} to="/login" variant="secondary" fullWidth>
             Log In
           </Button>
@@ -107,26 +112,26 @@ function PublicHeader() {
 
 function HeroMockup() {
   return (
-    <div className="relative mx-auto w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-xl">
+    <div className="relative mx-auto w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-xl dark:border-slate-800 dark:bg-slate-900">
       <div className="mb-4 flex items-center justify-between">
-        <span className="text-sm font-semibold text-slate-800">This Month</span>
+        <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">This Month</span>
         <Badge tone="success">On track</Badge>
       </div>
 
       <div className="mb-5 grid grid-cols-2 gap-3">
-        <div className="rounded-xl bg-emerald-50 p-3">
-          <div className="flex items-center gap-1.5 text-emerald-600">
+        <div className="rounded-xl bg-emerald-50 p-3 dark:bg-emerald-500/10">
+          <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
             <TrendingUp size={14} aria-hidden="true" />
             <span className="text-xs font-medium">Income</span>
           </div>
-          <p className="mt-1 text-lg font-bold tabular-nums text-slate-900">GH₵ 3,200.00</p>
+          <p className="mt-1 text-lg font-bold tabular-nums text-slate-900 dark:text-white">GH₵ 3,200.00</p>
         </div>
-        <div className="rounded-xl bg-rose-50 p-3">
-          <div className="flex items-center gap-1.5 text-rose-600">
+        <div className="rounded-xl bg-rose-50 p-3 dark:bg-rose-500/10">
+          <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
             <TrendingDown size={14} aria-hidden="true" />
             <span className="text-xs font-medium">Expenses</span>
           </div>
-          <p className="mt-1 text-lg font-bold tabular-nums text-slate-900">GH₵ 1,840.00</p>
+          <p className="mt-1 text-lg font-bold tabular-nums text-slate-900 dark:text-white">GH₵ 1,840.00</p>
         </div>
       </div>
 
@@ -138,17 +143,17 @@ function HeroMockup() {
         ].map((b) => (
           <div key={b.label}>
             <div className="mb-1 flex items-center justify-between text-xs">
-              <span className="font-medium text-slate-600">{b.label}</span>
-              <span className="text-slate-400">{b.pct}%</span>
+              <span className="font-medium text-slate-600 dark:text-slate-300">{b.label}</span>
+              <span className="text-slate-400 dark:text-slate-500">{b.pct}%</span>
             </div>
-            <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
               <div className={`h-full rounded-full ${b.tone}`} style={{ width: `${Math.min(b.pct, 100)}%` }} />
             </div>
           </div>
         ))}
       </div>
 
-      <div className="mt-4 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs text-amber-700">
+      <div className="mt-4 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs text-amber-700 dark:border-amber-900 dark:bg-amber-500/10 dark:text-amber-400">
         <AlertTriangle size={14} className="mt-0.5 shrink-0" aria-hidden="true" />
         <span>
           <strong className="font-semibold">Transport</strong> is over budget by GH₵ 20.00
@@ -164,7 +169,7 @@ function HeroMockup() {
 
 export default function Landing() {
   return (
-    <div className="bg-white">
+    <div className="bg-white dark:bg-slate-950">
       <PublicHeader />
 
       {/* Hero */}
@@ -174,10 +179,10 @@ export default function Landing() {
             <Badge tone="info" icon={Sparkles}>
               Free, forever &middot; Built for Ghana
             </Badge>
-            <h1 className="mt-4 text-4xl font-bold leading-tight tracking-tight text-slate-900 sm:text-5xl">
+            <h1 className="mt-4 text-4xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white sm:text-5xl">
               Take control of your money, on your terms.
             </h1>
-            <p className="mt-4 max-w-lg text-lg text-slate-500">
+            <p className="mt-4 max-w-lg text-lg text-slate-500 dark:text-slate-400">
               BudgetMate is a free personal budget tracker built for students and young professionals in Ghana —
               track spending in Ghana Cedi, manage Mobile Money, get real-time overspend alerts, and see exactly
               where your money goes.
@@ -190,7 +195,7 @@ export default function Landing() {
                 Log In
               </Button>
             </div>
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-400">
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-400 dark:text-slate-500">
               <span className="flex items-center gap-1.5">
                 <Shield size={15} aria-hidden="true" /> No credit card required
               </span>
@@ -205,11 +210,11 @@ export default function Landing() {
       </section>
 
       {/* Features */}
-      <section className="border-t border-slate-100 bg-slate-50/60 py-16">
+      <section className="border-t border-slate-100 bg-slate-50/60 py-16 dark:border-slate-800 dark:bg-slate-900/40">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-slate-900">Everything you need to stay on budget</h2>
-            <p className="mt-3 text-slate-500">
+            <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Everything you need to stay on budget</h2>
+            <p className="mt-3 text-slate-500 dark:text-slate-400">
               No clutter, no subscriptions — just the tools that actually change how you spend.
             </p>
           </div>
@@ -217,11 +222,11 @@ export default function Landing() {
           <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map(({ icon: Icon, title, description }) => (
               <Card key={title} className="transition-shadow hover:shadow-md">
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400">
                   <Icon size={20} aria-hidden="true" />
                 </div>
-                <h3 className="font-semibold text-slate-900">{title}</h3>
-                <p className="mt-1.5 text-sm text-slate-500">{description}</p>
+                <h3 className="font-semibold text-slate-900 dark:text-white">{title}</h3>
+                <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{description}</p>
               </Card>
             ))}
           </div>
@@ -232,7 +237,7 @@ export default function Landing() {
       <section className="py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-slate-900">Get started in three steps</h2>
+            <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Get started in three steps</h2>
           </div>
 
           <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">
@@ -241,8 +246,8 @@ export default function Landing() {
                 <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-indigo-600 text-lg font-bold text-white">
                   {i + 1}
                 </div>
-                <h3 className="font-semibold text-slate-900">{step.title}</h3>
-                <p className="mt-1.5 text-sm text-slate-500">{step.description}</p>
+                <h3 className="font-semibold text-slate-900 dark:text-white">{step.title}</h3>
+                <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{step.description}</p>
               </div>
             ))}
           </div>
@@ -261,9 +266,9 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-100 py-8">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 text-sm text-slate-400 sm:flex-row sm:px-6">
-          <div className="flex items-center gap-2 font-semibold text-slate-600">
+      <footer className="border-t border-slate-100 py-8 dark:border-slate-800">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 text-sm text-slate-400 dark:text-slate-500 sm:flex-row sm:px-6">
+          <div className="flex items-center gap-2 font-semibold text-slate-600 dark:text-slate-300">
             <Wallet size={16} aria-hidden="true" /> BudgetMate
           </div>
           <p>&copy; {new Date().getFullYear()} BudgetMate &middot; Built for the University of Ghana final year project.</p>

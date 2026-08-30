@@ -20,7 +20,7 @@ export default function Login() {
     setSubmitting(true)
     try {
       await login(form.email, form.password)
-      navigate('/')
+      navigate('/dashboard')
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.')
     } finally {
@@ -33,7 +33,7 @@ export default function Login() {
       <Card>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600">
+            <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
               {error}
             </p>
           )}
@@ -51,10 +51,10 @@ export default function Login() {
 
           <div>
             <div className="mb-1.5 flex items-center justify-between">
-              <label htmlFor="login-password" className="block text-sm font-medium text-slate-700">
+              <label htmlFor="login-password" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Password
               </label>
-              <Link to="/forgot-password" className="text-xs font-medium text-indigo-600 hover:underline">
+              <Link to="/forgot-password" className="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">
                 Forgot password?
               </Link>
             </div>
@@ -76,9 +76,9 @@ export default function Login() {
         </form>
       </Card>
 
-      <p className="mt-5 text-center text-sm text-slate-500">
+      <p className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
         Don&apos;t have an account?{' '}
-        <Link to="/register" className="font-medium text-indigo-600 hover:underline">
+        <Link to="/register" className="font-medium text-indigo-600 hover:underline dark:text-indigo-400">
           Create one
         </Link>
       </p>

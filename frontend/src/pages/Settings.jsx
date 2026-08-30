@@ -1,4 +1,4 @@
-import { Plus, Tag, Trash2, User } from 'lucide-react'
+import { Moon, Plus, Sun, Tag, Trash2, User } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { authApi, categoriesApi } from '../api/endpoints'
 import Button from '../components/Button'
@@ -9,9 +9,11 @@ import Input from '../components/Input'
 import PageHeader from '../components/PageHeader'
 import Select from '../components/Select'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 
 export default function Settings() {
   const { user, updateUser } = useAuth()
+  const { theme, setTheme } = useTheme()
   const [form, setForm] = useState({ fullName: user?.fullName || '', email: user?.email || '', currency: user?.currency || 'GHS' })
   const [status, setStatus] = useState('')
   const [statusError, setStatusError] = useState(false)
@@ -75,18 +77,22 @@ export default function Settings() {
 
   return (
     <div className="max-w-2xl">
-      <PageHeader title="Settings" description="Manage your profile and custom categories." />
+      <PageHeader title="Settings" description="Manage your profile, appearance, and custom categories." />
 
       <div className="space-y-6">
         <Card>
-          <h2 className="mb-4 flex items-center gap-2 font-semibold text-slate-900">
-            <User size={17} className="text-indigo-600" aria-hidden="true" /> Profile
+          <h2 className="mb-4 flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+            <User size={17} className="text-indigo-600 dark:text-indigo-400" aria-hidden="true" /> Profile
           </h2>
           <form onSubmit={handleSaveProfile} className="space-y-4">
             {status && (
               <p
                 role="status"
-                className={`rounded-lg px-3 py-2 text-sm ${statusError ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-700'}`}
+                className={`rounded-lg px-3 py-2 text-sm ${
+                  statusError
+                    ? 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400'
+                    : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
+                }`}
               >
                 {status}
               </p>
@@ -119,8 +125,43 @@ export default function Settings() {
         </Card>
 
         <Card>
-          <h2 className="mb-4 flex items-center gap-2 font-semibold text-slate-900">
-            <Tag size={17} className="text-indigo-600" aria-hidden="true" /> Custom Categories
+          <h2 className="mb-4 flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+            <Sun size={17} className="text-indigo-600 dark:text-indigo-400" aria-hidden="true" /> Appearance
+          </h2>
+          <p className="mb-3 text-sm text-slate-500 dark:text-slate-400">Choose how BudgetMate looks on this device.</p>
+          <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Theme">
+            <button
+              type="button"
+              role="radio"
+              aria-checked={theme === 'light'}
+              onClick={() => setTheme('light')}
+              className={`flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:ring-offset-slate-900 ${
+                theme === 'light'
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+              }`}
+            >
+              <Sun size={15} aria-hidden="true" /> Light
+            </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={theme === 'dark'}
+              onClick={() => setTheme('dark')}
+              className={`flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:ring-offset-slate-900 ${
+                theme === 'dark'
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+              }`}
+            >
+              <Moon size={15} aria-hidden="true" /> Dark
+            </button>
+          </div>
+        </Card>
+
+        <Card>
+          <h2 className="mb-4 flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+            <Tag size={17} className="text-indigo-600 dark:text-indigo-400" aria-hidden="true" /> Custom Categories
           </h2>
           <form onSubmit={handleAddCategory} className="mb-4 flex flex-col gap-2 sm:flex-row">
             <Input
@@ -149,16 +190,16 @@ export default function Settings() {
           {categories.length === 0 ? (
             <EmptyState title="No custom categories yet" description="Add one above to get started." />
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
               {categories.map((c) => (
                 <div key={c.id} className="flex items-center justify-between py-2.5 text-sm">
-                  <span className="text-slate-700">
-                    {c.name} <span className="text-xs text-slate-400">({c.type})</span>
+                  <span className="text-slate-700 dark:text-slate-300">
+                    {c.name} <span className="text-xs text-slate-400 dark:text-slate-500">({c.type})</span>
                   </span>
                   <button
                     onClick={() => setDeleteTarget(c)}
                     aria-label={`Delete category: ${c.name}`}
-                    className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
+                    className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-rose-400"
                   >
                     <Trash2 size={14} />
                   </button>

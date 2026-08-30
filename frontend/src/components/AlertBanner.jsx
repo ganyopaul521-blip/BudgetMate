@@ -8,7 +8,9 @@ export default function AlertBanner({ alert, onDismiss }) {
     <div
       role="alert"
       className={`mb-4 flex items-start justify-between gap-3 rounded-xl border px-4 py-3 text-sm ${
-        exceeded ? 'border-rose-200 bg-rose-50 text-rose-700' : 'border-amber-200 bg-amber-50 text-amber-700'
+        exceeded
+          ? 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900 dark:bg-rose-500/10 dark:text-rose-400'
+          : 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-500/10 dark:text-amber-400'
       }`}
     >
       <div className="flex items-start gap-2">

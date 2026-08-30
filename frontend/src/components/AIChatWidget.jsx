@@ -60,7 +60,7 @@ export default function AIChatWidget() {
         <div
           role="dialog"
           aria-label="BudgetMate assistant chat"
-          className="fixed bottom-24 right-4 z-40 flex h-[32rem] max-h-[calc(100vh-7rem)] w-[22rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+          className="fixed bottom-24 right-4 z-40 flex h-[32rem] max-h-[calc(100vh-7rem)] w-[22rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900"
         >
           <div className="flex items-center justify-between border-b border-slate-100 bg-indigo-600 px-4 py-3 text-white">
             <div className="flex items-center gap-2">
@@ -81,7 +81,9 @@ export default function AIChatWidget() {
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
                   className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
-                    m.role === 'user' ? 'whitespace-pre-wrap bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'
+                    m.role === 'user'
+                      ? 'whitespace-pre-wrap bg-indigo-600 text-white'
+                      : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200'
                   }`}
                 >
                   {m.role === 'assistant' ? <MarkdownText text={m.content} /> : m.content}
@@ -90,11 +92,11 @@ export default function AIChatWidget() {
             ))}
             {sending && (
               <div className="flex justify-start">
-                <div className="rounded-2xl bg-slate-100 px-3 py-2 text-sm text-slate-400">Thinking...</div>
+                <div className="rounded-2xl bg-slate-100 px-3 py-2 text-sm text-slate-400 dark:bg-slate-800 dark:text-slate-500">Thinking...</div>
               </div>
             )}
             {error && (
-              <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-600">
+              <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
                 {error}
               </p>
             )}
@@ -105,14 +107,14 @@ export default function AIChatWidget() {
               <button
                 onClick={() => send(QUICK_PROMPT)}
                 disabled={sending}
-                className="flex w-full items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-medium text-indigo-700 hover:bg-indigo-100 disabled:opacity-50"
+                className="flex w-full items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-medium text-indigo-700 hover:bg-indigo-100 disabled:opacity-50 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-400 dark:hover:bg-indigo-500/20"
               >
                 <Sparkles size={13} aria-hidden="true" /> Get a spending plan based on my income
               </button>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-slate-100 p-3">
+          <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-slate-100 p-3 dark:border-slate-800">
             <label htmlFor="ai-chat-input" className="sr-only">
               Message the assistant
             </label>
@@ -121,7 +123,7 @@ export default function AIChatWidget() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask a question..."
-              className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+              className="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-indigo-900/40"
             />
             <Button type="submit" size="md" disabled={sending || !input.trim()} aria-label="Send message" className="px-3">
               <Send size={16} aria-hidden="true" />

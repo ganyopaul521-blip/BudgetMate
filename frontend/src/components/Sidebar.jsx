@@ -32,13 +32,13 @@ export default function Sidebar({ open, onClose }) {
 
       <aside
         id="app-sidebar"
-        className={`fixed inset-y-0 left-0 z-50 flex w-72 shrink-0 -translate-x-full transform flex-col border-r border-slate-200 bg-white transition-transform duration-200 ease-out lg:static lg:z-auto lg:w-64 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 shrink-0 -translate-x-full transform flex-col border-r border-slate-200 bg-white transition-transform duration-200 ease-out dark:border-slate-800 dark:bg-slate-900 lg:static lg:z-auto lg:w-64 lg:translate-x-0 ${
           open ? 'translate-x-0' : ''
         }`}
         aria-label="Main navigation"
       >
         <div className="flex items-center justify-between px-5 py-5">
-          <div className="flex items-center gap-2 font-bold text-slate-900">
+          <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
               <Wallet size={17} />
             </div>
@@ -47,7 +47,7 @@ export default function Sidebar({ open, onClose }) {
           <button
             onClick={onClose}
             aria-label="Close navigation menu"
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 lg:hidden"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200 lg:hidden"
           >
             <X size={18} />
           </button>
@@ -63,8 +63,8 @@ export default function Sidebar({ open, onClose }) {
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-indigo-50 text-indigo-700'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
                 }`
               }
             >
@@ -74,8 +74,8 @@ export default function Sidebar({ open, onClose }) {
           ))}
         </nav>
 
-        <div className="border-t border-slate-100 px-5 py-4">
-          <p className="text-xs text-slate-400">BudgetMate &middot; Ghana Cedi (GH₵)</p>
+        <div className="border-t border-slate-100 px-5 py-4 dark:border-slate-800">
+          <p className="text-xs text-slate-400 dark:text-slate-500">BudgetMate &middot; Ghana Cedi (GH₵)</p>
         </div>
       </aside>
     </>

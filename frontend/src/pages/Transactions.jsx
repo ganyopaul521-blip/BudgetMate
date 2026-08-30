@@ -190,7 +190,7 @@ export default function Transactions() {
                   onDelete={setDeleteTarget}
                 />
               </div>
-              <div className="divide-y divide-slate-100 md:hidden">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800 md:hidden">
                 {transactions.map((t) => (
                   <TransactionCard
                     key={t.id}
@@ -204,7 +204,7 @@ export default function Transactions() {
                 ))}
               </div>
 
-              <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm text-slate-500">
+              <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
                 <span>
                   Page {page} of {totalPages} &middot; {total} total
                 </span>

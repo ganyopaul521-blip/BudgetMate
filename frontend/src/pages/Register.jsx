@@ -20,7 +20,7 @@ export default function Register() {
     setSubmitting(true)
     try {
       await register(form.fullName, form.email, form.password)
-      navigate('/')
+      navigate('/dashboard')
     } catch (err) {
       const details = err.response?.data?.details
       const detailMsg = details ? Object.values(details).flat().join(' ') : ''
@@ -35,7 +35,7 @@ export default function Register() {
       <Card>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600">
+            <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
               {error}
             </p>
           )}
@@ -79,9 +79,9 @@ export default function Register() {
         </form>
       </Card>
 
-      <p className="mt-5 text-center text-sm text-slate-500">
+      <p className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
         Already have an account?{' '}
-        <Link to="/login" className="font-medium text-indigo-600 hover:underline">
+        <Link to="/login" className="font-medium text-indigo-600 hover:underline dark:text-indigo-400">
           Log in
         </Link>
       </p>

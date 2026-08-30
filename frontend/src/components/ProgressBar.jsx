@@ -14,7 +14,7 @@ export default function ProgressBar({ percent, tone, label, size = 'md', classNa
   return (
     <div className={className}>
       <div
-        className={`w-full overflow-hidden rounded-full bg-slate-100 ${height}`}
+        className={`w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800 ${height}`}
         role="progressbar"
         aria-valuenow={Math.round(clamped)}
         aria-valuemin={0}

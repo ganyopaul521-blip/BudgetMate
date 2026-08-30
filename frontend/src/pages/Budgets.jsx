@@ -122,8 +122,8 @@ export default function Budgets() {
 
             return (
               <Card key={cat.id}>
-                <h3 className="font-semibold text-slate-900">{cat.name}</h3>
-                <p className="mt-1 text-sm text-slate-400">No budget set for this category yet.</p>
+                <h3 className="font-semibold text-slate-900 dark:text-white">{cat.name}</h3>
+                <p className="mt-1 text-sm text-slate-400 dark:text-slate-500">No budget set for this category yet.</p>
                 {saveRow}
               </Card>
             )

@@ -1,4 +1,5 @@
 import { BarChart3, ShieldCheck, Sparkles, Wallet } from 'lucide-react'
+import ThemeToggle from './ThemeToggle'
 
 const FEATURES = [
   { icon: BarChart3, text: 'Visual spending reports and budget tracking' },
@@ -8,7 +9,11 @@ const FEATURES = [
 
 export default function AuthLayout({ title, subtitle, children }) {
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="relative flex min-h-screen bg-slate-50 dark:bg-slate-950">
+      <div className="absolute right-4 top-4 z-10">
+        <ThemeToggle />
+      </div>
+
       <div className="hidden w-[42%] flex-col justify-between bg-indigo-700 px-10 py-12 text-white lg:flex xl:px-14">
         <div className="flex items-center gap-2.5 font-bold">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/15">
@@ -43,8 +48,8 @@ export default function AuthLayout({ title, subtitle, children }) {
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600 text-white lg:hidden">
               <Wallet size={22} />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900">{title}</h1>
-            {subtitle && <p className="text-sm text-slate-500">{subtitle}</p>}
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{title}</h1>
+            {subtitle && <p className="text-sm text-slate-500 dark:text-slate-400">{subtitle}</p>}
           </div>
           {children}
         </div>

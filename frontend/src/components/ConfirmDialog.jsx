@@ -18,15 +18,17 @@ export default function ConfirmDialog({
       <div className="flex gap-3">
         <div
           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-            variant === 'danger' ? 'bg-rose-100 text-rose-600' : 'bg-amber-100 text-amber-600'
+            variant === 'danger'
+              ? 'bg-rose-100 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400'
+              : 'bg-amber-100 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400'
           }`}
           aria-hidden="true"
         >
           <AlertTriangle size={20} />
         </div>
         <div className="flex-1">
-          <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-          {message && <p className="mt-1 text-sm text-slate-500">{message}</p>}
+          <h2 className="text-base font-semibold text-slate-900 dark:text-white">{title}</h2>
+          {message && <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{message}</p>}
         </div>
       </div>
 

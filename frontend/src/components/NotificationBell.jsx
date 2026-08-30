@@ -49,7 +49,7 @@ export default function NotificationBell() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="relative rounded-full p-2 text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+        className="relative rounded-full p-2 text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:text-slate-400 dark:hover:bg-slate-800"
         aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
         aria-haspopup="dialog"
         aria-expanded={open}
@@ -66,23 +66,23 @@ export default function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-30 mt-2 w-80 max-w-[90vw] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl">
-          <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
-            <span className="font-semibold text-slate-800">Notifications</span>
+        <div className="absolute right-0 z-30 mt-2 w-80 max-w-[90vw] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
+          <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3 dark:border-slate-800">
+            <span className="font-semibold text-slate-800 dark:text-slate-100">Notifications</span>
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
-                className="flex items-center gap-1 text-xs font-medium text-indigo-600 hover:underline"
+                className="flex items-center gap-1 text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400"
               >
                 <CheckCheck size={13} /> Mark all read
               </button>
             )}
           </div>
-          <div className="max-h-80 divide-y divide-slate-50 overflow-y-auto">
+          <div className="max-h-80 divide-y divide-slate-50 overflow-y-auto dark:divide-slate-800">
             {alerts.length === 0 && (
               <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
-                <BellOff size={20} className="text-slate-300" aria-hidden="true" />
-                <p className="text-sm text-slate-400">No alerts yet</p>
+                <BellOff size={20} className="text-slate-300 dark:text-slate-600" aria-hidden="true" />
+                <p className="text-sm text-slate-400 dark:text-slate-500">No alerts yet</p>
               </div>
             )}
             {alerts.map((alert) => (
