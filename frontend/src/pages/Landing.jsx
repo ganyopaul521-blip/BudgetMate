@@ -20,6 +20,7 @@ import Badge from '../components/Badge'
 import Button from '../components/Button'
 import Card from '../components/Card'
 import ThemeToggle from '../components/ThemeToggle'
+import { useAuth } from '../context/AuthContext'
 
 const FEATURES = [
   {
@@ -60,7 +61,7 @@ const STEPS = [
   { title: 'Set budgets and stay ahead', description: 'Get alerts before you overspend, and clear reports on where you stand.' },
 ]
 
-function PublicHeader() {
+function PublicHeader({ isAuthed }) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -75,12 +76,20 @@ function PublicHeader() {
 
         <div className="hidden items-center gap-2 sm:flex">
           <ThemeToggle />
-          <Button as={Link} to="/login" variant="ghost">
-            Log In
-          </Button>
-          <Button as={Link} to="/register" rightIcon={ArrowRight}>
-            Get Started Free
-          </Button>
+          {isAuthed ? (
+            <Button as={Link} to="/dashboard" rightIcon={ArrowRight}>
+              Go to Dashboard
+            </Button>
+          ) : (
+            <>
+              <Button as={Link} to="/login" variant="ghost">
+                Log In
+              </Button>
+              <Button as={Link} to="/register" rightIcon={ArrowRight}>
+                Get Started Free
+              </Button>
+            </>
+          )}
         </div>
 
         <div className="flex items-center gap-1 sm:hidden">
@@ -98,12 +107,20 @@ function PublicHeader() {
 
       {open && (
         <div className="flex flex-col gap-2 border-t border-slate-100 px-4 py-3 dark:border-slate-800 sm:hidden">
-          <Button as={Link} to="/login" variant="secondary" fullWidth>
-            Log In
-          </Button>
-          <Button as={Link} to="/register" fullWidth rightIcon={ArrowRight}>
-            Get Started Free
-          </Button>
+          {isAuthed ? (
+            <Button as={Link} to="/dashboard" fullWidth rightIcon={ArrowRight}>
+              Go to Dashboard
+            </Button>
+          ) : (
+            <>
+              <Button as={Link} to="/login" variant="secondary" fullWidth>
+                Log In
+              </Button>
+              <Button as={Link} to="/register" fullWidth rightIcon={ArrowRight}>
+                Get Started Free
+              </Button>
+            </>
+          )}
         </div>
       )}
     </header>
@@ -168,9 +185,12 @@ function HeroMockup() {
 }
 
 export default function Landing() {
+  const { user } = useAuth()
+  const isAuthed = !!user
+
   return (
     <div className="bg-white dark:bg-slate-950">
-      <PublicHeader />
+      <PublicHeader isAuthed={isAuthed} />
 
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-4 pb-16 pt-14 sm:px-6 sm:pt-20">
@@ -188,12 +208,20 @@ export default function Landing() {
               where your money goes.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button as={Link} to="/register" size="lg" rightIcon={ArrowRight}>
-                Get Started Free
-              </Button>
-              <Button as={Link} to="/login" size="lg" variant="secondary">
-                Log In
-              </Button>
+              {isAuthed ? (
+                <Button as={Link} to="/dashboard" size="lg" rightIcon={ArrowRight}>
+                  Go to Dashboard
+                </Button>
+              ) : (
+                <>
+                  <Button as={Link} to="/register" size="lg" rightIcon={ArrowRight}>
+                    Get Started Free
+                  </Button>
+                  <Button as={Link} to="/login" size="lg" variant="secondary">
+                    Log In
+                  </Button>
+                </>
+              )}
             </div>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-400 dark:text-slate-500">
               <span className="flex items-center gap-1.5">
@@ -257,11 +285,23 @@ export default function Landing() {
       {/* CTA */}
       <section className="border-t border-slate-100 bg-indigo-700 py-16">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-          <h2 className="text-3xl font-bold text-white">Ready to take control of your finances?</h2>
-          <p className="mt-3 text-indigo-100">Join BudgetMate today — it's free, and built for how you actually spend.</p>
-          <Button as={Link} to="/register" size="lg" variant="secondary" rightIcon={ArrowRight} className="mt-7">
-            Create Your Free Account
-          </Button>
+          {isAuthed ? (
+            <>
+              <h2 className="text-3xl font-bold text-white">Welcome back{user?.fullName ? `, ${user.fullName.split(' ')[0]}` : ''}.</h2>
+              <p className="mt-3 text-indigo-100">Jump back in and see where your money stands this month.</p>
+              <Button as={Link} to="/dashboard" size="lg" variant="secondary" rightIcon={ArrowRight} className="mt-7">
+                Go to Dashboard
+              </Button>
+            </>
+          ) : (
+            <>
+              <h2 className="text-3xl font-bold text-white">Ready to take control of your finances?</h2>
+              <p className="mt-3 text-indigo-100">Join BudgetMate today — it's free, and built for how you actually spend.</p>
+              <Button as={Link} to="/register" size="lg" variant="secondary" rightIcon={ArrowRight} className="mt-7">
+                Create Your Free Account
+              </Button>
+            </>
+          )}
         </div>
       </section>
 
