@@ -23,13 +23,15 @@ import PageHeader from '../components/PageHeader'
 import Select from '../components/Select'
 import StatCard from '../components/StatCard'
 import { useTheme } from '../context/ThemeContext'
-import { formatCurrency, MONTH_NAMES } from '../utils/format'
+import { useFormatCurrency } from '../hooks/useFormatCurrency'
+import { MONTH_NAMES } from '../utils/format'
 
 const COLORS = ['#4f46e5', '#e11d48', '#059669', '#d97706', '#0891b2', '#7c3aed', '#db2777', '#65a30d', '#2563eb', '#ea580c']
 
 const now = new Date()
 
 export default function Reports() {
+  const formatCurrency = useFormatCurrency()
   const { theme } = useTheme()
   const isDark = theme === 'dark'
   const gridColor = isDark ? '#334155' : '#e2e8f0'

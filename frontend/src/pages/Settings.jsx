@@ -10,6 +10,7 @@ import PageHeader from '../components/PageHeader'
 import Select from '../components/Select'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
+import { CURRENCIES } from '../utils/format'
 
 export default function Settings() {
   const { user, updateUser } = useAuth()
@@ -112,11 +113,15 @@ export default function Settings() {
             />
             <Select
               label="Currency"
+              hint="Changes which symbol amounts are shown with — your existing figures are not converted."
               value={form.currency}
               onChange={(e) => setForm({ ...form, currency: e.target.value })}
             >
-              <option value="GHS">Ghana Cedi (GH₵)</option>
-              <option value="USD">US Dollar ($)</option>
+              {CURRENCIES.map((c) => (
+                <option key={c.code} value={c.code}>
+                  {c.label} ({c.symbol})
+                </option>
+              ))}
             </Select>
             <Button type="submit" loading={saving}>
               Save Changes

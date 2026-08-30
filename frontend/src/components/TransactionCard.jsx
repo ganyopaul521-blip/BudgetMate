@@ -1,7 +1,9 @@
 import { ArrowDownLeft, ArrowUpRight, Pencil, Trash2 } from 'lucide-react'
-import { formatCurrency, formatDate, PAYMENT_METHOD_LABELS } from '../utils/format'
+import { useFormatCurrency } from '../hooks/useFormatCurrency'
+import { formatDate, PAYMENT_METHOD_LABELS } from '../utils/format'
 
 export default function TransactionCard({ transaction, onEdit, onDelete }) {
+  const formatCurrency = useFormatCurrency()
   const isIncome = transaction.type === 'income'
 
   return (
