@@ -1,5 +1,6 @@
 import {
   CreditCard,
+  Home,
   LayoutDashboard,
   ListChecks,
   PieChart,
@@ -18,6 +19,8 @@ const NAV_ITEMS = [
   { to: '/reports', label: 'Reports', icon: PieChart },
   { to: '/settings', label: 'Settings', icon: Settings },
 ]
+
+const HOME_ITEM = { to: '/', label: 'Home', icon: Home, end: true }
 
 export default function Sidebar({ open, onClose }) {
   return (
@@ -54,6 +57,22 @@ export default function Sidebar({ open, onClose }) {
         </div>
 
         <nav className="flex-1 space-y-1 px-3 py-2" aria-label="Primary">
+          <NavLink
+            to={HOME_ITEM.to}
+            end={HOME_ITEM.end}
+            onClick={onClose}
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                isActive
+                  ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
+              }`
+            }
+          >
+            <HOME_ITEM.icon size={18} aria-hidden="true" />
+            {HOME_ITEM.label}
+          </NavLink>
+          <div className="my-2 border-t border-slate-100 dark:border-slate-800" aria-hidden="true" />
           {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
             <NavLink
               key={to}

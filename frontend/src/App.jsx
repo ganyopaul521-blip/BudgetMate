@@ -24,14 +24,7 @@ function PublicOnlyRoute({ children }) {
 export default function App() {
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <PublicOnlyRoute>
-            <Landing />
-          </PublicOnlyRoute>
-        }
-      />
+      <Route path="/" element={<Landing />} />
       <Route
         path="/login"
         element={
