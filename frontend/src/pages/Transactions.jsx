@@ -13,11 +13,12 @@ import Select from '../components/Select'
 import TransactionCard from '../components/TransactionCard'
 import TransactionForm from '../components/TransactionForm'
 import TransactionTable from '../components/TransactionTable'
-import { formatCurrency } from '../utils/format'
+import { useFormatCurrency } from '../hooks/useFormatCurrency'
 
 const emptyFilters = { type: '', categoryId: '', from: '', to: '', search: '' }
 
 export default function Transactions() {
+  const formatCurrency = useFormatCurrency()
   const [transactions, setTransactions] = useState([])
   const [categories, setCategories] = useState([])
   const [filters, setFilters] = useState(emptyFilters)

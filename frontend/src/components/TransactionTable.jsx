@@ -1,7 +1,9 @@
 import { Pencil, Trash2 } from 'lucide-react'
-import { formatCurrency, formatDate, PAYMENT_METHOD_LABELS } from '../utils/format'
+import { useFormatCurrency } from '../hooks/useFormatCurrency'
+import { formatDate, PAYMENT_METHOD_LABELS } from '../utils/format'
 
 export default function TransactionTable({ transactions, onEdit, onDelete }) {
+  const formatCurrency = useFormatCurrency()
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">

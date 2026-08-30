@@ -1,10 +1,11 @@
 import { AlertTriangle, CheckCircle2 } from 'lucide-react'
+import { useFormatCurrency } from '../hooks/useFormatCurrency'
 import Badge from './Badge'
 import Card from './Card'
 import ProgressBar from './ProgressBar'
-import { formatCurrency } from '../utils/format'
 
 export default function BudgetCard({ categoryName, spent, amountLimit, percentUsed, children }) {
+  const formatCurrency = useFormatCurrency()
   const level = percentUsed >= 100 ? 'danger' : percentUsed >= 80 ? 'warning' : 'success'
   const remaining = amountLimit - spent
 

@@ -11,12 +11,14 @@ import Input from '../components/Input'
 import PageHeader from '../components/PageHeader'
 import Select from '../components/Select'
 import { useAuth } from '../context/AuthContext'
-import { formatCurrency, formatDate } from '../utils/format'
+import { useFormatCurrency } from '../hooks/useFormatCurrency'
+import { formatDate } from '../utils/format'
 
 const STATUS_TONES = { pending: 'warning', success: 'success', failed: 'danger' }
 
 export default function MakePayment() {
   const { user } = useAuth()
+  const formatCurrency = useFormatCurrency()
   const [categories, setCategories] = useState([])
   const [form, setForm] = useState({ categoryId: '', amount: '', description: '', channel: 'mobile_money' })
   const [projection, setProjection] = useState(null)

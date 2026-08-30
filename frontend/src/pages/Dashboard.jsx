@@ -13,10 +13,11 @@ import StatCard from '../components/StatCard'
 import TransactionCard from '../components/TransactionCard'
 import TransactionForm from '../components/TransactionForm'
 import { useAuth } from '../context/AuthContext'
-import { formatCurrency } from '../utils/format'
+import { useFormatCurrency } from '../hooks/useFormatCurrency'
 
 export default function Dashboard() {
   const { user } = useAuth()
+  const formatCurrency = useFormatCurrency()
   const [data, setData] = useState(null)
   const [formOpen, setFormOpen] = useState(false)
   const [formType, setFormType] = useState('expense')
