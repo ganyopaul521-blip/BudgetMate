@@ -5,6 +5,7 @@ import { useAuth } from './context/AuthContext'
 import Budgets from './pages/Budgets'
 import Dashboard from './pages/Dashboard'
 import ForgotPassword from './pages/ForgotPassword'
+import Landing from './pages/Landing'
 import Login from './pages/Login'
 import MakePayment from './pages/MakePayment'
 import Register from './pages/Register'
@@ -16,13 +17,21 @@ import Transactions from './pages/Transactions'
 function PublicOnlyRoute({ children }) {
   const { user, loading } = useAuth()
   if (loading) return null
-  if (user) return <Navigate to="/" replace />
+  if (user) return <Navigate to="/dashboard" replace />
   return children
 }
 
 export default function App() {
   return (
     <Routes>
+      <Route
+        path="/"
+        element={
+          <PublicOnlyRoute>
+            <Landing />
+          </PublicOnlyRoute>
+        }
+      />
       <Route
         path="/login"
         element={
@@ -49,7 +58,7 @@ export default function App() {
           </ProtectedRoute>
         }
       >
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/pay" element={<MakePayment />} />
         <Route path="/budgets" element={<Budgets />} />
