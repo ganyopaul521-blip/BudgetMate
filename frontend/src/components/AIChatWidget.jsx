@@ -2,6 +2,7 @@ import { Bot, MessageCircle, Send, Sparkles, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { aiApi } from '../api/endpoints'
 import Button from './Button'
+import MarkdownText from './MarkdownText'
 
 const GREETING = {
   role: 'assistant',
@@ -79,11 +80,11 @@ export default function AIChatWidget() {
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
-                  className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm ${
-                    m.role === 'user' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'
+                  className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
+                    m.role === 'user' ? 'whitespace-pre-wrap bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'
                   }`}
                 >
-                  {m.content}
+                  {m.role === 'assistant' ? <MarkdownText text={m.content} /> : m.content}
                 </div>
               </div>
             ))}
