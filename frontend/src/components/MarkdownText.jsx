@@ -1,17 +1,21 @@
-function parseInlineBold(text, keyPrefix) {
-  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
-    part.startsWith('**') && part.endsWith('**') ? (
-      <strong key={`${keyPrefix}-${i}`} className="font-semibold">
-        {part.slice(2, -2)}
-      </strong>
-    ) : (
-      <span key={`${keyPrefix}-${i}`}>{part}</span>
-    )
-  )
+function parseInlineFormatting(text, keyPrefix) {
+  return text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g).map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <strong key={`${keyPrefix}-${i}`} className="font-semibold">
+          {part.slice(2, -2)}
+        </strong>
+      )
+    }
+    if (part.startsWith('*') && part.endsWith('*') && part.length > 1) {
+      return <em key={`${keyPrefix}-${i}`}>{part.slice(1, -1)}</em>
+    }
+    return <span key={`${keyPrefix}-${i}`}>{part}</span>
+  })
 }
 
 /** Lightweight renderer for the small markdown subset the AI assistant tends to use:
- * **bold**, "- "/"* " bullets, "1. " numbered items, and simple indentation. */
+ * **bold**, *italic*, "- "/"* " bullets, "1. " numbered items, and simple indentation. */
 export default function MarkdownText({ text }) {
   const lines = text.split('\n')
 
@@ -28,7 +32,7 @@ export default function MarkdownText({ text }) {
           return (
             <div key={idx} className="flex gap-1.5" style={{ marginLeft: indentLevel * 12 }}>
               <span className="shrink-0 font-medium">{ordered[1]}.</span>
-              <span>{parseInlineBold(ordered[2], `o${idx}`)}</span>
+              <span>{parseInlineFormatting(ordered[2], `o${idx}`)}</span>
             </div>
           )
         }
@@ -39,12 +43,12 @@ export default function MarkdownText({ text }) {
               <span className="shrink-0" aria-hidden="true">
                 &bull;
               </span>
-              <span>{parseInlineBold(bullet[1], `b${idx}`)}</span>
+              <span>{parseInlineFormatting(bullet[1], `b${idx}`)}</span>
             </div>
           )
         }
 
-        return <p key={idx}>{parseInlineBold(line, `p${idx}`)}</p>
+        return <p key={idx}>{parseInlineFormatting(line, `p${idx}`)}</p>
       })}
     </div>
   )
