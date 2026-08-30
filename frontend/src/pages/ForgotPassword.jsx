@@ -33,7 +33,7 @@ export default function ForgotPassword() {
     <AuthLayout title="Reset your password" subtitle="Enter your account email and we'll send you a reset link.">
       <Card>
         {submitted ? (
-          <div role="status" className="flex items-start gap-2.5 rounded-lg bg-emerald-50 px-3.5 py-3 text-sm text-emerald-700">
+          <div role="status" className="flex items-start gap-2.5 rounded-lg bg-emerald-50 px-3.5 py-3 text-sm text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
             <CheckCircle2 size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
             <p>
               If an account exists for <strong>{email}</strong>, a password reset link has been sent. Check your inbox
@@ -43,7 +43,7 @@ export default function ForgotPassword() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600">
+              <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
                 {error}
               </p>
             )}
@@ -66,9 +66,9 @@ export default function ForgotPassword() {
         )}
       </Card>
 
-      <p className="mt-5 text-center text-sm text-slate-500">
+      <p className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
         Remembered your password?{' '}
-        <Link to="/login" className="font-medium text-indigo-600 hover:underline">
+        <Link to="/login" className="font-medium text-indigo-600 hover:underline dark:text-indigo-400">
           Log in
         </Link>
       </p>

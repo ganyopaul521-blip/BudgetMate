@@ -121,7 +121,7 @@ export default function MakePayment() {
           <Card>
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600">
+                <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
                   {error}
                 </p>
               )}
@@ -152,15 +152,15 @@ export default function MakePayment() {
                 placeholder="0.00"
               />
 
-              {checking && <p className="text-xs text-slate-400">Checking your budget...</p>}
+              {checking && <p className="text-xs text-slate-400 dark:text-slate-500">Checking your budget...</p>}
 
               {projection?.hasBudget && projection.level !== 'ok' && (
                 <div
                   role="status"
                   className={`flex items-start gap-2 rounded-xl border px-3 py-2.5 text-sm ${
                     projection.level === 'exceeded'
-                      ? 'border-rose-200 bg-rose-50 text-rose-700'
-                      : 'border-amber-200 bg-amber-50 text-amber-700'
+                      ? 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900 dark:bg-rose-500/10 dark:text-rose-400'
+                      : 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-500/10 dark:text-amber-400'
                   }`}
                 >
                   <AlertTriangle size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
@@ -179,19 +179,21 @@ export default function MakePayment() {
               )}
 
               {projection && !projection.hasBudget && (
-                <p className="text-xs text-slate-400">No budget set for this category yet — nothing to check against.</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500">No budget set for this category yet — nothing to check against.</p>
               )}
 
               <fieldset>
-                <legend className="mb-2 text-sm font-medium text-slate-700">Payment channel</legend>
+                <legend className="mb-2 text-sm font-medium text-slate-700 dark:text-slate-300">Payment channel</legend>
                 <div className="grid grid-cols-2 gap-2" role="radiogroup">
                   <button
                     type="button"
                     role="radio"
                     aria-checked={form.channel === 'mobile_money'}
                     onClick={() => setForm({ ...form, channel: 'mobile_money' })}
-                    className={`flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 ${
-                      form.channel === 'mobile_money' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    className={`flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:ring-offset-slate-900 ${
+                      form.channel === 'mobile_money'
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
                     }`}
                   >
                     <Smartphone size={15} aria-hidden="true" /> Mobile Money
@@ -201,8 +203,10 @@ export default function MakePayment() {
                     role="radio"
                     aria-checked={form.channel === 'card'}
                     onClick={() => setForm({ ...form, channel: 'card' })}
-                    className={`flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 ${
-                      form.channel === 'card' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    className={`flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:ring-offset-slate-900 ${
+                      form.channel === 'card'
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
                     }`}
                   >
                     <CreditCard size={15} aria-hidden="true" /> Card
@@ -226,7 +230,7 @@ export default function MakePayment() {
                 {projection?.level === 'exceeded' ? 'Pay Anyway' : 'Pay Now'}
               </Button>
 
-              <p className="flex items-center justify-center gap-1.5 text-center text-xs text-slate-400">
+              <p className="flex items-center justify-center gap-1.5 text-center text-xs text-slate-400 dark:text-slate-500">
                 <ShieldCheck size={13} aria-hidden="true" /> Secured by Paystack. Test mode — no real money is charged.
               </p>
             </form>
@@ -234,22 +238,22 @@ export default function MakePayment() {
         </div>
 
         <div>
-          <h2 className="mb-3 text-sm font-semibold text-slate-500">Payment History</h2>
+          <h2 className="mb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">Payment History</h2>
           <Card padded={false}>
             {payments.length === 0 ? (
               <EmptyState icon={Receipt} title="No payments yet" description="Payments you make will show up here." />
             ) : (
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {payments.map((p) => (
                   <div key={p.id} className="flex items-center justify-between px-4 py-3.5 text-sm">
                     <div className="min-w-0">
-                      <p className="truncate font-medium text-slate-700">{p.category.name}</p>
-                      <p className="truncate text-xs text-slate-400">
+                      <p className="truncate font-medium text-slate-700 dark:text-slate-200">{p.category.name}</p>
+                      <p className="truncate text-xs text-slate-400 dark:text-slate-500">
                         {p.description || 'Payment'} &middot; {formatDate(p.createdAt)}
                       </p>
                     </div>
                     <div className="ml-3 shrink-0 text-right">
-                      <p className="font-semibold tabular-nums text-slate-800">{formatCurrency(p.amount)}</p>
+                      <p className="font-semibold tabular-nums text-slate-800 dark:text-slate-100">{formatCurrency(p.amount)}</p>
                       <Badge tone={STATUS_TONES[p.status]}>{p.status}</Badge>
                     </div>
                   </div>

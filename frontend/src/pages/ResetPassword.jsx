@@ -42,13 +42,13 @@ export default function ResetPassword() {
     <AuthLayout title="Choose a new password">
       <Card>
         {!token && (
-          <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600">
+          <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
             This link is missing its reset token. Please use the link from your email, or request a new one.
           </p>
         )}
 
         {token && done && (
-          <div role="status" className="flex items-start gap-2.5 rounded-lg bg-emerald-50 px-3.5 py-3 text-sm text-emerald-700">
+          <div role="status" className="flex items-start gap-2.5 rounded-lg bg-emerald-50 px-3.5 py-3 text-sm text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
             <CheckCircle2 size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
             <p>Your password has been updated. You can now log in with your new password.</p>
           </div>
@@ -57,7 +57,7 @@ export default function ResetPassword() {
         {token && !done && (
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600">
+              <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
                 {error}
               </p>
             )}
@@ -92,8 +92,8 @@ export default function ResetPassword() {
         )}
       </Card>
 
-      <p className="mt-5 text-center text-sm text-slate-500">
-        <Link to="/login" className="font-medium text-indigo-600 hover:underline">
+      <p className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
+        <Link to="/login" className="font-medium text-indigo-600 hover:underline dark:text-indigo-400">
           Back to login
         </Link>
       </p>

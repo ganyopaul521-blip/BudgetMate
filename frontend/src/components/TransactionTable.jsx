@@ -5,7 +5,7 @@ export default function TransactionTable({ transactions, onEdit, onDelete }) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
-        <thead className="bg-slate-50 text-left text-xs font-medium uppercase tracking-wide text-slate-500">
+        <thead className="bg-slate-50 text-left text-xs font-medium uppercase tracking-wide text-slate-500 dark:bg-slate-800/60 dark:text-slate-400">
           <tr>
             <th scope="col" className="px-4 py-3">
               Date
@@ -27,16 +27,16 @@ export default function TransactionTable({ transactions, onEdit, onDelete }) {
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
           {transactions.map((t) => (
-            <tr key={t.id} className="transition-colors hover:bg-slate-50">
-              <td className="whitespace-nowrap px-4 py-3.5 text-slate-500">{formatDate(t.transactionDate)}</td>
-              <td className="whitespace-nowrap px-4 py-3.5 font-medium text-slate-800">{t.category.name}</td>
-              <td className="max-w-[220px] truncate px-4 py-3.5 text-slate-500">{t.description || '—'}</td>
-              <td className="whitespace-nowrap px-4 py-3.5 text-slate-500">{PAYMENT_METHOD_LABELS[t.paymentMethod]}</td>
+            <tr key={t.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/40">
+              <td className="whitespace-nowrap px-4 py-3.5 text-slate-500 dark:text-slate-400">{formatDate(t.transactionDate)}</td>
+              <td className="whitespace-nowrap px-4 py-3.5 font-medium text-slate-800 dark:text-slate-100">{t.category.name}</td>
+              <td className="max-w-[220px] truncate px-4 py-3.5 text-slate-500 dark:text-slate-400">{t.description || '—'}</td>
+              <td className="whitespace-nowrap px-4 py-3.5 text-slate-500 dark:text-slate-400">{PAYMENT_METHOD_LABELS[t.paymentMethod]}</td>
               <td
                 className={`whitespace-nowrap px-4 py-3.5 text-right font-semibold tabular-nums ${
-                  t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'
+                  t.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                 }`}
               >
                 {t.type === 'income' ? '+' : '-'}
@@ -47,14 +47,14 @@ export default function TransactionTable({ transactions, onEdit, onDelete }) {
                   <button
                     onClick={() => onEdit(t)}
                     aria-label={`Edit transaction: ${t.category.name}`}
-                    className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                    className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-indigo-400"
                   >
                     <Pencil size={14} />
                   </button>
                   <button
                     onClick={() => onDelete(t)}
                     aria-label={`Delete transaction: ${t.category.name}`}
-                    className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
+                    className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-rose-400"
                   >
                     <Trash2 size={14} />
                   </button>

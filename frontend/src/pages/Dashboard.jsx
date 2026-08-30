@@ -84,8 +84,8 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <Card padded={false}>
               <div className="flex items-center justify-between px-5 pt-5 sm:px-6 sm:pt-6">
-                <h2 className="font-semibold text-slate-900">Budget Status</h2>
-                <Link to="/budgets" className="text-xs font-medium text-indigo-600 hover:underline">
+                <h2 className="font-semibold text-slate-900 dark:text-white">Budget Status</h2>
+                <Link to="/budgets" className="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">
                   Manage
                 </Link>
               </div>
@@ -105,8 +105,8 @@ export default function Dashboard() {
                   {data.budgetStatus.map((b) => (
                     <div key={b.categoryId}>
                       <div className="mb-1 flex items-center justify-between text-sm">
-                        <span className="font-medium text-slate-700">{b.categoryName}</span>
-                        <span className="text-slate-500 tabular-nums">
+                        <span className="font-medium text-slate-700 dark:text-slate-300">{b.categoryName}</span>
+                        <span className="text-slate-500 tabular-nums dark:text-slate-400">
                           {formatCurrency(b.spent)} / {formatCurrency(b.amountLimit)}
                         </span>
                       </div>
@@ -119,8 +119,8 @@ export default function Dashboard() {
 
             <Card padded={false}>
               <div className="flex items-center justify-between px-5 pt-5 sm:px-6 sm:pt-6">
-                <h2 className="font-semibold text-slate-900">Recent Transactions</h2>
-                <Link to="/transactions" className="text-xs font-medium text-indigo-600 hover:underline">
+                <h2 className="font-semibold text-slate-900 dark:text-white">Recent Transactions</h2>
+                <Link to="/transactions" className="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">
                   View all
                 </Link>
               </div>

@@ -5,10 +5,12 @@ export default function TransactionCard({ transaction, onEdit, onDelete }) {
   const isIncome = transaction.type === 'income'
 
   return (
-    <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-3.5 last:border-0">
+    <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-3.5 last:border-0 dark:border-slate-800">
       <div
         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
-          isIncome ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'
+          isIncome
+            ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400'
+            : 'bg-rose-100 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400'
         }`}
         aria-hidden="true"
       >
@@ -16,14 +18,16 @@ export default function TransactionCard({ transaction, onEdit, onDelete }) {
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-slate-800">{transaction.category.name}</p>
-        <p className="truncate text-xs text-slate-400">
+        <p className="truncate text-sm font-medium text-slate-800 dark:text-slate-100">{transaction.category.name}</p>
+        <p className="truncate text-xs text-slate-400 dark:text-slate-500">
           {transaction.description || PAYMENT_METHOD_LABELS[transaction.paymentMethod]} · {formatDate(transaction.transactionDate)}
         </p>
       </div>
 
       <div className="flex shrink-0 items-center gap-1">
-        <span className={`text-sm font-semibold tabular-nums ${isIncome ? 'text-emerald-600' : 'text-rose-600'}`}>
+        <span
+          className={`text-sm font-semibold tabular-nums ${isIncome ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}
+        >
           {isIncome ? '+' : '-'}
           {formatCurrency(transaction.amount)}
         </span>
@@ -33,7 +37,7 @@ export default function TransactionCard({ transaction, onEdit, onDelete }) {
               <button
                 onClick={() => onEdit(transaction)}
                 aria-label={`Edit transaction: ${transaction.category.name}`}
-                className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-indigo-400"
               >
                 <Pencil size={14} />
               </button>
@@ -42,7 +46,7 @@ export default function TransactionCard({ transaction, onEdit, onDelete }) {
               <button
                 onClick={() => onDelete(transaction)}
                 aria-label={`Delete transaction: ${transaction.category.name}`}
-                className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
+                className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-rose-400"
               >
                 <Trash2 size={14} />
               </button>
