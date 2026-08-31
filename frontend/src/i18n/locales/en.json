@@ -78,11 +78,37 @@
   },
   "howItWorks": {
     "heading": "Managing your money can be this simple.",
+    "subheading": "Three simple steps to go from guessing to knowing exactly where your money goes.",
+    "currentBalance": "Current Balance",
+    "monthlyCashflow": "Monthly Cashflow",
     "steps": [
-      { "number": "01", "title": "Create your account", "description": "Sign up in seconds — no card required, ever." },
-      { "number": "02", "title": "Track your income and expenses", "description": "Log transactions as they happen, or catch up in bulk." },
-      { "number": "03", "title": "Set your budgets", "description": "Put a GH₵ limit on any category and keep an eye on it." },
-      { "number": "04", "title": "Understand your spending and improve your habits", "description": "Use alerts and reports to spot patterns before they become problems." }
+      {
+        "eyebrow": "Step 1",
+        "title": "Track your cash flow",
+        "items": [
+          "Log income and expenses in seconds, tagged by category and payment method",
+          "Cover Mobile Money, cash, bank transfers, and card payments in one place",
+          "Watch your balance update the moment you add a transaction"
+        ]
+      },
+      {
+        "eyebrow": "Step 2",
+        "title": "Understand your financial habits",
+        "items": [
+          "See income versus expenses laid out clearly, month by month",
+          "Spot exactly which categories your money goes to",
+          "No spreadsheets — just a clear picture, updated automatically"
+        ]
+      },
+      {
+        "eyebrow": "Step 3",
+        "title": "Make your spending stress-free",
+        "items": [
+          "Set a budget for any category and track it automatically",
+          "Get alerted at 80% of a budget, and again if you go over",
+          "Build the habit of checking in before you overspend, not after"
+        ]
+      }
     ]
   },
   "insights": {
