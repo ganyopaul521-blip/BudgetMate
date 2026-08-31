@@ -82,7 +82,7 @@ export default function Login() {
 
   return (
     <AuthLayout title={t('auth.login.title')} subtitle={t('auth.login.subtitle')}>
-      <Card>
+      <Card className="shadow-xl">
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
           <FormError title={formError?.title} message={formError?.message} />
 

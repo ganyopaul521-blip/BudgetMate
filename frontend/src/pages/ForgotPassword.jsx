@@ -34,7 +34,7 @@ export default function ForgotPassword() {
 
   return (
     <AuthLayout title={t('auth.forgotPassword.title')} subtitle={t('auth.forgotPassword.subtitle')}>
-      <Card>
+      <Card className="shadow-xl">
         {submitted ? (
           <div role="status" className="flex items-start gap-2.5 rounded-lg bg-emerald-50 px-3.5 py-3 text-sm text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
             <CheckCircle2 size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
