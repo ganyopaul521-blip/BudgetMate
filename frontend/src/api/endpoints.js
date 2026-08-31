@@ -6,6 +6,12 @@ export const authApi = {
   google: (credential) => client.post('/auth/google', { credential }),
   me: () => client.get('/auth/me'),
   updateProfile: (data) => client.patch('/auth/me', data),
+  uploadAvatar: (file) => {
+    const formData = new FormData()
+    formData.append('avatar', file)
+    return client.post('/auth/me/avatar', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+  },
+  removeAvatar: () => client.delete('/auth/me/avatar'),
   forgotPassword: (email) => client.post('/auth/forgot-password', { email }),
   resetPassword: (token, newPassword) => client.post('/auth/reset-password', { token, newPassword }),
 }

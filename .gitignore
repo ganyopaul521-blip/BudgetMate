@@ -12,6 +12,9 @@ build/
 # Prisma
 backend/node_modules/
 
+# User-uploaded files
+backend/uploads/
+
 # Logs
 npm-debug.log*
 *.log

@@ -15,6 +15,7 @@ model User {
   email                String    @unique
   passwordHash         String?
   googleId             String?
+  avatarUrl            String?
   currency             String    @default("GHS")
   resetTokenHash       String?
   resetTokenExpiresAt  DateTime?
