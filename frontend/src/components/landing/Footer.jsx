@@ -67,9 +67,8 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-slate-100 pt-6 text-sm text-slate-400 dark:border-slate-800 dark:text-slate-500 sm:flex-row">
+        <div className="mt-10 flex items-center justify-center border-t border-slate-100 pt-6 text-sm text-slate-400 dark:border-slate-800 dark:text-slate-500">
           <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
-          <p>{t('footer.project')}</p>
         </div>
       </div>
     </footer>
