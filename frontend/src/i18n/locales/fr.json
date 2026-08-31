@@ -78,11 +78,37 @@
   },
   "howItWorks": {
     "heading": "Gérer votre argent peut être aussi simple que ça.",
+    "subheading": "Trois étapes simples pour enfin savoir exactement où va votre argent.",
+    "currentBalance": "Solde actuel",
+    "monthlyCashflow": "Flux mensuel",
     "steps": [
-      { "number": "01", "title": "Créez votre compte", "description": "Inscrivez-vous en quelques secondes — aucune carte bancaire requise." },
-      { "number": "02", "title": "Suivez vos revenus et dépenses", "description": "Enregistrez vos transactions au fil de l'eau, ou rattrapez-les en une fois." },
-      { "number": "03", "title": "Définissez vos budgets", "description": "Fixez une limite en GH₵ pour chaque catégorie et gardez-la à l'œil." },
-      { "number": "04", "title": "Comprenez vos dépenses et améliorez vos habitudes", "description": "Utilisez les alertes et rapports pour repérer les tendances avant qu'elles ne posent problème." }
+      {
+        "eyebrow": "Étape 1",
+        "title": "Suivez vos flux financiers",
+        "items": [
+          "Enregistrez revenus et dépenses en quelques secondes, classés par catégorie et moyen de paiement",
+          "Mobile Money, espèces, virements bancaires et cartes, tout au même endroit",
+          "Votre solde se met à jour dès que vous ajoutez une transaction"
+        ]
+      },
+      {
+        "eyebrow": "Étape 2",
+        "title": "Comprenez vos habitudes financières",
+        "items": [
+          "Visualisez clairement vos revenus et dépenses, mois par mois",
+          "Repérez précisément où va votre argent, par catégorie",
+          "Plus besoin de tableurs — juste une vision claire, mise à jour automatiquement"
+        ]
+      },
+      {
+        "eyebrow": "Étape 3",
+        "title": "Dépensez sans stress",
+        "items": [
+          "Fixez un budget pour n'importe quelle catégorie et suivez-le automatiquement",
+          "Recevez une alerte à 80 % du budget, puis en cas de dépassement",
+          "Prenez l'habitude de vérifier avant de dépasser, pas après"
+        ]
+      }
     ]
   },
   "insights": {
