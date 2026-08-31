@@ -1,10 +1,13 @@
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
 const asyncHandler = require("express-async-handler");
 const { OAuth2Client } = require("google-auth-library");
 const prisma = require("../lib/prisma");
 const { signSessionToken } = require("../utils/token");
 const { sendPasswordResetEmail } = require("../services/email.service");
+const { AVATARS_DIR } = require("../middleware/avatarUpload.middleware");
 
 const RESET_TOKEN_TTL_MS = 60 * 60 * 1000; // 1 hour
 const googleClient = process.env.GOOGLE_CLIENT_ID ? new OAuth2Client(process.env.GOOGLE_CLIENT_ID) : null;
@@ -19,8 +22,18 @@ function toPublicUser(user) {
     fullName: user.fullName,
     email: user.email,
     currency: user.currency,
+    avatarUrl: user.avatarUrl || null,
     createdAt: user.createdAt,
   };
+}
+
+// Best-effort cleanup of a previously uploaded avatar file - never lets a
+// missing/already-deleted file block the request.
+function deleteAvatarFile(avatarUrl) {
+  if (!avatarUrl) return;
+  const filename = avatarUrl.split("/uploads/avatars/")[1];
+  if (!filename) return;
+  fs.unlink(path.join(AVATARS_DIR, filename), () => {});
 }
 
 // FR01 - register
@@ -141,6 +154,31 @@ const updateProfile = asyncHandler(async (req, res) => {
   res.json({ user: toPublicUser(user) });
 });
 
+// upload/replace the authenticated user's profile picture
+const uploadAvatar = asyncHandler(async (req, res) => {
+  if (!req.file) {
+    res.status(400);
+    throw new Error("No image file was provided.");
+  }
+
+  const existing = await prisma.user.findUnique({ where: { id: req.userId } });
+  deleteAvatarFile(existing?.avatarUrl);
+
+  const avatarUrl = `${req.protocol}://${req.get("host")}/uploads/avatars/${req.file.filename}`;
+  const user = await prisma.user.update({ where: { id: req.userId }, data: { avatarUrl } });
+
+  res.json({ user: toPublicUser(user) });
+});
+
+// remove the authenticated user's profile picture
+const removeAvatar = asyncHandler(async (req, res) => {
+  const existing = await prisma.user.findUnique({ where: { id: req.userId } });
+  deleteAvatarFile(existing?.avatarUrl);
+
+  const user = await prisma.user.update({ where: { id: req.userId }, data: { avatarUrl: null } });
+  res.json({ user: toPublicUser(user) });
+});
+
 // FR03 - request a password reset link
 const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -198,4 +236,4 @@ const resetPassword = asyncHandler(async (req, res) => {
   res.json({ message: "Password updated. You can now log in with your new password." });
 });
 
-module.exports = { register, login, googleAuth, me, updateProfile, forgotPassword, resetPassword };
+module.exports = { register, login, googleAuth, me, updateProfile, uploadAvatar, removeAvatar, forgotPassword, resetPassword };

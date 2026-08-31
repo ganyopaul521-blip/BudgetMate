@@ -1,6 +1,7 @@
 import { Moon, Plus, Sun, Tag, Trash2, User } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { authApi, categoriesApi } from '../api/endpoints'
+import Avatar from '../components/Avatar'
 import Button from '../components/Button'
 import Card from '../components/Card'
 import ConfirmDialog from '../components/ConfirmDialog'
@@ -12,6 +13,9 @@ import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { CURRENCIES } from '../utils/format'
 
+const AVATAR_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+const AVATAR_MAX_BYTES = 5 * 1024 * 1024
+
 export default function Settings() {
   const { user, updateUser } = useAuth()
   const { theme, setTheme } = useTheme()
@@ -19,6 +23,11 @@ export default function Settings() {
   const [status, setStatus] = useState('')
   const [statusError, setStatusError] = useState(false)
   const [saving, setSaving] = useState(false)
+
+  const avatarInputRef = useRef(null)
+  const [avatarUploading, setAvatarUploading] = useState(false)
+  const [removingAvatar, setRemovingAvatar] = useState(false)
+  const [avatarError, setAvatarError] = useState('')
 
   const [categories, setCategories] = useState([])
   const [newCategory, setNewCategory] = useState({ name: '', type: 'expense' })
@@ -49,6 +58,45 @@ export default function Settings() {
       setStatusError(true)
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+
+    setAvatarError('')
+    if (!AVATAR_TYPES.includes(file.type)) {
+      setAvatarError('Please choose a JPG, PNG, or WebP image.')
+      return
+    }
+    if (file.size > AVATAR_MAX_BYTES) {
+      setAvatarError('Image must be smaller than 5MB.')
+      return
+    }
+
+    setAvatarUploading(true)
+    try {
+      const res = await authApi.uploadAvatar(file)
+      updateUser(res.data.user)
+    } catch (err) {
+      setAvatarError(err.response?.data?.message || 'Could not upload image. Please try again.')
+    } finally {
+      setAvatarUploading(false)
+    }
+  }
+
+  const handleRemoveAvatar = async () => {
+    setRemovingAvatar(true)
+    setAvatarError('')
+    try {
+      const res = await authApi.removeAvatar()
+      updateUser(res.data.user)
+    } catch (err) {
+      setAvatarError(err.response?.data?.message || 'Could not remove image. Please try again.')
+    } finally {
+      setRemovingAvatar(false)
     }
   }
 
@@ -85,6 +133,39 @@ export default function Settings() {
           <h2 className="mb-4 flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
             <User size={17} className="text-indigo-600 dark:text-indigo-400" aria-hidden="true" /> Profile
           </h2>
+
+          <div className="mb-5 flex items-center gap-4 border-b border-slate-100 pb-5 dark:border-slate-800">
+            <Avatar src={user?.avatarUrl} name={user?.fullName} size="lg" />
+            <div className="min-w-0">
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  loading={avatarUploading}
+                  onClick={() => avatarInputRef.current?.click()}
+                >
+                  Change photo
+                </Button>
+                {user?.avatarUrl && (
+                  <Button type="button" variant="ghost" size="sm" loading={removingAvatar} onClick={handleRemoveAvatar}>
+                    Remove
+                  </Button>
+                )}
+              </div>
+              <p className="mt-1.5 text-xs text-slate-400 dark:text-slate-500">JPG, PNG, or WebP. Max 5MB.</p>
+              {avatarError && <p className="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{avatarError}</p>}
+            </div>
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleAvatarChange}
+              className="hidden"
+              aria-label="Upload profile picture"
+            />
+          </div>
+
           <form onSubmit={handleSaveProfile} className="space-y-4">
             {status && (
               <p

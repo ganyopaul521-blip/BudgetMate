@@ -2,14 +2,9 @@ import { ChevronDown, LogOut, Menu, User } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import Avatar from './Avatar'
 import NotificationBell from './NotificationBell'
 import ThemeToggle from './ThemeToggle'
-
-function initials(name) {
-  if (!name) return '?'
-  const parts = name.trim().split(/\s+/)
-  return ((parts[0]?.[0] || '') + (parts[1]?.[0] || '')).toUpperCase()
-}
 
 function UserMenu() {
   const { user, logout } = useAuth()
@@ -39,9 +34,7 @@ function UserMenu() {
         aria-expanded={open}
         className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 text-sm hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:hover:bg-slate-800"
       >
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-xs font-semibold text-white">
-          {initials(user?.fullName)}
-        </span>
+        <Avatar src={user?.avatarUrl} name={user?.fullName} size="sm" />
         <span className="hidden max-w-[9rem] truncate font-medium text-slate-700 dark:text-slate-200 sm:inline">{user?.fullName}</span>
         <ChevronDown size={14} className="hidden text-slate-400 dark:text-slate-500 sm:inline" aria-hidden="true" />
       </button>

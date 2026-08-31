@@ -1,6 +1,17 @@
 const express = require("express");
-const { register, login, googleAuth, me, updateProfile, forgotPassword, resetPassword } = require("../controllers/auth.controller");
+const {
+  register,
+  login,
+  googleAuth,
+  me,
+  updateProfile,
+  uploadAvatar,
+  removeAvatar,
+  forgotPassword,
+  resetPassword,
+} = require("../controllers/auth.controller");
 const { requireAuth } = require("../middleware/auth.middleware");
+const { avatarUpload } = require("../middleware/avatarUpload.middleware");
 const { validateBody } = require("../middleware/validate.middleware");
 const {
   registerSchema,
@@ -20,5 +31,7 @@ router.post("/forgot-password", validateBody(forgotPasswordSchema), forgotPasswo
 router.post("/reset-password", validateBody(resetPasswordSchema), resetPassword);
 router.get("/me", requireAuth, me);
 router.patch("/me", requireAuth, validateBody(updateProfileSchema), updateProfile);
+router.post("/me/avatar", requireAuth, avatarUpload, uploadAvatar);
+router.delete("/me/avatar", requireAuth, removeAvatar);
 
 module.exports = router;
