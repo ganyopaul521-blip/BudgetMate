@@ -19,8 +19,8 @@ export default function SecuritySection() {
           {items.map(({ title, description }, i) => {
             const Icon = ICONS[i]
             return (
-              <Reveal key={title} delay={i * 60} className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400">
+              <Reveal key={title} delay={i * 60} className="group flex items-start gap-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 transition-transform duration-200 group-hover:scale-110 dark:bg-indigo-500/15 dark:text-indigo-400">
                   <Icon size={20} aria-hidden="true" />
                 </div>
                 <div>

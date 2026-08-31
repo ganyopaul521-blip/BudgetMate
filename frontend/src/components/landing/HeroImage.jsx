@@ -14,7 +14,7 @@ export default function HeroImage() {
   return (
     <div className="relative mx-auto max-w-sm lg:max-w-none">
       <div
-        className="absolute -inset-6 -z-10 rounded-[2rem] bg-indigo-200/40 blur-3xl dark:bg-indigo-900/30"
+        className="animate-glow-pulse absolute -inset-6 -z-10 rounded-[2rem] bg-indigo-200/40 blur-3xl dark:bg-indigo-900/30"
         aria-hidden="true"
       />
 
@@ -29,7 +29,7 @@ export default function HeroImage() {
         />
       </div>
 
-      <div className="absolute bottom-3 left-3 flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 shadow-lg dark:border-slate-800 dark:bg-slate-900 sm:-bottom-5 sm:-left-6 sm:px-4 sm:py-3 lg:-bottom-6 lg:-left-8">
+      <div className="animate-float absolute bottom-3 left-3 flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 shadow-lg dark:border-slate-800 dark:bg-slate-900 sm:-bottom-5 sm:-left-6 sm:px-4 sm:py-3 lg:-bottom-6 lg:-left-8">
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400 sm:h-10 sm:w-10">
           <CheckCircle2 size={18} aria-hidden="true" />
         </span>
@@ -39,7 +39,7 @@ export default function HeroImage() {
         </div>
       </div>
 
-      <div className="absolute right-3 top-3 flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-lg dark:border-slate-800 dark:bg-slate-900 sm:-right-5 sm:-top-4 sm:px-3.5 sm:py-2.5 lg:-right-6">
+      <div className="animate-float-delayed absolute right-3 top-3 flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-lg dark:border-slate-800 dark:bg-slate-900 sm:-right-5 sm:-top-4 sm:px-3.5 sm:py-2.5 lg:-right-6">
         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400 sm:h-8 sm:w-8">
           <TrendingDown size={14} aria-hidden="true" />
         </span>
