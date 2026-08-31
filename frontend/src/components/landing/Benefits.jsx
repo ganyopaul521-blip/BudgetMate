@@ -21,7 +21,7 @@ export default function Benefits() {
             const Icon = ICONS[i]
             return (
               <Reveal key={title} delay={i * 60}>
-                <Card className="h-full">
+                <Card className="h-full transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
                   <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400">
                     <Icon size={20} aria-hidden="true" />
                   </div>
