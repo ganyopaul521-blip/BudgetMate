@@ -172,7 +172,7 @@
       "headline": "Take control of your money, on your terms.",
       "description": "Track your spending, manage your budgets, and understand your financial habits — all in one place.",
       "benefits": ["Track income and expenses", "Monitor your budgets", "Understand your spending"],
-      "copyright": "© {{year}} BudgetMate. Built for the University of Ghana final year project."
+      "copyright": "© {{year}} BudgetMate."
     },
     "orContinueWith": "or continue with",
     "signingIn": "Signing in...",

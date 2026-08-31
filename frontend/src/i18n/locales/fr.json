@@ -172,7 +172,7 @@
       "headline": "Prenez le contrôle de votre argent, à votre façon.",
       "description": "Suivez vos dépenses, gérez vos budgets et comprenez vos habitudes financières — le tout au même endroit.",
       "benefits": ["Suivez vos revenus et dépenses", "Surveillez vos budgets", "Comprenez vos dépenses"],
-      "copyright": "© {{year}} BudgetMate. Projet de fin d'études — Université du Ghana."
+      "copyright": "© {{year}} BudgetMate."
     },
     "orContinueWith": "ou continuer avec",
     "signingIn": "Connexion en cours...",
