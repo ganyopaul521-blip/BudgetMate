@@ -1,0 +1,248 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "features": "Fonctionnalités",
+    "howItWorks": "Comment ça marche",
+    "benefits": "Avantages",
+    "faq": "FAQ",
+    "login": "Connexion",
+    "getStarted": "Commencer",
+    "goToDashboard": "Accéder au tableau de bord",
+    "sectionsAriaLabel": "Rubriques",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
+  },
+  "dashboardPreview": {
+    "ariaLabel": "Aperçu illustratif du tableau de bord BudgetMate montrant le solde, les revenus, les dépenses et la progression du budget",
+    "thisMonth": "Ce mois-ci",
+    "preview": "Aperçu",
+    "currentBalance": "Solde actuel",
+    "income": "Revenus",
+    "expenses": "Dépenses",
+    "budgetLabels": ["Alimentation", "Data et crédit téléphonique", "Transport"],
+    "overBudget": "{{category}} dépasse le budget de GH₵ 20,00",
+    "recentTransactions": "Transactions récentes",
+    "transactions": [
+      { "label": "Riz Jollof", "category": "Alimentation" },
+      { "label": "Forfait data MTN MoMo", "category": "Data et crédit téléphonique" },
+      { "label": "Paiement travail à temps partiel", "category": "Revenus" }
+    ]
+  },
+  "trustStrip": {
+    "heading": "Tout ce qu'il faut pour prendre de meilleures décisions financières",
+    "points": [
+      "Suivi simple des dépenses",
+      "Budgétisation intelligente",
+      "Aperçus financiers clairs",
+      "Conçu pour les utilisateurs ghanéens"
+    ]
+  },
+  "hero": {
+    "badge": "Conçu pour les étudiants et jeunes professionnels du Ghana",
+    "headlineLine1": "Prenez le contrôle de votre argent.",
+    "headlineLine2": "Adoptez de meilleures habitudes financières.",
+    "description": "BudgetMate facilite le suivi de vos dépenses, la gestion de votre budget et la compréhension de l'utilisation de votre argent — le tout au même endroit.",
+    "getStarted": "Commencer",
+    "explore": "Découvrir BudgetMate",
+    "goToDashboard": "Accéder au tableau de bord",
+    "freeNoCard": "Gratuit, sans carte bancaire",
+    "builtInGhs": "Conçu pour le Cedi ghanéen (GH₵)"
+  },
+  "heroImage": {
+    "alt": "Tableau de bord financier BudgetMate affiché sur une tablette",
+    "budgetHealth": "Santé du budget",
+    "onTrack": "82 % · Sur la bonne voie",
+    "thisMonth": "Ce mois-ci",
+    "spent": "GH₵ 1 840 dépensés"
+  },
+  "features": {
+    "heading": "Tout ce qu'il faut pour garder le contrôle de vos finances",
+    "subheading": "Pas d'encombrement, pas d'abonnement — juste les outils qui changent vraiment vos habitudes de dépense.",
+    "items": [
+      { "title": "Suivez chaque transaction", "description": "Enregistrez rapidement vos revenus et dépenses et gardez votre activité financière organisée." },
+      { "title": "Budgétisation intelligente", "description": "Fixez des limites de dépenses mensuelles et suivez votre progression par catégorie." },
+      { "title": "Aperçus des dépenses", "description": "Comprenez où va votre argent grâce à des graphiques clairs et des résumés financiers." },
+      { "title": "Alertes de budget", "description": "Recevez des notifications lorsque vos dépenses approchent ou dépassent votre budget." },
+      { "title": "Rapports financiers", "description": "Transformez votre historique de transactions en informations financières utiles." },
+      { "title": "Conçu pour le Ghana", "description": "Prise en charge du Cedi ghanéen et des moyens de paiement courants au Ghana, dont le Mobile Money." }
+    ]
+  },
+  "productShowcase": {
+    "heading": "Visualisez clairement vos finances",
+    "description": "BudgetMate transforme vos transactions brutes en informations exploitables — un solde en temps réel, une répartition de vos dépenses et une vue claire de l'état de chaque budget, le tout sur un seul écran.",
+    "points": [
+      "Un solde à jour dès que vous enregistrez un revenu ou une dépense",
+      "Des budgets répartis par catégorie, avec une progression visible en un coup d'œil",
+      "Votre activité la plus récente, toujours mise en avant"
+    ]
+  },
+  "howItWorks": {
+    "heading": "Gérer votre argent peut être aussi simple que ça.",
+    "steps": [
+      { "number": "01", "title": "Créez votre compte", "description": "Inscrivez-vous en quelques secondes — aucune carte bancaire requise." },
+      { "number": "02", "title": "Suivez vos revenus et dépenses", "description": "Enregistrez vos transactions au fil de l'eau, ou rattrapez-les en une fois." },
+      { "number": "03", "title": "Définissez vos budgets", "description": "Fixez une limite en GH₵ pour chaque catégorie et gardez-la à l'œil." },
+      { "number": "04", "title": "Comprenez vos dépenses et améliorez vos habitudes", "description": "Utilisez les alertes et rapports pour repérer les tendances avant qu'elles ne posent problème." }
+    ]
+  },
+  "insights": {
+    "heading": "Sachez où va votre argent.",
+    "description": "BudgetMate résume vos revenus, dépenses et l'utilisation de votre budget dans des rapports vraiment lisibles — pour que vos habitudes de dépense n'aient plus de secret.",
+    "chartTitle": "Revenus vs dépenses",
+    "illustrative": "Illustratif",
+    "chartAlt": "Exemple de graphique comparant les revenus et dépenses mensuels",
+    "income": "Revenus",
+    "expenses": "Dépenses",
+    "spendingByCategory": "Dépenses par catégorie",
+    "monthLabels": ["Mai", "Juin", "Juil.", "Août"],
+    "categoryLabels": ["Loyer et logement", "Alimentation", "Transport", "Data et crédit téléphonique", "Autre"]
+  },
+  "ghana": {
+    "heading": "Des finances personnelles pensées pour le Ghana.",
+    "description": "BudgetMate est conçu autour de la façon dont l'argent circule réellement pour les étudiants et jeunes professionnels au Ghana — pas un modèle générique adapté après coup.",
+    "methods": ["Cedi ghanéen (GH₵)", "Mobile Money", "Virements bancaires", "Espèces", "Cartes de débit / crédit"]
+  },
+  "benefits": {
+    "heading": "Pourquoi BudgetMate",
+    "items": [
+      { "title": "Dépensez en toute conscience", "description": "Comprenez vos dépenses au lieu de vous demander où est passé votre argent." },
+      { "title": "Restez dans vos limites", "description": "Surveillez votre budget avant que les dépassements ne deviennent un problème." },
+      { "title": "Adoptez de meilleures habitudes", "description": "Utilisez vos données financières pour prendre de meilleures décisions au quotidien." },
+      { "title": "Planifiez en toute confiance", "description": "Ayez une vision plus claire de votre situation financière." }
+    ]
+  },
+  "security": {
+    "heading": "Vos finances méritent clarté et attention.",
+    "items": [
+      { "title": "Authentification sécurisée", "description": "Les mots de passe sont hachés, jamais stockés en clair, et les sessions expirent automatiquement après une période d'inactivité." },
+      { "title": "Informations financières privées", "description": "Vos transactions, budgets et rapports sont liés à votre compte et visibles uniquement une fois connecté." },
+      { "title": "Accès contrôlé", "description": "Chaque requête vers vos données nécessite une session valide et signée — aucun accès partagé ou anonyme." },
+      { "title": "Gestion responsable des données", "description": "Les liens de réinitialisation de mot de passe expirent après une heure, et les sessions inactives sont fermées automatiquement." }
+    ]
+  },
+  "designPhilosophy": {
+    "heading": "Conçu autour de vrais défis budgétaires",
+    "description": "BudgetMate a été conçu autour des problèmes que rencontrent réellement les étudiants et jeunes professionnels dans la gestion de leur argent au quotidien.",
+    "items": [
+      { "title": "De petites dépenses s'accumulent sans qu'on s'en rende compte", "description": "Quelques cedis par-ci par-là en data, transport ou nourriture semblent rarement significatifs sur le moment." },
+      { "title": "Les dépassements de budget sont remarqués trop tard", "description": "Sans total en temps réel, on ne réalise souvent qu'un budget est dépassé qu'après coup." },
+      { "title": "Les habitudes mensuelles restent invisibles", "description": "Les relevés bancaires et Mobile Money montrent des transactions — rarement une vision claire de leur destination." }
+    ]
+  },
+  "faq": {
+    "heading": "Questions fréquentes",
+    "items": [
+      { "question": "BudgetMate est-il gratuit ?", "answer": "Oui. La création d'un compte et l'utilisation des fonctionnalités principales de budgétisation, de suivi et de rapports sont gratuites." },
+      { "question": "L'application prend-elle en charge le Mobile Money ?", "answer": "Oui — le Mobile Money est l'un des moyens de paiement que vous pouvez utiliser pour vos transactions, au même titre que les espèces, les virements bancaires et les cartes." },
+      { "question": "Mes données financières sont-elles privées ?", "answer": "Vos transactions, budgets et rapports sont liés à votre compte et accessibles uniquement une fois connecté." },
+      { "question": "Puis-je utiliser BudgetMate sur mon téléphone ?", "answer": "Oui — l'application est entièrement responsive et fonctionne dans tout navigateur mobile récent, sans installation séparée." }
+    ]
+  },
+  "cta": {
+    "welcomeBack": "Content de vous revoir{{name}}.",
+    "welcomeBackSubtitle": "Reprenez où vous en étiez et consultez l'état de vos finances ce mois-ci.",
+    "goToDashboard": "Accéder au tableau de bord",
+    "heading": "Prêt à prendre le contrôle de votre argent ?",
+    "subtitle": "Commencez à suivre, budgétiser et comprendre vos finances avec BudgetMate.",
+    "getStarted": "Commencer — c'est simple",
+    "login": "Connexion"
+  },
+  "footer": {
+    "tagline": "Votre façon la plus intelligente de gérer votre argent.",
+    "product": "Produit",
+    "company": "Entreprise",
+    "support": "Assistance",
+    "features": "Fonctionnalités",
+    "howItWorks": "Comment ça marche",
+    "reports": "Rapports",
+    "about": "À propos",
+    "contact": "Contact",
+    "help": "Aide",
+    "faq": "FAQ",
+    "privacy": "Confidentialité",
+    "copyright": "© {{year}} BudgetMate",
+    "project": "Projet de fin d'études — Université du Ghana"
+  },
+  "languageSwitcher": {
+    "chooseLanguage": "Choisir la langue",
+    "label": "Langue"
+  },
+  "auth": {
+    "layout": {
+      "tagline": "Votre façon la plus intelligente de gérer votre argent.",
+      "headline": "Prenez le contrôle de votre argent, à votre façon.",
+      "description": "Suivez vos dépenses, gérez vos budgets et comprenez vos habitudes financières — le tout au même endroit.",
+      "benefits": ["Suivez vos revenus et dépenses", "Surveillez vos budgets", "Comprenez vos dépenses"],
+      "copyright": "© {{year}} BudgetMate. Projet de fin d'études — Université du Ghana."
+    },
+    "orContinueWith": "ou continuer avec",
+    "signingIn": "Connexion en cours...",
+    "login": {
+      "title": "Content de vous revoir",
+      "subtitle": "Connectez-vous à votre compte BudgetMate",
+      "email": "E-mail",
+      "emailRequired": "L'e-mail est requis.",
+      "emailInvalid": "Saisissez une adresse e-mail valide.",
+      "emailPlaceholder": "vous@exemple.com",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "Mot de passe oublié ?",
+      "passwordRequired": "Veuillez saisir votre mot de passe.",
+      "submit": "Connexion",
+      "submitting": "Connexion en cours...",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "createOne": "Créez-en un",
+      "unableTitle": "Connexion impossible",
+      "unableMessage": "Veuillez vérifier votre e-mail et votre mot de passe, puis réessayer.",
+      "genericError": "Une erreur s'est produite. Vérifiez votre connexion et réessayez.",
+      "googleUnableTitle": "Connexion avec Google impossible"
+    },
+    "register": {
+      "title": "Créez votre compte",
+      "subtitle": "Gratuit, et conçu pour le Ghana",
+      "fullName": "Nom complet",
+      "fullNamePlaceholder": "Ama Mensah",
+      "fullNameRequired": "Veuillez saisir votre nom complet.",
+      "email": "E-mail",
+      "emailRequired": "L'e-mail est requis.",
+      "emailInvalid": "Saisissez une adresse e-mail valide.",
+      "emailPlaceholder": "vous@exemple.com",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Au moins 8 caractères",
+      "passwordHint": "Doit contenir au moins un chiffre et un caractère spécial.",
+      "passwordRequired": "Veuillez choisir un mot de passe.",
+      "submit": "Créer le compte",
+      "submitting": "Création du compte...",
+      "haveAccount": "Vous avez déjà un compte ?",
+      "logIn": "Connexion",
+      "unableTitle": "Impossible de créer le compte",
+      "genericError": "Une erreur s'est produite. Vérifiez votre connexion et réessayez.",
+      "googleUnableTitle": "Inscription avec Google impossible"
+    },
+    "forgotPassword": {
+      "title": "Réinitialisez votre mot de passe",
+      "subtitle": "Saisissez l'e-mail de votre compte et nous vous enverrons un lien de réinitialisation.",
+      "email": "E-mail",
+      "emailPlaceholder": "vous@exemple.com",
+      "submit": "Envoyer le lien",
+      "successMessage": "Si un compte existe pour {{email}}, un lien de réinitialisation a été envoyé. Vérifiez votre boîte de réception (et vos spams).",
+      "genericError": "Une erreur s'est produite. Veuillez réessayer.",
+      "rememberedPassword": "Vous vous souvenez de votre mot de passe ?",
+      "logIn": "Connexion"
+    },
+    "resetPassword": {
+      "title": "Choisissez un nouveau mot de passe",
+      "missingToken": "Ce lien n'a pas de jeton de réinitialisation. Utilisez le lien reçu par e-mail, ou demandez-en un nouveau.",
+      "successMessage": "Votre mot de passe a été mis à jour. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+      "newPassword": "Nouveau mot de passe",
+      "passwordPlaceholder": "Au moins 8 caractères",
+      "passwordHint": "Doit contenir au moins un chiffre et un caractère spécial.",
+      "confirmPassword": "Confirmez le nouveau mot de passe",
+      "confirmPasswordPlaceholder": "Répétez votre nouveau mot de passe",
+      "passwordsDontMatch": "Les mots de passe ne correspondent pas.",
+      "submit": "Mettre à jour le mot de passe",
+      "genericError": "Impossible de réinitialiser le mot de passe.",
+      "backToLogin": "Retour à la connexion"
+    }
+  }
+}

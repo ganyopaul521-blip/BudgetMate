@@ -1,21 +1,27 @@
 import { Mail } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout'
 import Button from '../components/Button'
 import Card from '../components/Card'
 import FormError from '../components/FormError'
+import GoogleSignInButton from '../components/GoogleSignInButton'
 import Input from '../components/Input'
+import OrDivider from '../components/OrDivider'
 import PasswordInput from '../components/PasswordInput'
 import { useAuth } from '../context/AuthContext'
+import { GOOGLE_CLIENT_ID } from '../utils/googleIdentity'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function Login() {
-  const { login } = useAuth()
+  const { t } = useTranslation()
+  const { login, loginWithGoogle } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const redirectTo = location.state?.from?.pathname || '/dashboard'
+  const [googleSubmitting, setGoogleSubmitting] = useState(false)
 
   const [form, setForm] = useState({ email: '', password: '' })
   const [emailError, setEmailError] = useState('')
@@ -23,8 +29,8 @@ export default function Login() {
   const [submitting, setSubmitting] = useState(false)
 
   const validateEmail = (value) => {
-    if (!value) return 'Email is required.'
-    if (!EMAIL_PATTERN.test(value)) return 'Enter a valid email address.'
+    if (!value) return t('auth.login.emailRequired')
+    if (!EMAIL_PATTERN.test(value)) return t('auth.login.emailInvalid')
     return ''
   }
 
@@ -37,7 +43,7 @@ export default function Login() {
     if (emailValidation) return
 
     if (!form.password) {
-      setFormError({ title: 'Unable to log in', message: 'Please enter your password.' })
+      setFormError({ title: t('auth.login.unableTitle'), message: t('auth.login.passwordRequired') })
       return
     }
 
@@ -47,25 +53,41 @@ export default function Login() {
       navigate(redirectTo, { replace: true })
     } catch (err) {
       if (err.response?.status === 401) {
-        setFormError({ title: 'Unable to log in', message: 'Please check your email and password and try again.' })
+        setFormError({ title: t('auth.login.unableTitle'), message: t('auth.login.unableMessage') })
       } else if (err.response?.data?.message) {
         setFormError({ message: err.response.data.message })
       } else {
-        setFormError({ title: 'Unable to log in', message: 'Something went wrong. Please check your connection and try again.' })
+        setFormError({ title: t('auth.login.unableTitle'), message: t('auth.login.genericError') })
       }
     } finally {
       setSubmitting(false)
     }
   }
 
+  const handleGoogleCredential = async (credential) => {
+    setFormError(null)
+    setGoogleSubmitting(true)
+    try {
+      await loginWithGoogle(credential)
+      navigate(redirectTo, { replace: true })
+    } catch (err) {
+      setFormError({
+        title: t('auth.login.googleUnableTitle'),
+        message: err.response?.data?.message || t('auth.login.genericError'),
+      })
+    } finally {
+      setGoogleSubmitting(false)
+    }
+  }
+
   return (
-    <AuthLayout title="Welcome back" subtitle="Log in to your BudgetMate account">
+    <AuthLayout title={t('auth.login.title')} subtitle={t('auth.login.subtitle')}>
       <Card>
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
           <FormError title={formError?.title} message={formError?.message} />
 
           <Input
-            label="Email"
+            label={t('auth.login.email')}
             type="email"
             required
             leftIcon={Mail}
@@ -77,16 +99,16 @@ export default function Login() {
             }}
             onBlur={(e) => setEmailError(validateEmail(e.target.value))}
             error={emailError}
-            placeholder="you@example.com"
+            placeholder={t('auth.login.emailPlaceholder')}
           />
 
           <div>
             <div className="mb-1.5 flex items-center justify-between">
               <label htmlFor="login-password" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                Password
+                {t('auth.login.password')}
               </label>
               <Link to="/forgot-password" className="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">
-                Forgot password?
+                {t('auth.login.forgotPassword')}
               </Link>
             </div>
             <PasswordInput
@@ -95,20 +117,31 @@ export default function Login() {
               autoComplete="current-password"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
-              placeholder="••••••••"
+              placeholder={t('auth.login.passwordPlaceholder')}
             />
           </div>
 
           <Button type="submit" fullWidth loading={submitting} className="mt-1">
-            {submitting ? 'Logging in...' : 'Log In'}
+            {submitting ? t('auth.login.submitting') : t('auth.login.submit')}
           </Button>
         </form>
+
+        {GOOGLE_CLIENT_ID && (
+          <div className="mt-5 space-y-4">
+            <OrDivider />
+            {googleSubmitting ? (
+              <p className="text-center text-sm text-slate-500 dark:text-slate-400">{t('auth.signingIn')}</p>
+            ) : (
+              <GoogleSignInButton onCredential={handleGoogleCredential} />
+            )}
+          </div>
+        )}
       </Card>
 
       <p className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
-        Don&apos;t have an account?{' '}
+        {t('auth.login.noAccount')}{' '}
         <Link to="/register" className="font-medium text-indigo-600 hover:underline dark:text-indigo-400">
-          Create one
+          {t('auth.login.createOne')}
         </Link>
       </p>
     </AuthLayout>

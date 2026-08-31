@@ -1,19 +1,22 @@
 import { ArrowRight, Menu, Wallet, X } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import Button from '../Button'
+import LanguageSwitcher from '../LanguageSwitcher'
 import ThemeToggle from '../ThemeToggle'
 
-const NAV_LINKS = [
-  { href: '#top', label: 'Home' },
-  { href: '#features', label: 'Features' },
-  { href: '#how-it-works', label: 'How It Works' },
-  { href: '#benefits', label: 'Benefits' },
-  { href: '#faq', label: 'FAQ' },
-]
-
 export default function LandingNavbar({ isAuthed }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
+
+  const NAV_LINKS = [
+    { href: '#top', label: t('nav.home') },
+    { href: '#features', label: t('nav.features') },
+    { href: '#how-it-works', label: t('nav.howItWorks') },
+    { href: '#benefits', label: t('nav.benefits') },
+    { href: '#faq', label: t('nav.faq') },
+  ]
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90">
@@ -25,7 +28,7 @@ export default function LandingNavbar({ isAuthed }) {
           <span className="text-lg">BudgetMate</span>
         </a>
 
-        <nav className="hidden items-center gap-6 lg:flex" aria-label="Section">
+        <nav className="hidden items-center gap-6 lg:flex" aria-label={t('nav.sectionsAriaLabel')}>
           {NAV_LINKS.map((link) => (
             <a
               key={link.label}
@@ -38,28 +41,30 @@ export default function LandingNavbar({ isAuthed }) {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
+          <LanguageSwitcher />
           <ThemeToggle />
           {isAuthed ? (
             <Button as={Link} to="/dashboard" rightIcon={ArrowRight}>
-              Go to Dashboard
+              {t('nav.goToDashboard')}
             </Button>
           ) : (
             <>
               <Button as={Link} to="/login" variant="ghost">
-                Log In
+                {t('nav.login')}
               </Button>
               <Button as={Link} to="/register" rightIcon={ArrowRight}>
-                Get Started
+                {t('nav.getStarted')}
               </Button>
             </>
           )}
         </div>
 
         <div className="flex items-center gap-1 lg:hidden">
+          <LanguageSwitcher />
           <ThemeToggle />
           <button
             onClick={() => setOpen((v) => !v)}
-            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-label={open ? t('nav.closeMenu') : t('nav.openMenu')}
             aria-expanded={open}
             aria-controls="landing-mobile-menu"
             className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:text-slate-400 dark:hover:bg-slate-800"
@@ -71,7 +76,7 @@ export default function LandingNavbar({ isAuthed }) {
 
       {open && (
         <div id="landing-mobile-menu" className="border-t border-slate-100 px-4 py-3 dark:border-slate-800 lg:hidden">
-          <nav className="flex flex-col gap-1" aria-label="Section">
+          <nav className="flex flex-col gap-1" aria-label={t('nav.sectionsAriaLabel')}>
             {NAV_LINKS.map((link) => (
               <a
                 key={link.label}
@@ -86,15 +91,15 @@ export default function LandingNavbar({ isAuthed }) {
           <div className="mt-2 flex flex-col gap-2 border-t border-slate-100 pt-3 dark:border-slate-800">
             {isAuthed ? (
               <Button as={Link} to="/dashboard" fullWidth rightIcon={ArrowRight} onClick={() => setOpen(false)}>
-                Go to Dashboard
+                {t('nav.goToDashboard')}
               </Button>
             ) : (
               <>
                 <Button as={Link} to="/login" variant="secondary" fullWidth onClick={() => setOpen(false)}>
-                  Log In
+                  {t('nav.login')}
                 </Button>
                 <Button as={Link} to="/register" fullWidth rightIcon={ArrowRight} onClick={() => setOpen(false)}>
-                  Get Started
+                  {t('nav.getStarted')}
                 </Button>
               </>
             )}

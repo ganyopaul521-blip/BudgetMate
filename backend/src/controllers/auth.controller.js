@@ -1,11 +1,13 @@
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const asyncHandler = require("express-async-handler");
+const { OAuth2Client } = require("google-auth-library");
 const prisma = require("../lib/prisma");
 const { signSessionToken } = require("../utils/token");
 const { sendPasswordResetEmail } = require("../services/email.service");
 
 const RESET_TOKEN_TTL_MS = 60 * 60 * 1000; // 1 hour
+const googleClient = process.env.GOOGLE_CLIENT_ID ? new OAuth2Client(process.env.GOOGLE_CLIENT_ID) : null;
 
 function hashResetToken(rawToken) {
   return crypto.createHash("sha256").update(rawToken).digest("hex");
@@ -50,10 +52,55 @@ const login = asyncHandler(async (req, res) => {
     throw new Error("Invalid email or password");
   }
 
+  if (!user.passwordHash) {
+    res.status(401);
+    throw new Error("This account was created with Google. Please continue with Google to sign in.");
+  }
+
   const valid = await bcrypt.compare(password, user.passwordHash);
   if (!valid) {
     res.status(401);
     throw new Error("Invalid email or password");
+  }
+
+  const token = signSessionToken(user.id);
+  res.json({ token, user: toPublicUser(user) });
+});
+
+// FR02 (variant) - sign in or register via a Google ID token
+const googleAuth = asyncHandler(async (req, res) => {
+  if (!googleClient) {
+    res.status(503);
+    throw new Error("Google sign-in isn't configured yet — add a valid GOOGLE_CLIENT_ID in backend/.env.");
+  }
+
+  const { credential } = req.body;
+
+  let payload;
+  try {
+    const ticket = await googleClient.verifyIdToken({ idToken: credential, audience: process.env.GOOGLE_CLIENT_ID });
+    payload = ticket.getPayload();
+  } catch {
+    res.status(401);
+    throw new Error("Could not verify Google sign-in. Please try again.");
+  }
+
+  if (!payload?.email_verified) {
+    res.status(401);
+    throw new Error("Your Google email isn't verified. Please verify it with Google and try again.");
+  }
+
+  let user = await prisma.user.findUnique({ where: { googleId: payload.sub } });
+
+  if (!user) {
+    const existing = await prisma.user.findUnique({ where: { email: payload.email } });
+    if (existing) {
+      user = await prisma.user.update({ where: { id: existing.id }, data: { googleId: payload.sub } });
+    } else {
+      user = await prisma.user.create({
+        data: { fullName: payload.name || payload.email, email: payload.email, googleId: payload.sub },
+      });
+    }
   }
 
   const token = signSessionToken(user.id);
@@ -151,4 +198,4 @@ const resetPassword = asyncHandler(async (req, res) => {
   res.json({ message: "Password updated. You can now log in with your new password." });
 });
 
-module.exports = { register, login, me, updateProfile, forgotPassword, resetPassword };
+module.exports = { register, login, googleAuth, me, updateProfile, forgotPassword, resetPassword };

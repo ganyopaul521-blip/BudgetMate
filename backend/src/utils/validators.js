@@ -62,6 +62,10 @@ const aiChatSchema = z.object({
   interactionId: z.string().trim().min(1).optional().nullable(),
 });
 
+const googleAuthSchema = z.object({
+  credential: z.string().min(1, "Missing Google credential"),
+});
+
 const forgotPasswordSchema = z.object({
   email: z.string().trim().toLowerCase().email("Enter a valid email address"),
 });
@@ -74,6 +78,7 @@ const resetPasswordSchema = z.object({
 module.exports = {
   registerSchema,
   loginSchema,
+  googleAuthSchema,
   updateProfileSchema,
   transactionSchema,
   budgetSchema,

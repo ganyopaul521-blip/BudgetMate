@@ -1,32 +1,35 @@
 import { Wallet } from 'lucide-react'
-
-const LINK_GROUPS = [
-  {
-    heading: 'Product',
-    links: [
-      { label: 'Features', href: '#features' },
-      { label: 'How It Works', href: '#how-it-works' },
-      { label: 'Reports', href: '#insights' },
-    ],
-  },
-  {
-    heading: 'Company',
-    links: [
-      { label: 'About', href: '#about' },
-      { label: 'Contact' },
-    ],
-  },
-  {
-    heading: 'Support',
-    links: [
-      { label: 'Help', href: '#faq' },
-      { label: 'FAQ', href: '#faq' },
-      { label: 'Privacy' },
-    ],
-  },
-]
+import { useTranslation } from 'react-i18next'
 
 export default function Footer() {
+  const { t } = useTranslation()
+
+  const LINK_GROUPS = [
+    {
+      heading: t('footer.product'),
+      links: [
+        { label: t('footer.features'), href: '#features' },
+        { label: t('footer.howItWorks'), href: '#how-it-works' },
+        { label: t('footer.reports'), href: '#insights' },
+      ],
+    },
+    {
+      heading: t('footer.company'),
+      links: [
+        { label: t('footer.about'), href: '#about' },
+        { label: t('footer.contact') },
+      ],
+    },
+    {
+      heading: t('footer.support'),
+      links: [
+        { label: t('footer.help'), href: '#faq' },
+        { label: t('footer.faq'), href: '#faq' },
+        { label: t('footer.privacy') },
+      ],
+    },
+  ]
+
   return (
     <footer className="border-t border-slate-100 py-12 dark:border-slate-800">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -38,7 +41,7 @@ export default function Footer() {
               </div>
               <span className="text-lg">BudgetMate</span>
             </div>
-            <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Your smarter way to manage money.</p>
+            <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">{t('footer.tagline')}</p>
           </div>
 
           {LINK_GROUPS.map((group) => (
@@ -65,8 +68,8 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-slate-100 pt-6 text-sm text-slate-400 dark:border-slate-800 dark:text-slate-500 sm:flex-row">
-          <p>&copy; {new Date().getFullYear()} BudgetMate</p>
-          <p>University of Ghana Final Year Project</p>
+          <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
+          <p>{t('footer.project')}</p>
         </div>
       </div>
     </footer>

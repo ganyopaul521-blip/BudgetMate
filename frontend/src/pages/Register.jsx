@@ -1,27 +1,33 @@
 import { Mail, User } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/AuthLayout'
 import Button from '../components/Button'
 import Card from '../components/Card'
 import FormError from '../components/FormError'
+import GoogleSignInButton from '../components/GoogleSignInButton'
 import Input from '../components/Input'
+import OrDivider from '../components/OrDivider'
 import PasswordInput from '../components/PasswordInput'
 import { useAuth } from '../context/AuthContext'
+import { GOOGLE_CLIENT_ID } from '../utils/googleIdentity'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function Register() {
-  const { register } = useAuth()
+  const { t } = useTranslation()
+  const { register, loginWithGoogle } = useAuth()
   const navigate = useNavigate()
   const [form, setForm] = useState({ fullName: '', email: '', password: '' })
   const [emailError, setEmailError] = useState('')
   const [formError, setFormError] = useState(null)
   const [submitting, setSubmitting] = useState(false)
+  const [googleSubmitting, setGoogleSubmitting] = useState(false)
 
   const validateEmail = (value) => {
-    if (!value) return 'Email is required.'
-    if (!EMAIL_PATTERN.test(value)) return 'Enter a valid email address.'
+    if (!value) return t('auth.register.emailRequired')
+    if (!EMAIL_PATTERN.test(value)) return t('auth.register.emailInvalid')
     return ''
   }
 
@@ -34,11 +40,11 @@ export default function Register() {
     if (emailValidation) return
 
     if (!form.fullName.trim()) {
-      setFormError({ title: 'Unable to create account', message: 'Please enter your full name.' })
+      setFormError({ title: t('auth.register.unableTitle'), message: t('auth.register.fullNameRequired') })
       return
     }
     if (!form.password) {
-      setFormError({ title: 'Unable to create account', message: 'Please choose a password.' })
+      setFormError({ title: t('auth.register.unableTitle'), message: t('auth.register.passwordRequired') })
       return
     }
 
@@ -50,34 +56,46 @@ export default function Register() {
       const details = err.response?.data?.details
       const detailMsg = details ? Object.values(details).flat().join(' ') : ''
       const message = detailMsg || err.response?.data?.message
-      setFormError(
-        message
-          ? { message }
-          : { title: 'Unable to create account', message: 'Something went wrong. Please check your connection and try again.' }
-      )
+      setFormError(message ? { message } : { title: t('auth.register.unableTitle'), message: t('auth.register.genericError') })
     } finally {
       setSubmitting(false)
     }
   }
 
+  const handleGoogleCredential = async (credential) => {
+    setFormError(null)
+    setGoogleSubmitting(true)
+    try {
+      await loginWithGoogle(credential)
+      navigate('/dashboard', { replace: true })
+    } catch (err) {
+      setFormError({
+        title: t('auth.register.googleUnableTitle'),
+        message: err.response?.data?.message || t('auth.register.genericError'),
+      })
+    } finally {
+      setGoogleSubmitting(false)
+    }
+  }
+
   return (
-    <AuthLayout title="Create your account" subtitle="Free, and built for Ghana">
+    <AuthLayout title={t('auth.register.title')} subtitle={t('auth.register.subtitle')}>
       <Card>
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
           <FormError title={formError?.title} message={formError?.message} />
 
           <Input
-            label="Full name"
+            label={t('auth.register.fullName')}
             required
             leftIcon={User}
             autoComplete="name"
             value={form.fullName}
             onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-            placeholder="Ama Mensah"
+            placeholder={t('auth.register.fullNamePlaceholder')}
           />
 
           <Input
-            label="Email"
+            label={t('auth.register.email')}
             type="email"
             required
             leftIcon={Mail}
@@ -89,29 +107,40 @@ export default function Register() {
             }}
             onBlur={(e) => setEmailError(validateEmail(e.target.value))}
             error={emailError}
-            placeholder="you@example.com"
+            placeholder={t('auth.register.emailPlaceholder')}
           />
 
           <PasswordInput
-            label="Password"
+            label={t('auth.register.password')}
             required
             autoComplete="new-password"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            placeholder="At least 8 characters"
-            hint="Must include at least one number and one special character."
+            placeholder={t('auth.register.passwordPlaceholder')}
+            hint={t('auth.register.passwordHint')}
           />
 
           <Button type="submit" fullWidth loading={submitting} className="mt-1">
-            {submitting ? 'Creating account...' : 'Create Account'}
+            {submitting ? t('auth.register.submitting') : t('auth.register.submit')}
           </Button>
         </form>
+
+        {GOOGLE_CLIENT_ID && (
+          <div className="mt-5 space-y-4">
+            <OrDivider />
+            {googleSubmitting ? (
+              <p className="text-center text-sm text-slate-500 dark:text-slate-400">{t('auth.signingIn')}</p>
+            ) : (
+              <GoogleSignInButton onCredential={handleGoogleCredential} />
+            )}
+          </div>
+        )}
       </Card>
 
       <p className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
-        Already have an account?{' '}
+        {t('auth.register.haveAccount')}{' '}
         <Link to="/login" className="font-medium text-indigo-600 hover:underline dark:text-indigo-400">
-          Log in
+          {t('auth.register.logIn')}
         </Link>
       </p>
     </AuthLayout>
