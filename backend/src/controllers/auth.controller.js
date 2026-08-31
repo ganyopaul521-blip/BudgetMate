@@ -90,7 +90,7 @@ const googleAuth = asyncHandler(async (req, res) => {
     throw new Error("Your Google email isn't verified. Please verify it with Google and try again.");
   }
 
-  let user = await prisma.user.findUnique({ where: { googleId: payload.sub } });
+  let user = await prisma.user.findFirst({ where: { googleId: payload.sub } });
 
   if (!user) {
     const existing = await prisma.user.findUnique({ where: { email: payload.email } });
