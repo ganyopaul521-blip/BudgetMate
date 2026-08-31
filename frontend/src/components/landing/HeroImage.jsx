@@ -1,4 +1,5 @@
 import { CheckCircle2, TrendingDown } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import dashboardTabletImage from '../../assets/images/dashboard-tablet.jpg'
 
 /**
@@ -8,6 +9,8 @@ import dashboardTabletImage from '../../assets/images/dashboard-tablet.jpg'
  * illustrative, not real user data.
  */
 export default function HeroImage() {
+  const { t } = useTranslation()
+
   return (
     <div className="relative mx-auto max-w-sm lg:max-w-none">
       <div
@@ -18,7 +21,7 @@ export default function HeroImage() {
       <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-2xl dark:border-slate-800">
         <img
           src={dashboardTabletImage}
-          alt="BudgetMate financial dashboard displayed on a tablet"
+          alt={t('heroImage.alt')}
           width={736}
           height={1104}
           fetchPriority="high"
@@ -31,8 +34,8 @@ export default function HeroImage() {
           <CheckCircle2 size={18} aria-hidden="true" />
         </span>
         <div>
-          <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500">Budget Health</p>
-          <p className="text-sm font-bold text-slate-900 dark:text-white">82% &middot; On track</p>
+          <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500">{t('heroImage.budgetHealth')}</p>
+          <p className="text-sm font-bold text-slate-900 dark:text-white">{t('heroImage.onTrack')}</p>
         </div>
       </div>
 
@@ -41,8 +44,8 @@ export default function HeroImage() {
           <TrendingDown size={14} aria-hidden="true" />
         </span>
         <div>
-          <p className="text-[10px] font-medium text-slate-400 dark:text-slate-500">This month</p>
-          <p className="text-xs font-bold tabular-nums text-slate-900 dark:text-white">GH₵ 1,840 spent</p>
+          <p className="text-[10px] font-medium text-slate-400 dark:text-slate-500">{t('heroImage.thisMonth')}</p>
+          <p className="text-xs font-bold tabular-nums text-slate-900 dark:text-white">{t('heroImage.spent')}</p>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import client from './client'
 export const authApi = {
   register: (data) => client.post('/auth/register', data),
   login: (data) => client.post('/auth/login', data),
+  google: (credential) => client.post('/auth/google', { credential }),
   me: () => client.get('/auth/me'),
   updateProfile: (data) => client.patch('/auth/me', data),
   forgotPassword: (email) => client.post('/auth/forgot-password', { email }),

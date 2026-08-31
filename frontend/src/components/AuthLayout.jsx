@@ -1,13 +1,17 @@
 import { Check, Wallet } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import LanguageSwitcher from './LanguageSwitcher'
 import DashboardPreview from './landing/DashboardPreview'
 import ThemeToggle from './ThemeToggle'
 
-const BENEFITS = ['Track income and expenses', 'Monitor your budgets', 'Understand your spending']
-
 export default function AuthLayout({ title, subtitle, children }) {
+  const { t } = useTranslation()
+  const benefits = t('auth.layout.benefits', { returnObjects: true })
+
   return (
     <div className="relative flex min-h-screen bg-slate-50 dark:bg-slate-950">
-      <div className="absolute right-4 top-4 z-10">
+      <div className="absolute right-4 top-4 z-10 flex items-center gap-1">
+        <LanguageSwitcher />
         <ThemeToggle />
       </div>
 
@@ -18,17 +22,15 @@ export default function AuthLayout({ title, subtitle, children }) {
           </div>
           <div>
             <span className="block text-xl leading-tight">BudgetMate</span>
-            <span className="block text-xs font-normal text-indigo-200">Your smarter way to manage money.</span>
+            <span className="block text-xs font-normal text-indigo-200">{t('auth.layout.tagline')}</span>
           </div>
         </div>
 
         <div>
-          <h2 className="text-3xl font-bold leading-tight">Take control of your money, on your terms.</h2>
-          <p className="mt-3 max-w-sm text-indigo-100">
-            Track your spending, manage your budgets, and understand your financial habits — all in one place.
-          </p>
+          <h2 className="text-3xl font-bold leading-tight">{t('auth.layout.headline')}</h2>
+          <p className="mt-3 max-w-sm text-indigo-100">{t('auth.layout.description')}</p>
           <ul className="mt-8 space-y-4">
-            {BENEFITS.map((text) => (
+            {benefits.map((text) => (
               <li key={text} className="flex items-center gap-3 text-sm text-indigo-50">
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/15">
                   <Check size={15} aria-hidden="true" />
@@ -45,7 +47,7 @@ export default function AuthLayout({ title, subtitle, children }) {
           </div>
         </div>
 
-        <p className="text-xs text-indigo-200">&copy; {new Date().getFullYear()} BudgetMate. Built for the University of Ghana final year project.</p>
+        <p className="text-xs text-indigo-200">{t('auth.layout.copyright', { year: new Date().getFullYear() })}</p>
       </div>
 
       <div className="flex flex-1 items-center justify-center px-4 py-10 sm:px-6">
