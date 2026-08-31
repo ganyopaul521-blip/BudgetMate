@@ -160,8 +160,7 @@
     "help": "Help",
     "faq": "FAQ",
     "privacy": "Privacy",
-    "copyright": "© {{year}} BudgetMate",
-    "project": "University of Ghana Final Year Project"
+    "copyright": "© {{year}} BudgetMate"
   },
   "languageSwitcher": {
     "chooseLanguage": "Choose language",
