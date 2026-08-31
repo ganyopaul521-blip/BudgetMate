@@ -43,7 +43,7 @@ export default function ResetPassword() {
 
   return (
     <AuthLayout title={t('auth.resetPassword.title')}>
-      <Card>
+      <Card className="shadow-xl">
         {!token && <FormError message={t('auth.resetPassword.missingToken')} />}
 
         {token && done && (

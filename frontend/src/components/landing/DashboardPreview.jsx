@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next'
 import Badge from '../Badge'
 
 const BUDGET_META = [
-  { pct: 62, tone: 'bg-emerald-500' },
-  { pct: 88, tone: 'bg-amber-500' },
-  { pct: 104, tone: 'bg-rose-500' },
+  { pct: 62, tone: 'bg-gradient-to-r from-emerald-400 to-emerald-600' },
+  { pct: 88, tone: 'bg-gradient-to-r from-amber-400 to-amber-600' },
+  { pct: 104, tone: 'bg-gradient-to-r from-rose-400 to-rose-600' },
 ]
 
 const TRANSACTION_AMOUNTS = [-45, -25, 350]
@@ -15,7 +15,7 @@ const TRANSACTION_AMOUNTS = [-45, -25, 350]
  * `variant="compact"` is used in the hero; `variant="full"` adds a mini
  * transaction list for the larger product-showcase mockup.
  */
-export default function DashboardPreview({ variant = 'compact' }) {
+export default function DashboardPreview({ variant = 'compact', glass = false }) {
   const { t } = useTranslation()
   const isFull = variant === 'full'
   const budgetLabels = t('dashboardPreview.budgetLabels', { returnObjects: true })
@@ -23,7 +23,11 @@ export default function DashboardPreview({ variant = 'compact' }) {
 
   return (
     <div
-      className="relative w-full rounded-2xl border border-slate-200 bg-white p-5 shadow-xl dark:border-slate-800 dark:bg-slate-900"
+      className={`relative w-full rounded-2xl p-5 shadow-xl ${
+        glass
+          ? 'border border-white/40 bg-white/85 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/70'
+          : 'border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
+      }`}
       role="img"
       aria-label={t('dashboardPreview.ariaLabel')}
     >

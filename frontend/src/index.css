@@ -24,12 +24,31 @@ html {
 
 body {
   margin: 0;
-  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  font-family: "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
   background-color: #f8fafc;
 }
 
 .dark body {
   background-color: #020617;
+}
+
+/* Neutralize the browser's forced yellow autofill highlight so filled
+   inputs stay on-brand instead of flashing a jarring yellow tint. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #0f172a;
+  -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
+  box-shadow: 0 0 0px 1000px #ffffff inset;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f1f5f9;
+  -webkit-box-shadow: 0 0 0px 1000px #0f172a inset;
+  box-shadow: 0 0 0px 1000px #0f172a inset;
 }
 
 input[type="number"]::-webkit-outer-spin-button,

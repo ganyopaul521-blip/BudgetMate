@@ -80,7 +80,7 @@ export default function Register() {
 
   return (
     <AuthLayout title={t('auth.register.title')} subtitle={t('auth.register.subtitle')}>
-      <Card>
+      <Card className="shadow-xl">
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
           <FormError title={formError?.title} message={formError?.message} />
 

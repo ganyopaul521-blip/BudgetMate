@@ -1,8 +1,8 @@
 const TONE_CLASSES = {
-  success: 'bg-emerald-500',
-  warning: 'bg-amber-500',
-  danger: 'bg-rose-500',
-  brand: 'bg-indigo-600',
+  success: 'bg-gradient-to-r from-emerald-400 to-emerald-600',
+  warning: 'bg-gradient-to-r from-amber-400 to-amber-600',
+  danger: 'bg-gradient-to-r from-rose-400 to-rose-600',
+  brand: 'bg-gradient-to-r from-indigo-400 to-indigo-600',
 }
 
 /** Generic progress bar. Pass `tone` directly, or `percent` + thresholds to auto-derive it. */
