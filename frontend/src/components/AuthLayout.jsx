@@ -15,7 +15,7 @@ export default function AuthLayout({ title, subtitle, children }) {
         <ThemeToggle />
       </div>
 
-      <div className="relative hidden w-[42%] flex-col justify-between overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-900 px-12 py-14 text-white shadow-[12px_0_40px_-16px_rgba(67,56,202,0.5)] lg:flex xl:px-16">
+      <div className="relative hidden w-[42%] shrink-0 flex-col justify-between overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-900 px-12 py-14 text-white shadow-2xl lg:flex xl:px-16">
         <div
           className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-fuchsia-400/20 blur-3xl"
           aria-hidden="true"
