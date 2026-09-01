@@ -1,4 +1,4 @@
-import { AlertTriangle, CreditCard, Receipt, ShieldCheck, Smartphone } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, Clock, CreditCard, Receipt, ShieldCheck, Smartphone, XCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { categoriesApi, paymentsApi } from '../api/endpoints'
 import AlertBanner from '../components/AlertBanner'
@@ -8,17 +8,25 @@ import Card from '../components/Card'
 import ConfirmDialog from '../components/ConfirmDialog'
 import EmptyState from '../components/EmptyState'
 import Input from '../components/Input'
+import LoadingState from '../components/LoadingState'
 import PageHeader from '../components/PageHeader'
 import Select from '../components/Select'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 import { useFormatCurrency } from '../hooks/useFormatCurrency'
-import { formatDate } from '../utils/format'
+import { getCategoryIcon } from '../utils/categoryIcons'
+import { formatDate, PAYMENT_METHOD_LABELS } from '../utils/format'
 
-const STATUS_TONES = { pending: 'warning', success: 'success', failed: 'danger' }
+const STATUS_META = {
+  success: { tone: 'success', icon: CheckCircle2, label: 'Success' },
+  pending: { tone: 'warning', icon: Clock, label: 'Pending' },
+  failed: { tone: 'danger', icon: XCircle, label: 'Failed' },
+}
 
 export default function MakePayment() {
   const { user } = useAuth()
   const formatCurrency = useFormatCurrency()
+  const { showToast } = useToast()
   const [categories, setCategories] = useState([])
   const [form, setForm] = useState({ categoryId: '', amount: '', description: '', channel: 'mobile_money' })
   const [projection, setProjection] = useState(null)
@@ -27,11 +35,21 @@ export default function MakePayment() {
   const [error, setError] = useState('')
   const [successAlert, setSuccessAlert] = useState(null)
   const [payments, setPayments] = useState([])
+  const [historyLoading, setHistoryLoading] = useState(true)
+  const [historyError, setHistoryError] = useState(false)
   const [confirmExceeded, setConfirmExceeded] = useState(false)
 
   const loadPayments = async () => {
-    const res = await paymentsApi.list()
-    setPayments(res.data.payments)
+    setHistoryLoading(true)
+    setHistoryError(false)
+    try {
+      const res = await paymentsApi.list()
+      setPayments(res.data.payments)
+    } catch {
+      setHistoryError(true)
+    } finally {
+      setHistoryLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -88,17 +106,22 @@ export default function MakePayment() {
             .verify(reference)
             .then((res) => {
               if (res.data.alert) setSuccessAlert(res.data.alert)
+              showToast(`Payment of ${formatCurrency(amount)} was processed successfully.`)
               setForm({ categoryId: '', amount: '', description: '', channel: form.channel })
               setProjection(null)
               loadPayments()
             })
-            .catch(() => setError('Payment went through, but we could not confirm it. Check your payment history below.'))
+            .catch(() => {
+              setError('Payment went through, but we could not confirm it. Check your payment history below.')
+              showToast('Unable to confirm your payment. Please check your payment history.', { type: 'error' })
+            })
             .finally(() => setPaying(false))
         },
       })
       handler.openIframe()
     } catch (err) {
       setError(err.response?.data?.message || 'Could not start payment')
+      showToast('Unable to start payment. Please try again.', { type: 'error' })
       setPaying(false)
     }
   }
@@ -112,9 +135,11 @@ export default function MakePayment() {
     startPayment()
   }
 
+  const selectedCategory = categories.find((c) => c.id === form.categoryId)
+
   return (
     <div>
-      <PageHeader title="Make a Payment" description="Pay a bill or vendor directly through the app." />
+      <PageHeader title="Make a Payment" description="Pay bills and vendors securely through BudgetMate." />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div>
@@ -239,30 +264,87 @@ export default function MakePayment() {
           </Card>
         </div>
 
-        <div>
-          <h2 className="mb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">Payment History</h2>
-          <Card padded={false}>
-            {payments.length === 0 ? (
-              <EmptyState icon={Receipt} title="No payments yet" description="Payments you make will show up here." />
+        <div className="space-y-6">
+          {(form.categoryId || form.amount) && (
+            <Card>
+              <h2 className="mb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">Payment Summary</h2>
+              <dl className="space-y-2.5 text-sm">
+                <div className="flex items-center justify-between">
+                  <dt className="text-slate-400 dark:text-slate-500">Category</dt>
+                  <dd className="font-medium text-slate-700 dark:text-slate-200">{selectedCategory?.name || '—'}</dd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <dt className="text-slate-400 dark:text-slate-500">Amount</dt>
+                  <dd className="font-medium tabular-nums text-slate-700 dark:text-slate-200">
+                    {form.amount ? formatCurrency(Number(form.amount)) : '—'}
+                  </dd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <dt className="text-slate-400 dark:text-slate-500">Payment Method</dt>
+                  <dd className="font-medium text-slate-700 dark:text-slate-200">{PAYMENT_METHOD_LABELS[form.channel]}</dd>
+                </div>
+                <div className="flex items-center justify-between border-t border-slate-100 pt-2.5 dark:border-slate-800">
+                  <dt className="font-semibold text-slate-700 dark:text-slate-200">Total</dt>
+                  <dd className="text-base font-bold tabular-nums text-slate-900 dark:text-white">
+                    {form.amount ? formatCurrency(Number(form.amount)) : formatCurrency(0)}
+                  </dd>
+                </div>
+              </dl>
+            </Card>
+          )}
+
+          <div>
+            <h2 className="mb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">Payment History</h2>
+            {historyLoading ? (
+              <LoadingState variant="cards" cards={2} />
+            ) : historyError ? (
+              <Card className="flex flex-col items-center py-8 text-center">
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Unable to load payment history</p>
+                <Button variant="secondary" size="sm" className="mt-3" onClick={loadPayments}>
+                  Try Again
+                </Button>
+              </Card>
             ) : (
-              <div className="divide-y divide-slate-100 dark:divide-slate-800">
-                {payments.map((p) => (
-                  <div key={p.id} className="flex items-center justify-between px-4 py-3.5 text-sm">
-                    <div className="min-w-0">
-                      <p className="truncate font-medium text-slate-700 dark:text-slate-200">{p.category.name}</p>
-                      <p className="truncate text-xs text-slate-400 dark:text-slate-500">
-                        {p.description || 'Payment'} &middot; {formatDate(p.createdAt)}
-                      </p>
-                    </div>
-                    <div className="ml-3 shrink-0 text-right">
-                      <p className="font-semibold tabular-nums text-slate-800 dark:text-slate-100">{formatCurrency(p.amount)}</p>
-                      <Badge tone={STATUS_TONES[p.status]}>{p.status}</Badge>
-                    </div>
+              <Card padded={false}>
+                {payments.length === 0 ? (
+                  <EmptyState icon={Receipt} title="No payments yet" description="Payments you make will show up here." />
+                ) : (
+                  <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                    {payments.map((p) => {
+                      const status = STATUS_META[p.status] || STATUS_META.pending
+                      const StatusIcon = status.icon
+                      const CategoryIcon = getCategoryIcon(p.category.name)
+                      return (
+                        <div
+                          key={p.id}
+                          className="flex items-center gap-3 px-4 py-3.5 text-sm transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/40"
+                        >
+                          <span
+                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400"
+                            aria-hidden="true"
+                          >
+                            <CategoryIcon size={16} />
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate font-medium text-slate-700 dark:text-slate-200">{p.category.name}</p>
+                            <p className="truncate text-xs text-slate-400 dark:text-slate-500">
+                              {p.description || 'Payment'} &middot; {formatDate(p.createdAt)}
+                            </p>
+                          </div>
+                          <div className="shrink-0 text-right">
+                            <p className="font-semibold tabular-nums text-slate-800 dark:text-slate-100">{formatCurrency(p.amount)}</p>
+                            <Badge tone={status.tone} icon={StatusIcon} className="mt-0.5">
+                              {status.label}
+                            </Badge>
+                          </div>
+                        </div>
+                      )
+                    })}
                   </div>
-                ))}
-              </div>
+                )}
+              </Card>
             )}
-          </Card>
+          </div>
         </div>
       </div>
 
