@@ -1,10 +1,12 @@
-import { ArrowDownLeft, ArrowUpRight, Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
 import { useFormatCurrency } from '../hooks/useFormatCurrency'
+import { getCategoryIcon } from '../utils/categoryIcons'
 import { formatDate, PAYMENT_METHOD_LABELS } from '../utils/format'
 
 export default function TransactionCard({ transaction, onEdit, onDelete }) {
   const formatCurrency = useFormatCurrency()
   const isIncome = transaction.type === 'income'
+  const CategoryIcon = getCategoryIcon(transaction.category.name)
 
   return (
     <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-3.5 last:border-0 dark:border-slate-800">
@@ -16,7 +18,7 @@ export default function TransactionCard({ transaction, onEdit, onDelete }) {
         }`}
         aria-hidden="true"
       >
-        {isIncome ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}
+        <CategoryIcon size={16} />
       </div>
 
       <div className="min-w-0 flex-1">

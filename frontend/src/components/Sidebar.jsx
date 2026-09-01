@@ -11,16 +11,50 @@ import {
 } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 
-const NAV_ITEMS = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/transactions', label: 'Transactions', icon: ListChecks },
-  { to: '/pay', label: 'Pay', icon: CreditCard },
-  { to: '/budgets', label: 'Budgets', icon: PiggyBank },
-  { to: '/reports', label: 'Reports', icon: PieChart },
-  { to: '/settings', label: 'Settings', icon: Settings },
+const HOME_ITEM = { to: '/', label: 'Home', icon: Home, end: true }
+
+const NAV_GROUPS = [
+  {
+    label: 'Overview',
+    items: [{ to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true }],
+  },
+  {
+    label: 'Money',
+    items: [
+      { to: '/transactions', label: 'Transactions', icon: ListChecks },
+      { to: '/pay', label: 'Pay', icon: CreditCard },
+      { to: '/budgets', label: 'Budgets', icon: PiggyBank },
+    ],
+  },
+  {
+    label: 'Insights',
+    items: [{ to: '/reports', label: 'Reports', icon: PieChart }],
+  },
+  {
+    label: 'Account',
+    items: [{ to: '/settings', label: 'Settings', icon: Settings }],
+  },
 ]
 
-const HOME_ITEM = { to: '/', label: 'Home', icon: Home, end: true }
+function NavItem({ to, label, icon: Icon, end, onClick }) {
+  return (
+    <NavLink
+      to={to}
+      end={end}
+      onClick={onClick}
+      className={({ isActive }) =>
+        `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+          isActive
+            ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400'
+            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
+        }`
+      }
+    >
+      <Icon size={18} aria-hidden="true" />
+      {label}
+    </NavLink>
+  )
+}
 
 export default function Sidebar({ open, onClose }) {
   return (
@@ -56,45 +90,30 @@ export default function Sidebar({ open, onClose }) {
           </button>
         </div>
 
-        <nav className="flex-1 space-y-1 px-3 py-2" aria-label="Primary">
-          <NavLink
-            to={HOME_ITEM.to}
-            end={HOME_ITEM.end}
-            onClick={onClose}
-            className={({ isActive }) =>
-              `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                isActive
-                  ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400'
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
-              }`
-            }
-          >
-            <HOME_ITEM.icon size={18} aria-hidden="true" />
-            {HOME_ITEM.label}
-          </NavLink>
+        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-2" aria-label="Primary">
+          <NavItem {...HOME_ITEM} onClick={onClose} />
           <div className="my-2 border-t border-slate-100 dark:border-slate-800" aria-hidden="true" />
-          {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              onClick={onClose}
-              className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  isActive
-                    ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
-                }`
-              }
-            >
-              <Icon size={18} aria-hidden="true" />
-              {label}
-            </NavLink>
+
+          {NAV_GROUPS.map((group) => (
+            <div key={group.label} className="pt-3 first:pt-0">
+              <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                {group.label}
+              </p>
+              <div className="space-y-1">
+                {group.items.map((item) => (
+                  <NavItem key={item.to} {...item} onClick={onClose} />
+                ))}
+              </div>
+            </div>
           ))}
         </nav>
 
         <div className="border-t border-slate-100 px-5 py-4 dark:border-slate-800">
-          <p className="text-xs text-slate-400 dark:text-slate-500">BudgetMate &middot; Ghana Cedi (GH₵)</p>
+          <p className="flex items-center gap-1.5 text-xs font-medium text-slate-400 dark:text-slate-500">
+            <span className="text-slate-700 dark:text-slate-300">BudgetMate</span>
+            <span aria-hidden="true">&middot;</span>
+            Ghana Cedi (GH₵)
+          </p>
         </div>
       </aside>
     </>
