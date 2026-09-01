@@ -1,6 +1,6 @@
 import {
   Bus,
-  CircleDollarSign,
+  Coins,
   GraduationCap,
   Gift,
   HeartPulse,
@@ -34,7 +34,7 @@ const ICON_BY_CATEGORY = {
   'Salary/Allowance': Wallet,
   'Business Income': Briefcase,
   Gift: Gift,
-  'Other Income': CircleDollarSign,
+  'Other Income': Coins,
   Other: MoreHorizontal,
 }
 

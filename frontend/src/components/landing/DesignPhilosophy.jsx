@@ -1,9 +1,9 @@
-import { Eye, Receipt, TrendingDown } from 'lucide-react'
+import { Eye, ReceiptText, TrendingDown } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Card from '../Card'
 import Reveal from '../Reveal'
 
-const ICONS = [Receipt, TrendingDown, Eye]
+const ICONS = [ReceiptText, TrendingDown, Eye]
 
 export default function DesignPhilosophy() {
   const { t } = useTranslation()
