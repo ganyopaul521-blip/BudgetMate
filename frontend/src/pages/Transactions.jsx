@@ -1,4 +1,4 @@
-import { Plus, Receipt, Search, X } from 'lucide-react'
+import { Plus, ReceiptText, Search, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { categoriesApi, transactionsApi } from '../api/endpoints'
 import AlertBanner from '../components/AlertBanner'
@@ -10,6 +10,7 @@ import Input from '../components/Input'
 import LoadingState from '../components/LoadingState'
 import PageHeader from '../components/PageHeader'
 import Pagination from '../components/Pagination'
+import Reveal from '../components/Reveal'
 import Select from '../components/Select'
 import TransactionCard from '../components/TransactionCard'
 import TransactionDetails from '../components/TransactionDetails'
@@ -141,6 +142,7 @@ export default function Transactions() {
         <>
           {loading && !summary ? <LoadingState variant="stats" /> : <TransactionSummary summary={summary} />}
 
+          <Reveal delay={200}>
           <Card className="mb-4 mt-6">
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-5">
               <div className="sm:col-span-1 lg:col-span-2">
@@ -224,14 +226,16 @@ export default function Transactions() {
               </div>
             )}
           </Card>
+          </Reveal>
 
           {loading ? (
             <LoadingState variant="table" rows={6} />
           ) : (
+            <Reveal delay={280}>
             <Card padded={false} className="overflow-hidden">
               {transactions.length === 0 ? (
                 <EmptyState
-                  icon={Receipt}
+                  icon={ReceiptText}
                   title={hasFilters ? 'No transactions found' : 'No transactions yet'}
                   description={
                     hasFilters
@@ -284,6 +288,7 @@ export default function Transactions() {
                 </>
               )}
             </Card>
+            </Reveal>
           )}
         </>
       )}

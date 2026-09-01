@@ -6,7 +6,7 @@ import {
   PieChart,
   PiggyBank,
   Plus,
-  Receipt,
+  ReceiptText,
   TrendingDown,
   TrendingUp,
   Wallet,
@@ -264,7 +264,7 @@ export default function Dashboard() {
               </div>
               {data.recentTransactions.length === 0 ? (
                 <EmptyState
-                  icon={Receipt}
+                  icon={ReceiptText}
                   title="Start tracking your money"
                   description="Add your first income or expense to begin seeing your financial activity here."
                   action={
@@ -286,7 +286,7 @@ export default function Dashboard() {
               <h2 className="mb-4 font-semibold text-slate-900 dark:text-white">Your Financial Insights</h2>
               {insights.length === 0 ? (
                 <EmptyState
-                  icon={Receipt}
+                  icon={ReceiptText}
                   title="Your insights are waiting"
                   description="Add transactions to generate useful spending insights."
                 />
@@ -302,7 +302,7 @@ export default function Dashboard() {
               <QuickAction icon={PiggyBank} label="Create Budget" to="/budgets" />
               <QuickAction icon={CreditCard} label="Make a Payment" to="/pay" />
               <QuickAction icon={PieChart} label="View Reports" to="/reports" />
-              <QuickAction icon={Receipt} label="All Transactions" to="/transactions" />
+              <QuickAction icon={ReceiptText} label="All Transactions" to="/transactions" />
             </div>
           </Card>
         </div>

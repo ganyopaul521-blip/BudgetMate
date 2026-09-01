@@ -55,13 +55,17 @@ export default function Modal({ open, onClose, title, children, size = 'md' }) {
 
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center px-4 py-6">
-      <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-[2px] dark:bg-black/60" onClick={onClose} aria-hidden="true" />
+      <div
+        className="motion-safe:animate-[backdrop-in_0.15s_ease-out] fixed inset-0 bg-slate-900/50 backdrop-blur-[2px] dark:bg-black/60"
+        onClick={onClose}
+        aria-hidden="true"
+      />
       <div
         ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? titleId : undefined}
-        className={`relative z-10 max-h-[90vh] w-full overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800 sm:p-6 ${sizeClass}`}
+        className={`motion-safe:animate-[modal-in_0.18s_ease-out] relative z-10 max-h-[90vh] w-full overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800 sm:p-6 ${sizeClass}`}
       >
         {title && (
           <div className="mb-4 flex items-center justify-between">

@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckCircle2, Clock, CreditCard, Receipt, ShieldCheck, Smartphone, XCircle } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, Clock, CreditCard, ReceiptText, ShieldCheck, Smartphone, XCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { categoriesApi, paymentsApi } from '../api/endpoints'
 import AlertBanner from '../components/AlertBanner'
@@ -307,7 +307,7 @@ export default function MakePayment() {
             ) : (
               <Card padded={false}>
                 {payments.length === 0 ? (
-                  <EmptyState icon={Receipt} title="No payments yet" description="Payments you make will show up here." />
+                  <EmptyState icon={ReceiptText} title="No payments yet" description="Payments you make will show up here." />
                 ) : (
                   <div className="divide-y divide-slate-100 dark:divide-slate-800">
                     {payments.map((p) => {

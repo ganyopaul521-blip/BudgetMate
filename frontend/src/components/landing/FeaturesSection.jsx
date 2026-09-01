@@ -1,9 +1,9 @@
-import { BellRing, FileBarChart2, MapPin, PieChart, PiggyBank, Receipt } from 'lucide-react'
+import { BellRing, FileBarChart2, MapPin, PieChart, PiggyBank, ReceiptText } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Reveal from '../Reveal'
 import FeatureCard from './FeatureCard'
 
-const ICONS = [Receipt, PiggyBank, PieChart, BellRing, FileBarChart2, MapPin]
+const ICONS = [ReceiptText, PiggyBank, PieChart, BellRing, FileBarChart2, MapPin]
 
 export default function FeaturesSection() {
   const { t } = useTranslation()
