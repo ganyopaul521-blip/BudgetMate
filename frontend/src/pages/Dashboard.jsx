@@ -24,6 +24,7 @@ import IncomeExpenseChart from '../components/IncomeExpenseChart'
 import InsightCard from '../components/InsightCard'
 import LoadingState from '../components/LoadingState'
 import MonthlyBudgetCard from '../components/MonthlyBudgetCard'
+import MonthYearPicker from '../components/MonthYearPicker'
 import PageHeader from '../components/PageHeader'
 import ProgressBar from '../components/ProgressBar'
 import QuickAction from '../components/QuickAction'
@@ -68,6 +69,11 @@ export default function Dashboard() {
   const [error, setError] = useState(false)
 
   const now = new Date()
+  // The month/year the dashboard snapshot (balance, budget status) is scoped
+  // to - defaults to the real current month, changeable via MonthYearPicker.
+  const [viewMonth, setViewMonth] = useState(now.getMonth() + 1)
+  const [viewYear, setViewYear] = useState(now.getFullYear())
+  const isCurrentMonth = viewMonth === now.getMonth() + 1 && viewYear === now.getFullYear()
 
   const loadLastMonthDistribution = async () => {
     const d = new Date(now.getFullYear(), now.getMonth() - 1, 1)
@@ -81,12 +87,12 @@ export default function Dashboard() {
     }
   }
 
-  const load = async ({ showLoading = true } = {}) => {
+  const load = async ({ showLoading = true, month = viewMonth, year = viewYear } = {}) => {
     if (showLoading) setLoading(true)
     setError(false)
     try {
       const [dashRes, compRes, distRes] = await Promise.all([
-        reportsApi.dashboard(),
+        reportsApi.dashboard({ month, year }),
         reportsApi.monthlyComparison(),
         reportsApi.expenseDistribution({ month: now.getMonth() + 1, year: now.getFullYear() }),
       ])
@@ -111,6 +117,12 @@ export default function Dashboard() {
     if (p === 'last' && lastMonthDistribution === null) loadLastMonthDistribution()
   }
 
+  const handleViewMonthChange = ({ month, year }) => {
+    setViewMonth(month)
+    setViewYear(year)
+    load({ month, year })
+  }
+
   const chartDistribution = chartPeriod === 'last' ? lastMonthDistribution : distribution
   const chartTotal = chartPeriod === 'last' ? lastMonthTotal : distributionTotal
 
@@ -125,8 +137,10 @@ export default function Dashboard() {
     load({ showLoading: false })
   }
 
-  const incomeTrend = comparison?.length >= 2 ? trendFrom(comparison[5].income, comparison[4].income) : null
-  const expenseTrend = comparison?.length >= 2 ? trendFrom(comparison[5].expense, comparison[4].expense) : null
+  // Trend badges compare against the live rolling 6-month window, so they
+  // only make sense while viewing the real current month.
+  const incomeTrend = isCurrentMonth && comparison?.length >= 2 ? trendFrom(comparison[5].income, comparison[4].income) : null
+  const expenseTrend = isCurrentMonth && comparison?.length >= 2 ? trendFrom(comparison[5].expense, comparison[4].expense) : null
 
   const insights = []
   if (distribution?.length > 0) {
@@ -161,9 +175,10 @@ export default function Dashboard() {
     <div>
       <PageHeader
         title={`Welcome back${user?.fullName ? `, ${user.fullName.split(' ')[0]}` : ''} 👋`}
-        description={`Here's your financial snapshot for ${MONTH_NAMES[now.getMonth()]} ${now.getFullYear()}.`}
+        description={`Here's your financial snapshot for ${MONTH_NAMES[viewMonth - 1]} ${viewYear}.`}
         actions={
           <>
+            <MonthYearPicker month={viewMonth} year={viewYear} onChange={handleViewMonthChange} />
             <Button variant="success" leftIcon={Plus} onClick={() => openForm('income')}>
               Add Income
             </Button>
@@ -198,6 +213,7 @@ export default function Dashboard() {
               months={comparison || []}
               incomeTrend={incomeTrend}
               expenseTrend={expenseTrend}
+              periodLabel={isCurrentMonth ? 'This Month' : `${MONTH_NAMES[viewMonth - 1]} ${viewYear}`}
             />
 
             <div className="space-y-6">
