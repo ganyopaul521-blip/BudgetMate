@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Avatar from './Avatar'
+import GlobalSearch from './GlobalSearch'
 import NotificationBell from './NotificationBell'
 import ThemeToggle from './ThemeToggle'
 
@@ -84,7 +85,9 @@ export default function Navbar({ onMenuClick }) {
           <Menu size={20} />
         </button>
 
-        <div className="flex-1" />
+        <div className="flex flex-1 justify-center sm:justify-start">
+          <GlobalSearch />
+        </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
           <ThemeToggle />

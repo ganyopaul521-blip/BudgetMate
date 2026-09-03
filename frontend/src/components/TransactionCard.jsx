@@ -1,5 +1,6 @@
 import { Pencil, Trash2 } from 'lucide-react'
 import { useFormatCurrency } from '../hooks/useFormatCurrency'
+import { getCategoryColor } from '../utils/categoryColors'
 import { getCategoryIcon } from '../utils/categoryIcons'
 import { formatDate, PAYMENT_METHOD_LABELS } from '../utils/format'
 
@@ -7,16 +8,10 @@ export default function TransactionCard({ transaction, onView, onEdit, onDelete 
   const formatCurrency = useFormatCurrency()
   const isIncome = transaction.type === 'income'
   const CategoryIcon = getCategoryIcon(transaction.category.name)
+  const color = getCategoryColor(transaction.category.name)
 
   const icon = (
-    <div
-      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
-        isIncome
-          ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400'
-          : 'bg-rose-100 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400'
-      }`}
-      aria-hidden="true"
-    >
+    <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${color.bg} ${color.text}`} aria-hidden="true">
       <CategoryIcon size={16} />
     </div>
   )

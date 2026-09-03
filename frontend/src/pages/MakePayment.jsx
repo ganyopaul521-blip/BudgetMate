@@ -14,6 +14,7 @@ import Select from '../components/Select'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { useFormatCurrency } from '../hooks/useFormatCurrency'
+import { getCategoryColor } from '../utils/categoryColors'
 import { getCategoryIcon } from '../utils/categoryIcons'
 import { formatDate, PAYMENT_METHOD_LABELS } from '../utils/format'
 
@@ -314,15 +315,13 @@ export default function MakePayment() {
                       const status = STATUS_META[p.status] || STATUS_META.pending
                       const StatusIcon = status.icon
                       const CategoryIcon = getCategoryIcon(p.category.name)
+                      const color = getCategoryColor(p.category.name)
                       return (
                         <div
                           key={p.id}
                           className="flex items-center gap-3 px-4 py-3.5 text-sm transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/40"
                         >
-                          <span
-                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400"
-                            aria-hidden="true"
-                          >
+                          <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${color.bg} ${color.text}`} aria-hidden="true">
                             <CategoryIcon size={16} />
                           </span>
                           <div className="min-w-0 flex-1">
