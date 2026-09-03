@@ -13,11 +13,12 @@ async function sumForRange(userId, type, start, end) {
   return agg._sum.amount || 0;
 }
 
-// FR19 - dashboard: current month balance, recent transactions, budget status
+// FR19 - dashboard: balance, recent transactions, budget status for a given
+// month (defaults to the current month when no query params are given).
 const dashboard = asyncHandler(async (req, res) => {
   const now = new Date();
-  const month = now.getMonth() + 1;
-  const year = now.getFullYear();
+  const month = Number(req.query.month) || now.getMonth() + 1;
+  const year = Number(req.query.year) || now.getFullYear();
   const { start, end } = monthRange(month, year);
 
   const [totalIncome, totalExpense, recentTransactions, budgets] = await Promise.all([
@@ -55,6 +56,8 @@ const dashboard = asyncHandler(async (req, res) => {
   );
 
   res.json({
+    month,
+    year,
     balance: { totalIncome, totalExpense, net: totalIncome - totalExpense },
     recentTransactions,
     budgetStatus,

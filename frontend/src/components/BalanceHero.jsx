@@ -11,7 +11,7 @@ const MASK = '••••••'
  * privacy toggle that masks the figures on-screen (state only, nothing sent
  * anywhere).
  */
-export default function BalanceHero({ balance, months, incomeTrend, expenseTrend }) {
+export default function BalanceHero({ balance, months, incomeTrend, expenseTrend, periodLabel = 'This Month' }) {
   const formatCurrency = useFormatCurrency()
   const [hidden, setHidden] = useState(false)
   const isPositive = balance.net >= 0
@@ -29,7 +29,7 @@ export default function BalanceHero({ balance, months, incomeTrend, expenseTrend
       />
 
       <div className="relative flex items-center justify-between">
-        <p className={`text-sm font-medium ${isPositive ? 'text-indigo-100' : 'text-rose-100'}`}>This Month</p>
+        <p className={`text-sm font-medium ${isPositive ? 'text-indigo-100' : 'text-rose-100'}`}>{periodLabel}</p>
         <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15" aria-hidden="true">
           <Wallet size={17} />
         </span>

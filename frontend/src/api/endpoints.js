@@ -36,7 +36,7 @@ export const budgetsApi = {
 }
 
 export const reportsApi = {
-  dashboard: () => client.get('/reports/dashboard'),
+  dashboard: (params) => client.get('/reports/dashboard', { params }),
   expenseDistribution: (params) => client.get('/reports/expense-distribution', { params }),
   monthlyComparison: () => client.get('/reports/monthly-comparison'),
   categoryTrend: (categoryId) => client.get('/reports/category-trend', { params: { categoryId } }),
