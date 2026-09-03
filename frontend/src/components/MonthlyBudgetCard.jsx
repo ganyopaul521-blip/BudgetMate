@@ -16,6 +16,7 @@ export default function MonthlyBudgetCard({ budgetStatus }) {
         <h2 className="mb-1 font-semibold text-slate-900 dark:text-white">Monthly Budget</h2>
         <EmptyState
           icon={PiggyBank}
+          decorative
           title="No budgets set yet"
           description="Set a limit per category to see your overall monthly budget here."
           action={

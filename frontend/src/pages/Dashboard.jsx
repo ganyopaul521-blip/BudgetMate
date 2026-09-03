@@ -287,6 +287,7 @@ export default function Dashboard() {
               {data.budgetStatus.length === 0 ? (
                 <EmptyState
                   icon={PiggyBank}
+                  decorative
                   title="No budgets set yet"
                   description="Create category budgets to understand and control your spending."
                   action={

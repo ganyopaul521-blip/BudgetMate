@@ -1,6 +1,5 @@
 import { HeartPulse } from 'lucide-react'
 import Card from './Card'
-import EmptyState from './EmptyState'
 import ProgressBar from './ProgressBar'
 
 /**
@@ -91,6 +90,25 @@ function HealthGauge({ score }) {
   )
 }
 
+function EmptyGauge() {
+  const size = 104
+  const strokeWidth = 9
+  const radius = (size - strokeWidth) / 2
+
+  return (
+    <div className="relative mx-auto shrink-0" style={{ width: size, height: size }} aria-hidden="true">
+      <svg width={size} height={size}>
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" strokeWidth={strokeWidth} className="stroke-slate-100 dark:stroke-slate-800" />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400">
+          <HeartPulse size={16} />
+        </span>
+      </div>
+    </div>
+  )
+}
+
 export default function FinancialHealth({ totalIncome, totalExpense, budgetStatus }) {
   const health = computeFinancialHealth({ totalIncome, totalExpense, budgetStatus })
 
@@ -98,11 +116,13 @@ export default function FinancialHealth({ totalIncome, totalExpense, budgetStatu
     <Card>
       <h2 className="mb-4 font-semibold text-slate-900 dark:text-white">Financial Health</h2>
       {!health ? (
-        <EmptyState
-          icon={HeartPulse}
-          title="No Data Yet"
-          description="Log income or expenses this month, or set a budget, to see your Financial Health score."
-        />
+        <div className="flex flex-col items-center px-4 py-6 text-center">
+          <EmptyGauge />
+          <p className="mt-4 font-medium text-slate-700 dark:text-slate-200">No Data Yet</p>
+          <p className="mt-1 max-w-xs text-sm text-slate-400 dark:text-slate-500">
+            Log income or expenses this month, or set a budget, to see your Financial Health score.
+          </p>
+        </div>
       ) : (
         <div>
           <HealthGauge score={health.overall} />
