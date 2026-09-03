@@ -3,7 +3,7 @@ function Shimmer({ className = '' }) {
 }
 
 /** variant: 'page' | 'stats' | 'cards' | 'table' */
-export default function LoadingState({ variant = 'page', rows = 4, cards = 4 }) {
+export default function LoadingState({ variant = 'page', rows = 4, cards = 4, cols = 2 }) {
   if (variant === 'stats') {
     return (
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3" role="status" aria-label="Loading">
@@ -19,7 +19,7 @@ export default function LoadingState({ variant = 'page', rows = 4, cards = 4 }) 
 
   if (variant === 'cards') {
     return (
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2" role="status" aria-label="Loading">
+      <div className={`grid grid-cols-1 gap-4 ${cols === 3 ? 'md:grid-cols-2 lg:grid-cols-3' : 'md:grid-cols-2'}`} role="status" aria-label="Loading">
         {Array.from({ length: cards }).map((_, i) => (
           <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 sm:p-6">
             <Shimmer className="h-4 w-28" />

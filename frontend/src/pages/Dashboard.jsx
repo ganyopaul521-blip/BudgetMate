@@ -192,10 +192,7 @@ export default function Dashboard() {
       <AlertBanner alert={alert} onDismiss={() => setAlert(null)} />
 
       {loading ? (
-        <div className="space-y-6">
-          <LoadingState variant="cards" cards={3} />
-          <LoadingState variant="cards" />
-        </div>
+        <LoadingState variant="cards" cards={9} cols={3} />
       ) : error ? (
         <Card className="flex flex-col items-center py-12 text-center">
           <p className="font-medium text-slate-700 dark:text-slate-200">Something went wrong</p>
@@ -205,142 +202,132 @@ export default function Dashboard() {
           </Button>
         </Card>
       ) : (
-        <div className="space-y-6">
-          {/* Hero row: balance + monthly trend, budget + spending mix, quick actions + recent activity */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            <BalanceHero
-              balance={data.balance}
-              months={comparison || []}
-              incomeTrend={incomeTrend}
-              expenseTrend={expenseTrend}
-              periodLabel={isCurrentMonth ? 'This Month' : `${MONTH_NAMES[viewMonth - 1]} ${viewYear}`}
-            />
+        // Flat 3-column grid, 9 cards in row-major order - CSS grid's default
+        // items-stretch means every card in a row shares that row's height,
+        // instead of one tall hero card next to two stacked shorter ones.
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <BalanceHero
+            balance={data.balance}
+            months={comparison || []}
+            incomeTrend={incomeTrend}
+            expenseTrend={expenseTrend}
+            periodLabel={isCurrentMonth ? 'This Month' : `${MONTH_NAMES[viewMonth - 1]} ${viewYear}`}
+          />
 
-            <div className="space-y-6">
-              <MonthlyBudgetCard budgetStatus={data.budgetStatus} />
-              <SpendingChart
-                distribution={chartDistribution}
-                total={chartTotal}
-                period={chartPeriod}
-                onPeriodChange={handleChartPeriodChange}
+          <MonthlyBudgetCard budgetStatus={data.budgetStatus} />
+
+          <Card>
+            <h2 className="mb-4 font-semibold text-slate-900 dark:text-white">Quick Actions</h2>
+            <div className="grid grid-cols-2 gap-3">
+              <QuickAction icon={PiggyBank} label="Create Budget" to="/budgets" tone="brand" />
+              <QuickAction icon={CreditCard} label="Make a Payment" to="/pay" tone="success" />
+              <QuickAction icon={PieChart} label="View Reports" to="/reports" tone="warning" />
+              <QuickAction icon={ReceiptText} label="All Transactions" to="/transactions" tone="neutral" />
+            </div>
+          </Card>
+
+          <SpendingChart
+            distribution={chartDistribution}
+            total={chartTotal}
+            period={chartPeriod}
+            onPeriodChange={handleChartPeriodChange}
+          />
+
+          <Card padded={false}>
+            <div className="flex items-center justify-between px-5 pt-5 sm:px-6 sm:pt-6">
+              <h2 className="font-semibold text-slate-900 dark:text-white">Recent Transactions</h2>
+              <Link to="/transactions" className="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">
+                View all
+              </Link>
+            </div>
+            {data.recentTransactions.length === 0 ? (
+              <EmptyState
+                icon={ReceiptText}
+                title="Start tracking your money"
+                description="Add your first income or expense to begin seeing your financial activity here."
+                action={
+                  <Button variant="secondary" size="sm" onClick={() => openForm('expense')}>
+                    Add Transaction
+                  </Button>
+                }
               />
-            </div>
-
-            <div className="space-y-6">
-              <Card>
-                <h2 className="mb-4 font-semibold text-slate-900 dark:text-white">Quick Actions</h2>
-                <div className="grid grid-cols-2 gap-3">
-                  <QuickAction icon={PiggyBank} label="Create Budget" to="/budgets" tone="brand" />
-                  <QuickAction icon={CreditCard} label="Make a Payment" to="/pay" tone="success" />
-                  <QuickAction icon={PieChart} label="View Reports" to="/reports" tone="warning" />
-                  <QuickAction icon={ReceiptText} label="All Transactions" to="/transactions" tone="neutral" />
-                </div>
-              </Card>
-
-              <Card padded={false}>
-                <div className="flex items-center justify-between px-5 pt-5 sm:px-6 sm:pt-6">
-                  <h2 className="font-semibold text-slate-900 dark:text-white">Recent Transactions</h2>
-                  <Link to="/transactions" className="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">
-                    View all
-                  </Link>
-                </div>
-                {data.recentTransactions.length === 0 ? (
-                  <EmptyState
-                    icon={ReceiptText}
-                    title="Start tracking your money"
-                    description="Add your first income or expense to begin seeing your financial activity here."
-                    action={
-                      <Button variant="secondary" size="sm" onClick={() => openForm('expense')}>
-                        Add Transaction
-                      </Button>
-                    }
-                  />
-                ) : (
-                  <div className="mt-2">
-                    {data.recentTransactions.map((t) => (
-                      <TransactionCard key={t.id} transaction={t} />
-                    ))}
-                  </div>
-                )}
-              </Card>
-            </div>
-          </div>
-
-          {/* Details: financial health, full income/expense trend, per-category budgets, insights */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <FinancialHealth
-              totalIncome={data.balance.totalIncome}
-              totalExpense={data.balance.totalExpense}
-              budgetStatus={data.budgetStatus}
-            />
-            <IncomeExpenseChart data={comparison} title="Income vs Expenses (6 months)" />
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <Card padded={false}>
-              <div className="flex items-center justify-between px-5 pt-5 sm:px-6 sm:pt-6">
-                <h2 className="font-semibold text-slate-900 dark:text-white">Budget Status</h2>
-                <Link to="/budgets" className="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">
-                  Manage
-                </Link>
+            ) : (
+              <div className="mt-2">
+                {data.recentTransactions.map((t) => (
+                  <TransactionCard key={t.id} transaction={t} />
+                ))}
               </div>
-              {data.budgetStatus.length === 0 ? (
-                <EmptyState
-                  icon={PiggyBank}
-                  decorative
-                  title="No budgets set yet"
-                  description="Create category budgets to understand and control your spending."
-                  action={
-                    <Link
-                      to="/budgets"
-                      className="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
-                    >
-                      Create Your First Budget →
-                    </Link>
-                  }
-                />
-              ) : (
-                <div className="space-y-4 px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
-                  {data.budgetStatus.map((b) => {
-                    const status = budgetStatusMeta(b.percentUsed)
-                    const remaining = b.amountLimit - b.spent
-                    return (
-                      <div key={b.categoryId}>
-                        <div className="mb-1 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-sm">
-                          <span className="font-medium text-slate-700 dark:text-slate-300">{b.categoryName}</span>
-                          <Badge tone={status.tone} icon={status.icon}>
-                            {status.label}
-                          </Badge>
-                        </div>
-                        <ProgressBar percent={b.percentUsed} tone={status.tone} label={`${b.categoryName} budget usage`} />
-                        <div className="mt-1 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
-                          <span>
-                            {formatCurrency(b.spent)} of {formatCurrency(b.amountLimit)}
-                          </span>
-                          <span className={remaining < 0 ? 'font-medium text-rose-600 dark:text-rose-400' : ''}>
-                            {remaining < 0 ? `${formatCurrency(Math.abs(remaining))} over` : `${formatCurrency(remaining)} left`}
-                          </span>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              )}
-            </Card>
+            )}
+          </Card>
 
-            <Card>
-              <h2 className="mb-4 font-semibold text-slate-900 dark:text-white">Your Financial Insights</h2>
-              {insights.length === 0 ? (
-                <EmptyState
-                  icon={ReceiptText}
-                  title="Your insights are waiting"
-                  description="Add transactions to generate useful spending insights."
-                />
-              ) : (
-                <div className="space-y-4">{insights}</div>
-              )}
-            </Card>
-          </div>
+          <FinancialHealth
+            totalIncome={data.balance.totalIncome}
+            totalExpense={data.balance.totalExpense}
+            budgetStatus={data.budgetStatus}
+          />
+
+          <IncomeExpenseChart data={comparison} title="Income vs Expenses (6 months)" />
+
+          <Card padded={false}>
+            <div className="flex items-center justify-between px-5 pt-5 sm:px-6 sm:pt-6">
+              <h2 className="font-semibold text-slate-900 dark:text-white">Budget Status</h2>
+              <Link to="/budgets" className="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">
+                Manage
+              </Link>
+            </div>
+            {data.budgetStatus.length === 0 ? (
+              <EmptyState
+                icon={PiggyBank}
+                decorative
+                title="No budgets set yet"
+                description="Create category budgets to understand and control your spending."
+                action={
+                  <Link to="/budgets" className="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400">
+                    Create Your First Budget →
+                  </Link>
+                }
+              />
+            ) : (
+              <div className="space-y-4 px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
+                {data.budgetStatus.map((b) => {
+                  const status = budgetStatusMeta(b.percentUsed)
+                  const remaining = b.amountLimit - b.spent
+                  return (
+                    <div key={b.categoryId}>
+                      <div className="mb-1 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-sm">
+                        <span className="font-medium text-slate-700 dark:text-slate-300">{b.categoryName}</span>
+                        <Badge tone={status.tone} icon={status.icon}>
+                          {status.label}
+                        </Badge>
+                      </div>
+                      <ProgressBar percent={b.percentUsed} tone={status.tone} label={`${b.categoryName} budget usage`} />
+                      <div className="mt-1 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
+                        <span>
+                          {formatCurrency(b.spent)} of {formatCurrency(b.amountLimit)}
+                        </span>
+                        <span className={remaining < 0 ? 'font-medium text-rose-600 dark:text-rose-400' : ''}>
+                          {remaining < 0 ? `${formatCurrency(Math.abs(remaining))} over` : `${formatCurrency(remaining)} left`}
+                        </span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </Card>
+
+          <Card>
+            <h2 className="mb-4 font-semibold text-slate-900 dark:text-white">Your Financial Insights</h2>
+            {insights.length === 0 ? (
+              <EmptyState
+                icon={ReceiptText}
+                title="Your insights are waiting"
+                description="Add transactions to generate useful spending insights."
+              />
+            ) : (
+              <div className="space-y-4">{insights}</div>
+            )}
+          </Card>
         </div>
       )}
 
