@@ -9,13 +9,13 @@ import {
   ReceiptText,
   TrendingDown,
   TrendingUp,
-  Wallet,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { reportsApi } from '../api/endpoints'
 import AlertBanner from '../components/AlertBanner'
 import Badge from '../components/Badge'
+import BalanceHero from '../components/BalanceHero'
 import Button from '../components/Button'
 import Card from '../components/Card'
 import EmptyState from '../components/EmptyState'
@@ -23,11 +23,11 @@ import FinancialHealth from '../components/FinancialHealth'
 import IncomeExpenseChart from '../components/IncomeExpenseChart'
 import InsightCard from '../components/InsightCard'
 import LoadingState from '../components/LoadingState'
+import MonthlyBudgetCard from '../components/MonthlyBudgetCard'
 import PageHeader from '../components/PageHeader'
 import ProgressBar from '../components/ProgressBar'
 import QuickAction from '../components/QuickAction'
 import SpendingChart from '../components/SpendingChart'
-import StatCard from '../components/StatCard'
 import TransactionCard from '../components/TransactionCard'
 import TransactionForm from '../components/TransactionForm'
 import { useAuth } from '../context/AuthContext'
@@ -102,10 +102,6 @@ export default function Dashboard() {
   const incomeTrend = comparison?.length >= 2 ? trendFrom(comparison[5].income, comparison[4].income) : null
   const expenseTrend = comparison?.length >= 2 ? trendFrom(comparison[5].expense, comparison[4].expense) : null
 
-  const budgetRemaining = data?.budgetStatus?.length
-    ? data.budgetStatus.reduce((sum, b) => sum + Math.max(0, b.amountLimit - b.spent), 0)
-    : null
-
   const insights = []
   if (distribution?.length > 0) {
     const top = [...distribution].sort((a, b) => b.amount - a.amount)[0]
@@ -156,7 +152,7 @@ export default function Dashboard() {
 
       {loading ? (
         <div className="space-y-6">
-          <LoadingState variant="stats" />
+          <LoadingState variant="cards" cards={3} />
           <LoadingState variant="cards" />
         </div>
       ) : error ? (
@@ -169,40 +165,71 @@ export default function Dashboard() {
         </Card>
       ) : (
         <div className="space-y-6">
-          <div className={`grid grid-cols-1 gap-4 sm:grid-cols-2 ${budgetRemaining !== null ? 'lg:grid-cols-4' : 'lg:grid-cols-3'}`}>
-            <StatCard
-              label="Net Balance"
-              value={formatCurrency(data.balance.net)}
-              icon={Wallet}
-              tone={data.balance.net >= 0 ? 'gradient' : 'gradient-danger'}
-              sub={data.balance.net >= 0 ? 'Positive this month' : 'Spending more than you earn'}
+          {/* Hero row: balance + monthly trend, budget + spending mix, quick actions + recent activity */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <BalanceHero
+              balance={data.balance}
+              months={comparison || []}
+              incomeTrend={incomeTrend}
+              expenseTrend={expenseTrend}
             />
-            <StatCard
-              label="Total Income"
-              value={formatCurrency(data.balance.totalIncome)}
-              icon={TrendingUp}
-              tone="success"
-              sub={incomeTrend ? `${incomeTrend.up ? '↑' : '↓'} ${incomeTrend.value}% vs last month` : undefined}
-            />
-            <StatCard
-              label="Total Expenses"
-              value={formatCurrency(data.balance.totalExpense)}
-              icon={TrendingDown}
-              tone="danger"
-              sub={expenseTrend ? `${expenseTrend.up ? '↑' : '↓'} ${expenseTrend.value}% vs last month` : undefined}
-            />
-            {budgetRemaining !== null && (
-              <StatCard label="Budget Remaining" value={formatCurrency(budgetRemaining)} icon={PiggyBank} tone="brand" />
-            )}
+
+            <div className="space-y-6">
+              <MonthlyBudgetCard budgetStatus={data.budgetStatus} />
+              <SpendingChart distribution={distribution} total={distributionTotal} />
+            </div>
+
+            <div className="space-y-6">
+              <Card>
+                <h2 className="mb-4 font-semibold text-slate-900 dark:text-white">Quick Actions</h2>
+                <div className="grid grid-cols-2 gap-3">
+                  <QuickAction icon={PiggyBank} label="Create Budget" to="/budgets" tone="brand" />
+                  <QuickAction icon={CreditCard} label="Make a Payment" to="/pay" tone="success" />
+                  <QuickAction icon={PieChart} label="View Reports" to="/reports" tone="warning" />
+                  <QuickAction icon={ReceiptText} label="All Transactions" to="/transactions" tone="neutral" />
+                </div>
+              </Card>
+
+              <Card padded={false}>
+                <div className="flex items-center justify-between px-5 pt-5 sm:px-6 sm:pt-6">
+                  <h2 className="font-semibold text-slate-900 dark:text-white">Recent Transactions</h2>
+                  <Link to="/transactions" className="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">
+                    View all
+                  </Link>
+                </div>
+                {data.recentTransactions.length === 0 ? (
+                  <EmptyState
+                    icon={ReceiptText}
+                    title="Start tracking your money"
+                    description="Add your first income or expense to begin seeing your financial activity here."
+                    action={
+                      <Button variant="secondary" size="sm" onClick={() => openForm('expense')}>
+                        Add Transaction
+                      </Button>
+                    }
+                  />
+                ) : (
+                  <div className="mt-2">
+                    {data.recentTransactions.map((t) => (
+                      <TransactionCard key={t.id} transaction={t} />
+                    ))}
+                  </div>
+                )}
+              </Card>
+            </div>
           </div>
 
+          {/* Details: financial health, full income/expense trend, per-category budgets, insights */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <FinancialHealth
               totalIncome={data.balance.totalIncome}
               totalExpense={data.balance.totalExpense}
               budgetStatus={data.budgetStatus}
             />
+            <IncomeExpenseChart data={comparison} title="Income vs Expenses (6 months)" />
+          </div>
 
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <Card padded={false}>
               <div className="flex items-center justify-between px-5 pt-5 sm:px-6 sm:pt-6">
                 <h2 className="font-semibold text-slate-900 dark:text-white">Budget Status</h2>
@@ -249,40 +276,6 @@ export default function Dashboard() {
                 </div>
               )}
             </Card>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <SpendingChart distribution={distribution} total={distributionTotal} />
-            <IncomeExpenseChart data={comparison} title="Income vs Expenses (6 months)" />
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <Card padded={false}>
-              <div className="flex items-center justify-between px-5 pt-5 sm:px-6 sm:pt-6">
-                <h2 className="font-semibold text-slate-900 dark:text-white">Recent Transactions</h2>
-                <Link to="/transactions" className="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">
-                  View all
-                </Link>
-              </div>
-              {data.recentTransactions.length === 0 ? (
-                <EmptyState
-                  icon={ReceiptText}
-                  title="Start tracking your money"
-                  description="Add your first income or expense to begin seeing your financial activity here."
-                  action={
-                    <Button variant="secondary" size="sm" onClick={() => openForm('expense')}>
-                      Add Transaction
-                    </Button>
-                  }
-                />
-              ) : (
-                <div className="mt-2">
-                  {data.recentTransactions.map((t) => (
-                    <TransactionCard key={t.id} transaction={t} />
-                  ))}
-                </div>
-              )}
-            </Card>
 
             <Card>
               <h2 className="mb-4 font-semibold text-slate-900 dark:text-white">Your Financial Insights</h2>
@@ -297,16 +290,6 @@ export default function Dashboard() {
               )}
             </Card>
           </div>
-
-          <Card>
-            <h2 className="mb-4 font-semibold text-slate-900 dark:text-white">Quick Actions</h2>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <QuickAction icon={PiggyBank} label="Create Budget" to="/budgets" tone="brand" />
-              <QuickAction icon={CreditCard} label="Make a Payment" to="/pay" tone="success" />
-              <QuickAction icon={PieChart} label="View Reports" to="/reports" tone="warning" />
-              <QuickAction icon={ReceiptText} label="All Transactions" to="/transactions" tone="neutral" />
-            </div>
-          </Card>
         </div>
       )}
 
