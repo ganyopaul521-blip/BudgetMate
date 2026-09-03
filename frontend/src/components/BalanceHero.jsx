@@ -3,19 +3,61 @@ import { useState } from 'react'
 import { useFormatCurrency } from '../hooks/useFormatCurrency'
 
 const MASK = '••••••'
+const WAVE_WIDTH = 300
+const WAVE_HEIGHT = 100
+
+// Smooths a small set of points into a wavy path using quadratic curves
+// through their midpoints - a standard trick for turning a handful of real
+// data points into a gentle curve instead of a jagged polyline.
+function buildWavePath(points) {
+  if (points.length < 2) return ''
+  let d = `M ${points[0].x} ${points[0].y}`
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i]
+    const p1 = points[i + 1]
+    const midX = (p0.x + p1.x) / 2
+    const midY = (p0.y + p1.y) / 2
+    d += ` Q ${p0.x} ${p0.y} ${midX} ${midY}`
+  }
+  const last = points[points.length - 1]
+  d += ` T ${last.x} ${last.y}`
+  return d
+}
+
+// Builds the decorative background wave from the real 6-month net trend
+// (income - expense per month) - not fabricated, just smoothed and scaled
+// to fill the card. Flat/zero data (a brand-new account) legitimately
+// renders as a flat line rather than a fake squiggle.
+function computeNetWave(months) {
+  if (months.length < 2) return { line: '', area: '' }
+
+  const values = months.map((m) => m.income - m.expense)
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+  const range = max - min || 1
+
+  const points = values.map((v, i) => ({
+    x: (i / (values.length - 1)) * WAVE_WIDTH,
+    // Padded 20-80 band so peaks/troughs never touch the card edges.
+    y: 80 - ((v - min) / range) * 60,
+  }))
+
+  const line = buildWavePath(points)
+  const area = `${line} L ${WAVE_WIDTH} ${WAVE_HEIGHT} L 0 ${WAVE_HEIGHT} Z`
+  return { line, area }
+}
 
 /**
  * Hero balance card: real net balance + income/expense breakdown, with a
- * lightweight 6-month bar preview built from the same monthly-comparison
- * data used elsewhere (no separate fetch, no fabricated figures), plus a
- * privacy toggle that masks the figures on-screen (state only, nothing sent
- * anywhere).
+ * decorative wave built from the real 6-month net trend (no separate fetch,
+ * no fabricated figures), plus a privacy toggle that masks the figures
+ * on-screen (state only, nothing sent anywhere).
  */
 export default function BalanceHero({ balance, months, incomeTrend, expenseTrend, periodLabel = 'This Month' }) {
   const formatCurrency = useFormatCurrency()
   const [hidden, setHidden] = useState(false)
   const isPositive = balance.net >= 0
-  const maxVal = Math.max(1, ...months.flatMap((m) => [m.income, m.expense]))
+  const wave = computeNetWave(months)
 
   return (
     <div
@@ -23,10 +65,17 @@ export default function BalanceHero({ balance, months, incomeTrend, expenseTrend
         isPositive ? 'from-indigo-600 via-indigo-700 to-violet-800' : 'from-rose-600 via-rose-700 to-rose-900'
       }`}
     >
-      <div
-        className="animate-glow-pulse pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/15 blur-3xl"
-        aria-hidden="true"
-      />
+      {wave.area && (
+        <svg
+          viewBox={`0 0 ${WAVE_WIDTH} ${WAVE_HEIGHT}`}
+          preserveAspectRatio="none"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 w-full"
+          aria-hidden="true"
+        >
+          <path d={wave.area} className="fill-white/10" />
+          <path d={wave.line} fill="none" className="stroke-white/30" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      )}
 
       <div className="relative flex items-center justify-between">
         <p className={`text-sm font-medium ${isPositive ? 'text-indigo-100' : 'text-rose-100'}`}>{periodLabel}</p>
@@ -75,23 +124,7 @@ export default function BalanceHero({ balance, months, incomeTrend, expenseTrend
         </div>
       </div>
 
-      {months.length > 0 && (
-        <div
-          className="relative mt-6 flex flex-1 items-end justify-between gap-2"
-          role="img"
-          aria-label="Monthly income and expenses for the last six months"
-        >
-          {months.map((m) => (
-            <div key={m.label} className="flex flex-1 flex-col items-center gap-1.5">
-              <div className="flex h-20 w-full items-end justify-center gap-1" aria-hidden="true">
-                <div className="w-2 rounded-t-sm bg-white/45 sm:w-2.5" style={{ height: `${(m.income / maxVal) * 100}%` }} />
-                <div className="w-2 rounded-t-sm bg-white sm:w-2.5" style={{ height: `${(m.expense / maxVal) * 100}%` }} />
-              </div>
-              <span className={`text-[10px] font-medium ${isPositive ? 'text-indigo-200' : 'text-rose-200'}`}>{m.label}</span>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="relative flex-1" aria-hidden="true" />
     </div>
   )
 }

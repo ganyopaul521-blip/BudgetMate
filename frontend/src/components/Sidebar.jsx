@@ -9,7 +9,6 @@ import {
   PiggyBank,
   Settings,
   Sun,
-  Wallet,
   X,
 } from 'lucide-react'
 import { useState } from 'react'
@@ -99,18 +98,23 @@ function SidebarCurrencySelect() {
     }
   }
 
+  const selected = CURRENCIES.find((c) => c.code === (user?.currency || 'GHS')) || CURRENCIES[0]
+
   return (
     <div className="relative">
+      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm" aria-hidden="true">
+        {selected.flag}
+      </span>
       <select
         value={user?.currency || 'GHS'}
         onChange={handleChange}
         disabled={saving}
         aria-label="Change currency"
-        className="w-full appearance-none rounded-lg bg-white/5 px-3 py-2.5 pr-8 text-sm font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 disabled:opacity-60"
+        className="w-full appearance-none rounded-lg bg-white/5 py-2.5 pl-9 pr-8 text-sm font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 disabled:opacity-60"
       >
         {CURRENCIES.map((c) => (
           <option key={c.code} value={c.code} className="text-slate-900">
-            {c.label} ({c.symbol})
+            {c.flag} {c.label} ({c.symbol})
           </option>
         ))}
       </select>
@@ -139,8 +143,8 @@ export default function Sidebar({ open, onClose }) {
       >
         <div className="flex items-center justify-between px-5 py-5">
           <div className="flex items-center gap-2 font-bold text-white">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
-              <Wallet size={17} />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-base font-extrabold text-white" aria-hidden="true">
+              B
             </div>
             <span className="text-lg">BudgetMate</span>
           </div>
