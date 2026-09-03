@@ -1,5 +1,6 @@
 import { ArrowDown, ArrowUp, ArrowUpDown, Pencil, Trash2 } from 'lucide-react'
 import { useFormatCurrency } from '../hooks/useFormatCurrency'
+import { getCategoryColor } from '../utils/categoryColors'
 import { getCategoryIcon } from '../utils/categoryIcons'
 import { formatDate, PAYMENT_METHOD_LABELS } from '../utils/format'
 
@@ -54,6 +55,7 @@ export default function TransactionTable({ transactions, sort, onSort, onView, o
           {transactions.map((t) => {
             const isIncome = t.type === 'income'
             const CategoryIcon = getCategoryIcon(t.category.name)
+            const color = getCategoryColor(t.category.name)
             return (
               <tr key={t.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/40">
                 <td className="whitespace-nowrap px-4 py-3.5 text-slate-500 dark:text-slate-400">{formatDate(t.transactionDate)}</td>
@@ -62,14 +64,7 @@ export default function TransactionTable({ transactions, sort, onSort, onView, o
                     onClick={() => onView(t)}
                     className="flex items-center gap-2.5 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                   >
-                    <span
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-                        isIncome
-                          ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400'
-                          : 'bg-rose-100 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400'
-                      }`}
-                      aria-hidden="true"
-                    >
+                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${color.bg} ${color.text}`} aria-hidden="true">
                       <CategoryIcon size={15} />
                     </span>
                     <span className="max-w-[220px] truncate font-medium text-slate-800 dark:text-slate-100">
