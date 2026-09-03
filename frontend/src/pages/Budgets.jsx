@@ -2,12 +2,15 @@ import { Save } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { budgetsApi, categoriesApi } from '../api/endpoints'
 import BudgetCard from '../components/BudgetCard'
+import BudgetOverviewCard from '../components/BudgetOverviewCard'
 import Button from '../components/Button'
 import Card from '../components/Card'
 import Input from '../components/Input'
 import LoadingState from '../components/LoadingState'
 import PageHeader from '../components/PageHeader'
 import Select from '../components/Select'
+import { getCategoryColor } from '../utils/categoryColors'
+import { getCategoryIcon } from '../utils/categoryIcons'
 import { MONTH_NAMES } from '../utils/format'
 
 const now = new Date()
@@ -52,27 +55,33 @@ export default function Budgets() {
     }
   }
 
+  const totalBudget = budgets.reduce((sum, b) => sum + b.amountLimit, 0)
+  const percentSet = categories.length > 0 ? (budgets.length / categories.length) * 100 : 0
+
   return (
     <div>
       <PageHeader
         title="Budgets"
-        description="Set a monthly spending limit for each category."
+        description="Set a monthly spending limit for each category and take control of your finances."
         actions={
-          <div className="flex gap-2">
-            <Select aria-label="Select month" value={month} onChange={(e) => setMonth(Number(e.target.value))}>
-              {MONTH_NAMES.map((name, i) => (
-                <option key={name} value={i + 1}>
-                  {name}
-                </option>
-              ))}
-            </Select>
-            <Select aria-label="Select year" value={year} onChange={(e) => setYear(Number(e.target.value))}>
-              {[year - 1, year, year + 1].map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </Select>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex gap-2">
+              <Select aria-label="Select month" value={month} onChange={(e) => setMonth(Number(e.target.value))}>
+                {MONTH_NAMES.map((name, i) => (
+                  <option key={name} value={i + 1}>
+                    {name}
+                  </option>
+                ))}
+              </Select>
+              <Select aria-label="Select year" value={year} onChange={(e) => setYear(Number(e.target.value))}>
+                {[year - 1, year, year + 1].map((y) => (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            {!loading && <BudgetOverviewCard totalBudget={totalBudget} percentSet={percentSet} />}
           </div>
         }
       />
@@ -83,6 +92,8 @@ export default function Budgets() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {categories.map((cat) => {
             const budget = budgetFor(cat.id)
+            const Icon = getCategoryIcon(cat.name)
+            const color = getCategoryColor(cat.name)
             const saveRow = (
               <div className="mt-3 flex gap-2">
                 <Input
@@ -122,8 +133,15 @@ export default function Budgets() {
 
             return (
               <Card key={cat.id}>
-                <h3 className="font-semibold text-slate-900 dark:text-white">{cat.name}</h3>
-                <p className="mt-1 text-sm text-slate-400 dark:text-slate-500">No budget set for this category yet.</p>
+                <div className="flex items-start gap-3">
+                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${color.bg} ${color.text}`} aria-hidden="true">
+                    <Icon size={18} />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-slate-900 dark:text-white">{cat.name}</h3>
+                    <p className="mt-0.5 text-sm text-slate-400 dark:text-slate-500">No budget set yet</p>
+                  </div>
+                </div>
                 {saveRow}
               </Card>
             )
