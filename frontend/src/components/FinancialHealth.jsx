@@ -52,6 +52,45 @@ function barTone(score) {
   return 'danger'
 }
 
+const RING_STROKE_BY_TONE = {
+  success: 'stroke-emerald-500 dark:stroke-emerald-400',
+  warning: 'stroke-amber-500 dark:stroke-amber-400',
+  danger: 'stroke-rose-500 dark:stroke-rose-400',
+}
+
+function HealthGauge({ score }) {
+  const size = 104
+  const strokeWidth = 9
+  const radius = (size - strokeWidth) / 2
+  const circumference = 2 * Math.PI * radius
+  const clamped = Math.min(Math.max(score, 0), 100)
+  const offset = circumference - (clamped / 100) * circumference
+
+  return (
+    <div className="relative mx-auto shrink-0" style={{ width: size, height: size }} role="img" aria-label={`Financial health score: ${clamped} out of 100`}>
+      <svg width={size} height={size} className="-rotate-90" aria-hidden="true">
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" strokeWidth={strokeWidth} className="stroke-slate-100 dark:stroke-slate-800" />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          className={RING_STROKE_BY_TONE[barTone(clamped)]}
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          style={{ transition: 'stroke-dashoffset 0.6s ease-out' }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-2xl font-bold tabular-nums text-slate-900 dark:text-white">{clamped}</span>
+        <span className="text-[10px] text-slate-400 dark:text-slate-500">/ 100</span>
+      </div>
+    </div>
+  )
+}
+
 export default function FinancialHealth({ totalIncome, totalExpense, budgetStatus }) {
   const health = computeFinancialHealth({ totalIncome, totalExpense, budgetStatus })
 
@@ -61,16 +100,13 @@ export default function FinancialHealth({ totalIncome, totalExpense, budgetStatu
       {!health ? (
         <EmptyState
           icon={HeartPulse}
-          title="Not enough data yet"
+          title="No Data Yet"
           description="Log income or expenses this month, or set a budget, to see your Financial Health score."
         />
       ) : (
         <div>
-          <div className="flex items-end gap-1.5">
-            <span className="text-4xl font-bold tabular-nums text-slate-900 dark:text-white">{health.overall}</span>
-            <span className="mb-1 text-sm text-slate-400 dark:text-slate-500">/ 100</span>
-          </div>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{scoreMessage(health.overall)}</p>
+          <HealthGauge score={health.overall} />
+          <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">{scoreMessage(health.overall)}</p>
 
           <div className="mt-5 space-y-3">
             {health.parts.map((p) => (

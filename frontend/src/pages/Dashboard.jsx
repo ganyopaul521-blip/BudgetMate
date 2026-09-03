@@ -53,8 +53,14 @@ export default function Dashboard() {
   const formatCurrency = useFormatCurrency()
   const [data, setData] = useState(null)
   const [comparison, setComparison] = useState(null)
+  // Always "this month" - feeds the Insights section, which is worded in
+  // terms of the current month regardless of what period the chart shows.
   const [distribution, setDistribution] = useState(null)
   const [distributionTotal, setDistributionTotal] = useState(0)
+  // Last month's distribution, fetched lazily only once the selector is used.
+  const [lastMonthDistribution, setLastMonthDistribution] = useState(null)
+  const [lastMonthTotal, setLastMonthTotal] = useState(0)
+  const [chartPeriod, setChartPeriod] = useState('this')
   const [formOpen, setFormOpen] = useState(false)
   const [formType, setFormType] = useState('expense')
   const [alert, setAlert] = useState(null)
@@ -62,6 +68,18 @@ export default function Dashboard() {
   const [error, setError] = useState(false)
 
   const now = new Date()
+
+  const loadLastMonthDistribution = async () => {
+    const d = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+    try {
+      const res = await reportsApi.expenseDistribution({ month: d.getMonth() + 1, year: d.getFullYear() })
+      setLastMonthDistribution(res.data.distribution)
+      setLastMonthTotal(res.data.total)
+    } catch {
+      setLastMonthDistribution([])
+      setLastMonthTotal(0)
+    }
+  }
 
   const load = async ({ showLoading = true } = {}) => {
     if (showLoading) setLoading(true)
@@ -87,6 +105,14 @@ export default function Dashboard() {
     load()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const handleChartPeriodChange = (p) => {
+    setChartPeriod(p)
+    if (p === 'last' && lastMonthDistribution === null) loadLastMonthDistribution()
+  }
+
+  const chartDistribution = chartPeriod === 'last' ? lastMonthDistribution : distribution
+  const chartTotal = chartPeriod === 'last' ? lastMonthTotal : distributionTotal
 
   const openForm = (type) => {
     setFormType(type)
@@ -176,7 +202,12 @@ export default function Dashboard() {
 
             <div className="space-y-6">
               <MonthlyBudgetCard budgetStatus={data.budgetStatus} />
-              <SpendingChart distribution={distribution} total={distributionTotal} />
+              <SpendingChart
+                distribution={chartDistribution}
+                total={chartTotal}
+                period={chartPeriod}
+                onPeriodChange={handleChartPeriodChange}
+              />
             </div>
 
             <div className="space-y-6">

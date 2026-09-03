@@ -1,4 +1,4 @@
-import { PieChart as PieChartIcon } from 'lucide-react'
+import { ChevronDown, PieChart as PieChartIcon } from 'lucide-react'
 import { Cell, Pie, PieChart, Tooltip } from 'recharts'
 import { useTheme } from '../context/ThemeContext'
 import { useFormatCurrency } from '../hooks/useFormatCurrency'
@@ -8,8 +8,14 @@ import LoadingState from './LoadingState'
 
 const COLORS = ['#4f46e5', '#e11d48', '#059669', '#d97706', '#0891b2', '#7c3aed', '#db2777', '#65a30d', '#2563eb', '#ea580c']
 
-/** Donut chart of spending by category, with a real total in the center. `distribution`/`total` come from GET /reports/expense-distribution (distribution null while loading). */
-export default function SpendingChart({ distribution, total, title = 'Spending by Category' }) {
+/**
+ * Donut chart of spending by category, with a real total in the center.
+ * `distribution`/`total` come from GET /reports/expense-distribution
+ * (distribution null while loading). When `period`/`onPeriodChange` are
+ * given, renders a This Month / Last Month selector that the caller
+ * refetches expense-distribution for - no client-side fabrication.
+ */
+export default function SpendingChart({ distribution, total, title = 'Spending by Category', period, onPeriodChange }) {
   const formatCurrency = useFormatCurrency()
   const { theme } = useTheme()
   const isDark = theme === 'dark'
@@ -23,11 +29,31 @@ export default function SpendingChart({ distribution, total, title = 'Spending b
 
   return (
     <Card>
-      <h2 className="mb-4 font-semibold text-slate-900 dark:text-white">{title}</h2>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="font-semibold text-slate-900 dark:text-white">{title}</h2>
+        {onPeriodChange && (
+          <div className="relative">
+            <select
+              value={period}
+              onChange={(e) => onPeriodChange(e.target.value)}
+              aria-label="Select period"
+              className="appearance-none rounded-lg border border-slate-200 bg-white py-1 pl-2.5 pr-7 text-xs font-medium text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+            >
+              <option value="this">This Month</option>
+              <option value="last">Last Month</option>
+            </select>
+            <ChevronDown size={12} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" aria-hidden="true" />
+          </div>
+        )}
+      </div>
       {distribution === null ? (
         <LoadingState variant="page" />
       ) : distribution.length === 0 ? (
-        <EmptyState icon={PieChartIcon} title="No expenses this month" description="Add an expense to see your spending breakdown." />
+        <EmptyState
+          icon={PieChartIcon}
+          title={period === 'last' ? 'No expenses last month' : 'No expenses this month'}
+          description="Add an expense to see your spending breakdown."
+        />
       ) : (
         <div className="flex flex-col items-center gap-6 sm:flex-row">
           <div className="relative shrink-0">
