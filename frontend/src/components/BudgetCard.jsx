@@ -1,5 +1,7 @@
 import { AlertTriangle, CheckCircle2 } from 'lucide-react'
 import { useFormatCurrency } from '../hooks/useFormatCurrency'
+import { getCategoryColor } from '../utils/categoryColors'
+import { getCategoryIcon } from '../utils/categoryIcons'
 import Badge from './Badge'
 import Card from './Card'
 import ProgressBar from './ProgressBar'
@@ -8,26 +10,33 @@ export default function BudgetCard({ categoryName, spent, amountLimit, percentUs
   const formatCurrency = useFormatCurrency()
   const level = percentUsed >= 100 ? 'danger' : percentUsed >= 80 ? 'warning' : 'success'
   const remaining = amountLimit - spent
+  const Icon = getCategoryIcon(categoryName)
+  const color = getCategoryColor(categoryName)
 
   return (
     <Card>
-      <div className="mb-3 flex items-start justify-between gap-2">
-        <h3 className="font-semibold text-slate-900 dark:text-white">{categoryName}</h3>
-        {level === 'danger' && (
-          <Badge tone="danger" icon={AlertTriangle}>
-            Exceeded
-          </Badge>
-        )}
-        {level === 'warning' && (
-          <Badge tone="warning" icon={AlertTriangle}>
-            Near limit
-          </Badge>
-        )}
-        {level === 'success' && (
-          <Badge tone="success" icon={CheckCircle2}>
-            On track
-          </Badge>
-        )}
+      <div className="mb-3 flex items-start gap-3">
+        <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${color.bg} ${color.text}`} aria-hidden="true">
+          <Icon size={18} />
+        </span>
+        <div className="flex min-w-0 flex-1 items-start justify-between gap-2">
+          <h3 className="font-semibold text-slate-900 dark:text-white">{categoryName}</h3>
+          {level === 'danger' && (
+            <Badge tone="danger" icon={AlertTriangle}>
+              Exceeded
+            </Badge>
+          )}
+          {level === 'warning' && (
+            <Badge tone="warning" icon={AlertTriangle}>
+              Near limit
+            </Badge>
+          )}
+          {level === 'success' && (
+            <Badge tone="success" icon={CheckCircle2}>
+              On track
+            </Badge>
+          )}
+        </div>
       </div>
 
       <ProgressBar percent={percentUsed} tone={level} label={`${categoryName} budget usage`} />
