@@ -54,6 +54,7 @@ export default function Dashboard() {
   const [data, setData] = useState(null)
   const [comparison, setComparison] = useState(null)
   const [distribution, setDistribution] = useState(null)
+  const [distributionTotal, setDistributionTotal] = useState(0)
   const [formOpen, setFormOpen] = useState(false)
   const [formType, setFormType] = useState('expense')
   const [alert, setAlert] = useState(null)
@@ -74,6 +75,7 @@ export default function Dashboard() {
       setData(dashRes.data)
       setComparison(compRes.data.data)
       setDistribution(distRes.data.distribution)
+      setDistributionTotal(distRes.data.total)
     } catch {
       setError(true)
     } finally {
@@ -169,6 +171,13 @@ export default function Dashboard() {
         <div className="space-y-6">
           <div className={`grid grid-cols-1 gap-4 sm:grid-cols-2 ${budgetRemaining !== null ? 'lg:grid-cols-4' : 'lg:grid-cols-3'}`}>
             <StatCard
+              label="Net Balance"
+              value={formatCurrency(data.balance.net)}
+              icon={Wallet}
+              tone={data.balance.net >= 0 ? 'gradient' : 'gradient-danger'}
+              sub={data.balance.net >= 0 ? 'Positive this month' : 'Spending more than you earn'}
+            />
+            <StatCard
               label="Total Income"
               value={formatCurrency(data.balance.totalIncome)}
               icon={TrendingUp}
@@ -181,13 +190,6 @@ export default function Dashboard() {
               icon={TrendingDown}
               tone="danger"
               sub={expenseTrend ? `${expenseTrend.up ? '↑' : '↓'} ${expenseTrend.value}% vs last month` : undefined}
-            />
-            <StatCard
-              label="Net Balance"
-              value={formatCurrency(data.balance.net)}
-              icon={Wallet}
-              tone={data.balance.net >= 0 ? 'brand' : 'danger'}
-              sub={data.balance.net >= 0 ? 'Positive this month' : 'Spending more than you earn'}
             />
             {budgetRemaining !== null && (
               <StatCard label="Budget Remaining" value={formatCurrency(budgetRemaining)} icon={PiggyBank} tone="brand" />
@@ -250,7 +252,7 @@ export default function Dashboard() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <SpendingChart distribution={distribution} />
+            <SpendingChart distribution={distribution} total={distributionTotal} />
             <IncomeExpenseChart data={comparison} title="Income vs Expenses (6 months)" />
           </div>
 
@@ -299,10 +301,10 @@ export default function Dashboard() {
           <Card>
             <h2 className="mb-4 font-semibold text-slate-900 dark:text-white">Quick Actions</h2>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <QuickAction icon={PiggyBank} label="Create Budget" to="/budgets" />
-              <QuickAction icon={CreditCard} label="Make a Payment" to="/pay" />
-              <QuickAction icon={PieChart} label="View Reports" to="/reports" />
-              <QuickAction icon={ReceiptText} label="All Transactions" to="/transactions" />
+              <QuickAction icon={PiggyBank} label="Create Budget" to="/budgets" tone="brand" />
+              <QuickAction icon={CreditCard} label="Make a Payment" to="/pay" tone="success" />
+              <QuickAction icon={PieChart} label="View Reports" to="/reports" tone="warning" />
+              <QuickAction icon={ReceiptText} label="All Transactions" to="/transactions" tone="neutral" />
             </div>
           </Card>
         </div>
