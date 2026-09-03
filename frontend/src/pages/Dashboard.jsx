@@ -290,9 +290,12 @@ export default function Dashboard() {
                   title="No budgets set yet"
                   description="Create category budgets to understand and control your spending."
                   action={
-                    <Button as={Link} to="/budgets" variant="secondary" size="sm">
-                      Create your first budget
-                    </Button>
+                    <Link
+                      to="/budgets"
+                      className="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+                    >
+                      Create Your First Budget →
+                    </Link>
                   }
                 />
               ) : (
