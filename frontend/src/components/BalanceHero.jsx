@@ -1,13 +1,19 @@
-import { TrendingDown, TrendingUp, Wallet } from 'lucide-react'
+import { Eye, EyeOff, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
+import { useState } from 'react'
 import { useFormatCurrency } from '../hooks/useFormatCurrency'
+
+const MASK = '••••••'
 
 /**
  * Hero balance card: real net balance + income/expense breakdown, with a
  * lightweight 6-month bar preview built from the same monthly-comparison
- * data used elsewhere (no separate fetch, no fabricated figures).
+ * data used elsewhere (no separate fetch, no fabricated figures), plus a
+ * privacy toggle that masks the figures on-screen (state only, nothing sent
+ * anywhere).
  */
 export default function BalanceHero({ balance, months, incomeTrend, expenseTrend }) {
   const formatCurrency = useFormatCurrency()
+  const [hidden, setHidden] = useState(false)
   const isPositive = balance.net >= 0
   const maxVal = Math.max(1, ...months.flatMap((m) => [m.income, m.expense]))
 
@@ -29,8 +35,18 @@ export default function BalanceHero({ balance, months, incomeTrend, expenseTrend
         </span>
       </div>
 
-      <p className={`relative mt-4 text-xs font-medium ${isPositive ? 'text-indigo-100' : 'text-rose-100'}`}>Net Balance</p>
-      <p className="relative mt-1 text-3xl font-bold tabular-nums">{formatCurrency(balance.net)}</p>
+      <div className="relative mt-4 flex items-center gap-2">
+        <p className={`text-xs font-medium ${isPositive ? 'text-indigo-100' : 'text-rose-100'}`}>Net Balance</p>
+        <button
+          onClick={() => setHidden((v) => !v)}
+          aria-label={hidden ? 'Show balance figures' : 'Hide balance figures'}
+          aria-pressed={hidden}
+          className={`rounded-full p-1 transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 ${isPositive ? 'text-indigo-100' : 'text-rose-100'}`}
+        >
+          {hidden ? <EyeOff size={13} aria-hidden="true" /> : <Eye size={13} aria-hidden="true" />}
+        </button>
+      </div>
+      <p className="relative mt-1 text-3xl font-bold tabular-nums">{hidden ? MASK : formatCurrency(balance.net)}</p>
 
       <div className="relative mt-5 grid grid-cols-2 gap-3">
         <div className="rounded-xl bg-white/10 p-3">
@@ -38,7 +54,7 @@ export default function BalanceHero({ balance, months, incomeTrend, expenseTrend
             <TrendingUp size={14} aria-hidden="true" />
             <span className="text-xs font-medium">Income</span>
           </div>
-          <p className="mt-1 text-sm font-bold tabular-nums text-white">{formatCurrency(balance.totalIncome)}</p>
+          <p className="mt-1 text-sm font-bold tabular-nums text-white">{hidden ? MASK : formatCurrency(balance.totalIncome)}</p>
           {incomeTrend && (
             <p className={`mt-0.5 text-[11px] ${isPositive ? 'text-indigo-200' : 'text-rose-200'}`}>
               {incomeTrend.up ? '↑' : '↓'} {incomeTrend.value}% vs last month
@@ -50,7 +66,7 @@ export default function BalanceHero({ balance, months, incomeTrend, expenseTrend
             <TrendingDown size={14} aria-hidden="true" />
             <span className="text-xs font-medium">Expenses</span>
           </div>
-          <p className="mt-1 text-sm font-bold tabular-nums text-white">{formatCurrency(balance.totalExpense)}</p>
+          <p className="mt-1 text-sm font-bold tabular-nums text-white">{hidden ? MASK : formatCurrency(balance.totalExpense)}</p>
           {expenseTrend && (
             <p className={`mt-0.5 text-[11px] ${isPositive ? 'text-indigo-200' : 'text-rose-200'}`}>
               {expenseTrend.up ? '↑' : '↓'} {expenseTrend.value}% vs last month
