@@ -82,8 +82,10 @@ export default function BudgetCard({ categoryId, categoryName, budgetId, spent, 
         <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${color.bg} ${color.text}`} aria-hidden="true">
           <Icon size={18} />
         </span>
-        <div className="flex min-w-0 flex-1 items-start justify-between gap-2">
-          <h3 className="font-semibold text-slate-900 dark:text-white">{categoryName}</h3>
+        <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
+          <h3 className="min-w-0 truncate font-semibold text-slate-900 dark:text-white" title={categoryName}>
+            {categoryName}
+          </h3>
           {level === 'danger' && (
             <Badge tone="danger" icon={AlertTriangle}>
               Exceeded
