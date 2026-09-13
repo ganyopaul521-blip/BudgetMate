@@ -10,13 +10,14 @@ export default function Hero({ isAuthed }) {
   const { t } = useTranslation()
 
   return (
-    <section id="top" className="scroll-mt-16 px-4 pb-16 pt-14 sm:px-6 sm:pt-20 lg:px-8">
-      <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-2">
+    <section id="top" className="relative scroll-mt-16 px-4 pb-16 pt-14 sm:px-6 sm:pt-20 lg:px-8">
+      <HeroImage />
+      <div className="relative mx-auto max-w-6xl">
         <Reveal>
           <Badge tone="info" icon={Wallet}>
             {t('hero.badge')}
           </Badge>
-          <h1 className="mt-4 text-4xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+          <h1 className="mt-4 max-w-2xl text-4xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white sm:text-5xl">
             {t('hero.headlineLine1')}
             <br />
             {t('hero.headlineLine2')}
@@ -46,10 +47,6 @@ export default function Hero({ isAuthed }) {
               <Wallet size={15} aria-hidden="true" /> {t('hero.builtInGhs')}
             </span>
           </div>
-        </Reveal>
-
-        <Reveal delay={120}>
-          <HeroImage />
         </Reveal>
       </div>
     </section>
