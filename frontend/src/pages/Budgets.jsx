@@ -139,7 +139,7 @@ export default function Budgets() {
       {loading ? (
         <LoadingState variant="cards" cards={6} cols={3} />
       ) : (
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_300px]">
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_300px]">
           <div>
             <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
               <div className="relative flex-1">
@@ -194,7 +194,7 @@ export default function Budgets() {
             )}
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-6 lg:sticky lg:top-6">
             <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
               <h2 className="mb-1 flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
                 <Target size={16} className="text-indigo-500" aria-hidden="true" />
