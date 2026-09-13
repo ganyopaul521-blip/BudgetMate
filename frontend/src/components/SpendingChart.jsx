@@ -1,10 +1,16 @@
-import { ChevronDown, PieChart as PieChartIcon } from 'lucide-react'
+import { PieChart as PieChartIcon } from 'lucide-react'
 import { Cell, Pie, PieChart, Tooltip } from 'recharts'
 import { useTheme } from '../context/ThemeContext'
 import { useFormatCurrency } from '../hooks/useFormatCurrency'
 import Card from './Card'
 import EmptyState from './EmptyState'
 import LoadingState from './LoadingState'
+import SegmentedTabs from './SegmentedTabs'
+
+const PERIOD_OPTIONS = [
+  { value: 'this', label: 'This Month' },
+  { value: 'last', label: 'Last Month' },
+]
 
 const COLORS = ['#4f46e5', '#e11d48', '#059669', '#d97706', '#0891b2', '#7c3aed', '#db2777', '#65a30d', '#2563eb', '#ea580c']
 
@@ -32,18 +38,7 @@ export default function SpendingChart({ distribution, total, title = 'Spending b
       <div className="mb-4 flex items-center justify-between">
         <h2 className="font-semibold text-slate-900 dark:text-white">{title}</h2>
         {onPeriodChange && (
-          <div className="relative">
-            <select
-              value={period}
-              onChange={(e) => onPeriodChange(e.target.value)}
-              aria-label="Select period"
-              className="appearance-none rounded-lg border border-slate-200 bg-white py-1 pl-2.5 pr-7 text-xs font-medium text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
-            >
-              <option value="this">This Month</option>
-              <option value="last">Last Month</option>
-            </select>
-            <ChevronDown size={12} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" aria-hidden="true" />
-          </div>
+          <SegmentedTabs options={PERIOD_OPTIONS} value={period} onChange={onPeriodChange} aria-label="Select period" />
         )}
       </div>
       {distribution === null ? (
