@@ -77,7 +77,7 @@ export default function BudgetCard({ categoryId, categoryName, budgetId, spent, 
   }
 
   return (
-    <Card className="transition-shadow hover:shadow-md">
+    <Card className="flex h-full flex-col transition-shadow hover:shadow-md">
       <div className="mb-3 flex items-start gap-3">
         <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${color.bg} ${color.text}`} aria-hidden="true">
           <Icon size={18} />
@@ -122,6 +122,8 @@ export default function BudgetCard({ categoryId, categoryName, budgetId, spent, 
       ) : (
         <p className="text-sm text-slate-400 dark:text-slate-500">No budget set yet</p>
       )}
+
+      <div className="flex-1" aria-hidden="true" />
 
       {editing ? (
         <div className="mt-3 flex gap-2">
