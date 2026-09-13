@@ -14,7 +14,7 @@ export default function HeroImage() {
         width={736}
         height={1104}
         fetchPriority="high"
-        className="absolute right-0 top-0 h-full w-full object-cover object-left opacity-[0.15] sm:w-2/3 sm:object-right lg:w-1/2 dark:opacity-[0.08]"
+        className="absolute right-0 top-0 h-full w-full object-cover object-left opacity-40 sm:w-2/3 sm:object-right lg:w-1/2 dark:opacity-25"
       />
       <div className="absolute inset-0 bg-gradient-to-r from-white via-white/70 to-white/10 dark:from-slate-950 dark:via-slate-950/70 dark:to-slate-950/10 sm:to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white dark:from-slate-950" />

@@ -10,7 +10,7 @@ export default function Hero({ isAuthed }) {
   const { t } = useTranslation()
 
   return (
-    <section id="top" className="relative scroll-mt-16 px-4 pb-16 pt-14 sm:px-6 sm:pt-20 lg:px-8">
+    <section id="top" className="relative isolate scroll-mt-16 px-4 pb-16 pt-14 sm:px-6 sm:pt-20 lg:px-8">
       <HeroImage />
       <div className="relative mx-auto max-w-6xl">
         <Reveal>
