@@ -7,47 +7,43 @@ import {
   PiggyBank,
   Plus,
   ReceiptText,
+  Sparkles,
+  Target,
   TrendingDown,
   TrendingUp,
+  Wallet,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { reportsApi } from '../api/endpoints'
 import AlertBanner from '../components/AlertBanner'
 import Badge from '../components/Badge'
-import BalanceHero from '../components/BalanceHero'
 import Button from '../components/Button'
 import Card from '../components/Card'
 import EmptyState from '../components/EmptyState'
 import FinancialHealth from '../components/FinancialHealth'
 import IncomeExpenseChart from '../components/IncomeExpenseChart'
-import InsightCard from '../components/InsightCard'
+import KpiCard from '../components/KpiCard'
 import LoadingState from '../components/LoadingState'
 import MonthlyBudgetCard from '../components/MonthlyBudgetCard'
 import MonthYearPicker from '../components/MonthYearPicker'
 import PageHeader from '../components/PageHeader'
-import Reveal from '../components/Reveal'
 import ProgressBar from '../components/ProgressBar'
 import QuickAction from '../components/QuickAction'
+import Reveal from '../components/Reveal'
 import SpendingChart from '../components/SpendingChart'
-import TransactionCard from '../components/TransactionCard'
 import TransactionForm from '../components/TransactionForm'
 import { useAuth } from '../context/AuthContext'
 import { useFormatCurrency } from '../hooks/useFormatCurrency'
-import { MONTH_NAMES } from '../utils/format'
+import { getCategoryColor } from '../utils/categoryColors'
+import { getCategoryIcon } from '../utils/categoryIcons'
+import { formatDate, MONTH_NAMES } from '../utils/format'
+import { trendFrom } from '../utils/trends'
 
 function budgetStatusMeta(percentUsed) {
   if (percentUsed >= 100) return { label: 'Budget exceeded', tone: 'danger', icon: AlertTriangle }
   if (percentUsed >= 80) return { label: 'Approaching limit', tone: 'warning', icon: AlertTriangle }
   return { label: 'On track', tone: 'success', icon: CheckCircle2 }
-}
-
-// Real month-over-month % change - returns null (not shown) rather than a
-// misleading 0%/Infinity% when there's no prior-month figure to compare against.
-function trendFrom(current, previous) {
-  if (!previous) return null
-  const change = ((current - previous) / previous) * 100
-  return { value: Math.round(Math.abs(change) * 10) / 10, up: change >= 0 }
 }
 
 export default function Dashboard() {
@@ -142,34 +138,53 @@ export default function Dashboard() {
   // only make sense while viewing the real current month.
   const incomeTrend = isCurrentMonth && comparison?.length >= 2 ? trendFrom(comparison[5].income, comparison[4].income) : null
   const expenseTrend = isCurrentMonth && comparison?.length >= 2 ? trendFrom(comparison[5].expense, comparison[4].expense) : null
+  const netTrend =
+    isCurrentMonth && comparison?.length >= 2
+      ? trendFrom(comparison[5].income - comparison[5].expense, comparison[4].income - comparison[4].expense)
+      : null
 
+  const totalBudgetLimit = data ? data.budgetStatus.reduce((s, b) => s + b.amountLimit, 0) : 0
+  const totalBudgetSpent = data ? data.budgetStatus.reduce((s, b) => s + b.spent, 0) : 0
+  const budgetAvailable = Math.max(0, totalBudgetLimit - totalBudgetSpent)
+  const budgetPercentUsed = totalBudgetLimit > 0 ? Math.round((totalBudgetSpent / totalBudgetLimit) * 1000) / 10 : 0
+
+  // Plain data (not JSX) so the same real insights can render on either the
+  // light or the dark Financial Insights card treatment.
   const insights = []
   if (distribution?.length > 0) {
     const top = [...distribution].sort((a, b) => b.amount - a.amount)[0]
-    insights.push(
-      <InsightCard key="top" icon={TrendingDown} label="Top Spending Category">
-        <span className="font-semibold text-slate-900 dark:text-white">{top.category}</span>
-        <span className="text-slate-500 dark:text-slate-400"> — {formatCurrency(top.amount)} this month</span>
-      </InsightCard>
-    )
-  }
-  if (data?.budgetStatus.length > 0) {
-    const avgUsed = Math.round(data.budgetStatus.reduce((s, b) => s + b.percentUsed, 0) / data.budgetStatus.length)
-    insights.push(
-      <InsightCard key="budget" icon={PiggyBank} label="Budget Status">
-        You're using <span className="font-semibold text-slate-900 dark:text-white">{avgUsed}%</span> of your planned budget on
-        average.
-      </InsightCard>
-    )
+    insights.push({
+      key: 'top',
+      icon: TrendingDown,
+      text: (
+        <>
+          Your biggest expense is <span className="font-semibold">{top.category}</span> ({top.percentage}% of total spending).
+        </>
+      ),
+    })
   }
   if (expenseTrend) {
-    insights.push(
-      <InsightCard key="pattern" icon={expenseTrend.up ? TrendingUp : TrendingDown} label="Spending Pattern">
-        Your spending is{' '}
-        <span className="font-semibold text-slate-900 dark:text-white">{expenseTrend.up ? 'higher' : 'lower'}</span> than last
-        month ({expenseTrend.value}% {expenseTrend.up ? 'more' : 'less'}).
-      </InsightCard>
-    )
+    insights.push({
+      key: 'pattern',
+      icon: expenseTrend.up ? TrendingUp : Sparkles,
+      text: (
+        <>
+          You're spending <span className="font-semibold">{expenseTrend.value}% {expenseTrend.up ? 'more' : 'less'}</span> than
+          last month. {expenseTrend.up ? 'Keep an eye on it.' : 'Keep it up!'}
+        </>
+      ),
+    })
+  }
+  if (data?.budgetStatus.length > 0) {
+    insights.push({
+      key: 'budget',
+      icon: Wallet,
+      text: (
+        <>
+          You have <span className="font-semibold">{formatCurrency(budgetAvailable)}</span> remaining in your monthly budget.
+        </>
+      ),
+    })
   }
 
   return (
@@ -204,17 +219,50 @@ export default function Dashboard() {
         </Card>
       ) : (
         <div className="space-y-6">
-          {/* Row 1: hero gets extra width for the balance figure, matching the reference layout. Each row is its own grid so column ratios can differ, while CSS grid's default items-stretch still keeps cards within a row the same height. */}
+          {/* Row 1: four KPI tiles - real balance/income/expense/budget figures, each with a real trend and sparkline built from the actual 6-month comparison data. */}
           <Reveal>
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.55fr_1fr_1fr]">
-              <BalanceHero
-                balance={data.balance}
-                months={comparison || []}
-                incomeTrend={incomeTrend}
-                expenseTrend={expenseTrend}
-                periodLabel={isCurrentMonth ? 'This Month' : `${MONTH_NAMES[viewMonth - 1]} ${viewYear}`}
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <KpiCard
+                icon={Wallet}
+                label="Total Balance"
+                amount={data.balance.net}
+                trend={netTrend}
+                sparklineValues={comparison?.map((m) => m.income - m.expense)}
+                tone="hero"
+                maskable
               />
+              <KpiCard
+                icon={TrendingUp}
+                label="Income"
+                amount={data.balance.totalIncome}
+                trend={incomeTrend}
+                favorableWhenUp
+                sparklineValues={comparison?.map((m) => m.income)}
+                tone="success"
+              />
+              <KpiCard
+                icon={TrendingDown}
+                label="Expenses"
+                amount={data.balance.totalExpense}
+                trend={expenseTrend}
+                favorableWhenUp={false}
+                sparklineValues={comparison?.map((m) => m.expense)}
+                tone="danger"
+              />
+              <KpiCard
+                icon={Target}
+                label="Budgets"
+                amount={budgetAvailable}
+                subtitle={`${budgetPercentUsed}% of total budget used`}
+                progressPercent={budgetPercentUsed}
+                tone="brand"
+              />
+            </div>
+          </Reveal>
 
+          {/* Row 2: budget summary, quick actions, spending mix. */}
+          <Reveal delay={80}>
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               <MonthlyBudgetCard budgetStatus={data.budgetStatus} />
 
               <Card>
@@ -226,24 +274,27 @@ export default function Dashboard() {
                   <QuickAction icon={ReceiptText} label="All Transactions" to="/transactions" tone="neutral" />
                 </div>
               </Card>
-            </div>
-          </Reveal>
 
-          {/* Row 2: transactions gets extra width for description text, matching the reference layout. */}
-          <Reveal delay={80}>
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.25fr_1fr]">
               <SpendingChart
                 distribution={chartDistribution}
                 total={chartTotal}
                 period={chartPeriod}
                 onPeriodChange={handleChartPeriodChange}
               />
+            </div>
+          </Reveal>
 
+          {/* Row 3: recent activity as a compact real transaction table, plus financial health. */}
+          <Reveal delay={160}>
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.5fr_1fr]">
               <Card padded={false}>
                 <div className="flex items-center justify-between px-5 pt-5 sm:px-6 sm:pt-6">
                   <h2 className="font-semibold text-slate-900 dark:text-white">Recent Transactions</h2>
-                  <Link to="/transactions" className="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">
-                    View all
+                  <Link
+                    to="/transactions"
+                    className="flex items-center gap-1 text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+                  >
+                    View all →
                   </Link>
                 </div>
                 {data.recentTransactions.length === 0 ? (
@@ -258,10 +309,50 @@ export default function Dashboard() {
                     }
                   />
                 ) : (
-                  <div className="mt-2">
-                    {data.recentTransactions.map((t) => (
-                      <TransactionCard key={t.id} transaction={t} />
-                    ))}
+                  <div className="mt-3 overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead className="text-left text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                        <tr>
+                          <th scope="col" className="px-5 pb-2 sm:px-6">Date</th>
+                          <th scope="col" className="px-2 pb-2">Description</th>
+                          <th scope="col" className="hidden px-2 pb-2 sm:table-cell">Category</th>
+                          <th scope="col" className="px-2 pb-2 text-right sm:px-5">Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                        {data.recentTransactions.map((t) => {
+                          const isIncome = t.type === 'income'
+                          const CategoryIcon = getCategoryIcon(t.category.name)
+                          const color = getCategoryColor(t.category.name)
+                          return (
+                            <tr key={t.id}>
+                              <td className="whitespace-nowrap px-5 py-3 text-slate-500 dark:text-slate-400 sm:px-6">
+                                {formatDate(t.transactionDate)}
+                              </td>
+                              <td className="px-2 py-3">
+                                <div className="flex items-center gap-2.5">
+                                  <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${color.bg} ${color.text}`} aria-hidden="true">
+                                    <CategoryIcon size={14} />
+                                  </span>
+                                  <span className="max-w-[140px] truncate font-medium text-slate-800 dark:text-slate-100">
+                                    {t.description || t.category.name}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="hidden whitespace-nowrap px-2 py-3 text-slate-500 dark:text-slate-400 sm:table-cell">
+                                {t.category.name}
+                              </td>
+                              <td
+                                className={`whitespace-nowrap px-2 py-3 text-right font-semibold tabular-nums sm:px-5 ${isIncome ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}
+                              >
+                                {isIncome ? '+' : '-'}
+                                {formatCurrency(t.amount)}
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 )}
               </Card>
@@ -274,9 +365,9 @@ export default function Dashboard() {
             </div>
           </Reveal>
 
-          {/* Row 3: additional detail not in the reference mockup's compact bento - kept rather than dropped, since it's real, already-working functionality. */}
-          <Reveal delay={160}>
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          {/* Row 4: 6-month trend and the detailed per-category budget breakdown. */}
+          <Reveal delay={240}>
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <IncomeExpenseChart data={comparison} title="Income vs Expenses (6 months)" />
 
               <Card padded={false}>
@@ -326,19 +417,30 @@ export default function Dashboard() {
                   </div>
                 )}
               </Card>
+            </div>
+          </Reveal>
 
-              <Card>
-                <h2 className="mb-4 font-semibold text-slate-900 dark:text-white">Your Financial Insights</h2>
-                {insights.length === 0 ? (
-                  <EmptyState
-                    icon={ReceiptText}
-                    title="Your insights are waiting"
-                    description="Add transactions to generate useful spending insights."
-                  />
-                ) : (
-                  <div className="space-y-4">{insights}</div>
-                )}
-              </Card>
+          {/* Row 5: financial insights, styled as a dark highlight card. */}
+          <Reveal delay={320}>
+            <div className="rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 p-5 shadow-sm sm:p-6">
+              <div className="mb-4 flex items-center gap-2">
+                <Sparkles size={16} className="text-indigo-400" aria-hidden="true" />
+                <h2 className="font-semibold text-white">Financial Insights</h2>
+              </div>
+              {insights.length === 0 ? (
+                <p className="text-sm text-slate-400">Add transactions to generate useful spending insights.</p>
+              ) : (
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  {insights.map((insight) => (
+                    <div key={insight.key} className="flex items-start gap-3 rounded-xl bg-white/5 p-3.5">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500/20 text-indigo-300" aria-hidden="true">
+                        <insight.icon size={15} />
+                      </span>
+                      <p className="text-sm text-slate-200">{insight.text}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </Reveal>
         </div>
