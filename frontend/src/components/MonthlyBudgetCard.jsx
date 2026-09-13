@@ -35,6 +35,13 @@ export default function MonthlyBudgetCard({ budgetStatus }) {
   const percentUsed = totalLimit > 0 ? Math.round((totalSpent / totalLimit) * 1000) / 10 : 0
   const tone = percentUsed >= 100 ? 'danger' : percentUsed >= 80 ? 'warning' : 'brand'
 
+  // Same thresholds as the detailed per-category Budget Status card, so the
+  // two views of the same real budgetStatus data never disagree.
+  const onTrack = budgetStatus.filter((b) => b.percentUsed < 80).length
+  const watchClosely = budgetStatus.filter((b) => b.percentUsed >= 80 && b.percentUsed < 100).length
+  const overBudget = budgetStatus.filter((b) => b.percentUsed >= 100).length
+  const categoryWord = (n) => `${n} categor${n === 1 ? 'y' : 'ies'}`
+
   return (
     <Card>
       <div className="mb-4 flex items-center justify-between">
@@ -55,6 +62,30 @@ export default function MonthlyBudgetCard({ budgetStatus }) {
       </div>
       <ProgressBar percent={percentUsed} tone={tone} label="Overall monthly budget usage" />
       <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">{percentUsed}% of your combined budget used</p>
+
+      <div className="mt-5 space-y-2.5 border-t border-slate-100 pt-4 text-xs dark:border-slate-800">
+        <div className="flex items-center justify-between">
+          <span className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
+            On track
+          </span>
+          <span className="font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">{categoryWord(onTrack)}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden="true" />
+            Watch closely
+          </span>
+          <span className="font-semibold tabular-nums text-amber-600 dark:text-amber-400">{categoryWord(watchClosely)}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-rose-500" aria-hidden="true" />
+            Over budget
+          </span>
+          <span className="font-semibold tabular-nums text-rose-600 dark:text-rose-400">{categoryWord(overBudget)}</span>
+        </div>
+      </div>
     </Card>
   )
 }

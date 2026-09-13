@@ -16,18 +16,25 @@ export const CURRENCIES = [
 
 const CURRENCY_SYMBOLS = Object.fromEntries(CURRENCIES.map((c) => [c.code, c.symbol]))
 
+export function getCurrencySymbol(currency = 'GHS') {
+  return CURRENCY_SYMBOLS[currency] || currency
+}
+
+/** Formats just the numeric part (no symbol) - for callers that style the symbol separately. */
+export function formatAmount(amount) {
+  return Number(amount || 0).toLocaleString('en-GH', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+}
+
 /**
  * Formats an amount with the given currency's symbol. This does NOT convert
  * values between currencies - the app stores and enters every amount as-is;
  * changing currency only changes which symbol is shown.
  */
 export function formatCurrency(amount, currency = 'GHS') {
-  const symbol = CURRENCY_SYMBOLS[currency] || currency
-  const value = Number(amount || 0).toLocaleString('en-GH', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
-  return `${symbol} ${value}`
+  return `${getCurrencySymbol(currency)} ${formatAmount(amount)}`
 }
 
 export function formatDate(date) {

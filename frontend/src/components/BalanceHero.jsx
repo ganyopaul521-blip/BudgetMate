@@ -1,8 +1,24 @@
 import { Eye, EyeOff, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { useState } from 'react'
-import { useFormatCurrency } from '../hooks/useFormatCurrency'
+import { useAuth } from '../context/AuthContext'
+import { useCountUp } from '../hooks/useCountUp'
+import { formatAmount, getCurrencySymbol } from '../utils/format'
 
 const MASK = '••••••'
+
+// Counts up to the real amount and splits the currency symbol out at a
+// smaller size - purely typographic, the underlying value is untouched.
+function AnimatedAmount({ amount, size = 'lg' }) {
+  const { user } = useAuth()
+  const animated = useCountUp(amount)
+  const symbolClass = size === 'lg' ? 'text-lg opacity-60' : 'text-xs opacity-60'
+  return (
+    <>
+      <span className={`${symbolClass} mr-1 font-medium`}>{getCurrencySymbol(user?.currency)}</span>
+      {formatAmount(animated)}
+    </>
+  )
+}
 const WAVE_WIDTH = 300
 const WAVE_HEIGHT = 100
 
@@ -54,7 +70,6 @@ function computeNetWave(months) {
  * on-screen (state only, nothing sent anywhere).
  */
 export default function BalanceHero({ balance, months, incomeTrend, expenseTrend, periodLabel = 'This Month' }) {
-  const formatCurrency = useFormatCurrency()
   const [hidden, setHidden] = useState(false)
   const isPositive = balance.net >= 0
   const wave = computeNetWave(months)
@@ -95,7 +110,9 @@ export default function BalanceHero({ balance, months, incomeTrend, expenseTrend
           {hidden ? <EyeOff size={13} aria-hidden="true" /> : <Eye size={13} aria-hidden="true" />}
         </button>
       </div>
-      <p className="relative mt-1 text-3xl font-bold tabular-nums">{hidden ? MASK : formatCurrency(balance.net)}</p>
+      <p className="relative mt-1 text-3xl font-bold tabular-nums">
+        {hidden ? MASK : <AnimatedAmount amount={balance.net} size="lg" />}
+      </p>
 
       <div className="relative mt-5 grid grid-cols-2 gap-3">
         <div className="rounded-xl bg-white/10 p-3">
@@ -103,7 +120,9 @@ export default function BalanceHero({ balance, months, incomeTrend, expenseTrend
             <TrendingUp size={14} aria-hidden="true" />
             <span className="text-xs font-medium">Income</span>
           </div>
-          <p className="mt-1 text-sm font-bold tabular-nums text-white">{hidden ? MASK : formatCurrency(balance.totalIncome)}</p>
+          <p className="mt-1 text-sm font-bold tabular-nums text-white">
+            {hidden ? MASK : <AnimatedAmount amount={balance.totalIncome} size="sm" />}
+          </p>
           {incomeTrend && (
             <p className={`mt-0.5 text-[11px] ${isPositive ? 'text-indigo-200' : 'text-rose-200'}`}>
               {incomeTrend.up ? '↑' : '↓'} {incomeTrend.value}% vs last month
@@ -115,7 +134,9 @@ export default function BalanceHero({ balance, months, incomeTrend, expenseTrend
             <TrendingDown size={14} aria-hidden="true" />
             <span className="text-xs font-medium">Expenses</span>
           </div>
-          <p className="mt-1 text-sm font-bold tabular-nums text-white">{hidden ? MASK : formatCurrency(balance.totalExpense)}</p>
+          <p className="mt-1 text-sm font-bold tabular-nums text-white">
+            {hidden ? MASK : <AnimatedAmount amount={balance.totalExpense} size="sm" />}
+          </p>
           {expenseTrend && (
             <p className={`mt-0.5 text-[11px] ${isPositive ? 'text-indigo-200' : 'text-rose-200'}`}>
               {expenseTrend.up ? '↑' : '↓'} {expenseTrend.value}% vs last month
