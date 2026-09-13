@@ -1,47 +1,18 @@
-import {
-  ChevronDown,
-  CreditCard,
-  Home,
-  LayoutDashboard,
-  ListChecks,
-  Moon,
-  PieChart,
-  PiggyBank,
-  Settings,
-  Sun,
-  X,
-} from 'lucide-react'
-import { useState } from 'react'
+import { CreditCard, ListChecks, LayoutDashboard, LogOut, PieChart, PiggyBank, Settings, Sparkles, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { authApi } from '../api/endpoints'
+import { reportsApi } from '../api/endpoints'
 import { useAuth } from '../context/AuthContext'
-import { useTheme } from '../context/ThemeContext'
-import { CURRENCIES } from '../utils/format'
+import { trendFrom } from '../utils/trends'
+import Avatar from './Avatar'
 
-const NAV_GROUPS = [
-  {
-    label: 'Overview',
-    items: [
-      { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
-      { to: '/', label: 'Home', icon: Home, end: true },
-    ],
-  },
-  {
-    label: 'Money',
-    items: [
-      { to: '/transactions', label: 'Transactions', icon: ListChecks },
-      { to: '/pay', label: 'Pay', icon: CreditCard },
-      { to: '/budgets', label: 'Budgets', icon: PiggyBank },
-    ],
-  },
-  {
-    label: 'Insights',
-    items: [{ to: '/reports', label: 'Reports', icon: PieChart }],
-  },
-  {
-    label: 'Account',
-    items: [{ to: '/settings', label: 'Settings', icon: Settings }],
-  },
+const NAV_ITEMS = [
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
+  { to: '/transactions', label: 'Transactions', icon: ListChecks },
+  { to: '/budgets', label: 'Budgets', icon: PiggyBank },
+  { to: '/reports', label: 'Reports', icon: PieChart },
+  { to: '/pay', label: 'Pay', icon: CreditCard },
+  { to: '/settings', label: 'Settings', icon: Settings },
 ]
 
 function NavItem({ to, label, icon: Icon, end, onClick }) {
@@ -62,77 +33,44 @@ function NavItem({ to, label, icon: Icon, end, onClick }) {
   )
 }
 
-function SidebarThemeToggle() {
-  const { theme, toggleTheme } = useTheme()
-  const isDark = theme === 'dark'
+/** Real month-over-month spending trend, reused from Dashboard's own comparison data. Renders nothing without enough real data to say something honest. */
+function SidebarInsight({ expenseTrend }) {
+  if (!expenseTrend) return null
+  const better = !expenseTrend.up
 
   return (
-    <button
-      onClick={toggleTheme}
-      className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-    >
-      <span className="flex items-center gap-2.5">
-        {isDark ? <Moon size={16} aria-hidden="true" /> : <Sun size={16} aria-hidden="true" />}
-        {isDark ? 'Dark Mode' : 'Light Mode'}
-      </span>
-      <ChevronDown size={14} className="text-slate-500" aria-hidden="true" />
-    </button>
-  )
-}
-
-function SidebarCurrencySelect() {
-  const { user, updateUser } = useAuth()
-  const [saving, setSaving] = useState(false)
-
-  const handleChange = async (e) => {
-    const currency = e.target.value
-    setSaving(true)
-    try {
-      const res = await authApi.updateProfile({ currency })
-      updateUser(res.data.user)
-    } catch {
-      // Non-critical - the sidebar selector is a shortcut to a setting also
-      // editable (with full error feedback) from the Settings page.
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  const selected = CURRENCIES.find((c) => c.code === (user?.currency || 'GHS')) || CURRENCIES[0]
-
-  return (
-    <div className="relative">
-      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm" aria-hidden="true">
-        {selected.flag}
-      </span>
-      <select
-        value={user?.currency || 'GHS'}
-        onChange={handleChange}
-        disabled={saving}
-        aria-label="Change currency"
-        className="w-full appearance-none rounded-lg bg-white/5 py-2.5 pl-9 pr-8 text-sm font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 disabled:opacity-60"
-      >
-        {CURRENCIES.map((c) => (
-          <option key={c.code} value={c.code} className="text-slate-900">
-            {c.flag} {c.label} ({c.symbol})
-          </option>
-        ))}
-      </select>
-      <ChevronDown size={14} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500" aria-hidden="true" />
+    <div className="mb-3 rounded-xl border border-white/10 bg-white/5 p-3.5">
+      <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+        <Sparkles size={13} className="text-indigo-400" aria-hidden="true" />
+        Insight
+      </div>
+      <p className="text-sm text-slate-200">
+        You're spending <span className="font-semibold text-white">{expenseTrend.value}% {expenseTrend.up ? 'more' : 'less'}</span> than
+        last month. {better ? 'Great job!' : 'Keep an eye on it.'}
+      </p>
     </div>
   )
 }
 
 export default function Sidebar({ open, onClose }) {
+  const { user, logout } = useAuth()
+  const [expenseTrend, setExpenseTrend] = useState(null)
+
+  useEffect(() => {
+    reportsApi
+      .monthlyComparison()
+      .then((res) => {
+        const months = res.data.data
+        if (months?.length >= 2) {
+          setExpenseTrend(trendFrom(months[months.length - 1].expense, months[months.length - 2].expense))
+        }
+      })
+      .catch(() => {})
+  }, [])
+
   return (
     <>
-      {open && (
-        <div
-          className="fixed inset-0 z-40 bg-slate-900/50 lg:hidden"
-          onClick={onClose}
-          aria-hidden="true"
-        />
-      )}
+      {open && <div className="fixed inset-0 z-40 bg-slate-900/50 lg:hidden" onClick={onClose} aria-hidden="true" />}
 
       <aside
         id="app-sidebar"
@@ -142,11 +80,17 @@ export default function Sidebar({ open, onClose }) {
         aria-label="Main navigation"
       >
         <div className="flex items-center justify-between px-5 py-5">
-          <div className="flex items-center gap-2 font-bold text-white">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-base font-extrabold text-white" aria-hidden="true">
+          <div className="flex items-center gap-2.5">
+            <div
+              className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-base font-extrabold text-white"
+              aria-hidden="true"
+            >
               B
             </div>
-            <span className="text-lg">BudgetMate</span>
+            <div>
+              <p className="text-base font-bold leading-tight text-white">BudgetMate</p>
+              <p className="text-[11px] leading-tight text-slate-500">Plan Today. Build Tomorrow.</p>
+            </div>
           </div>
           <button
             onClick={onClose}
@@ -158,21 +102,29 @@ export default function Sidebar({ open, onClose }) {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-2" aria-label="Primary">
-          {NAV_GROUPS.map((group) => (
-            <div key={group.label} className="pt-3 first:pt-0">
-              <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">{group.label}</p>
-              <div className="space-y-1">
-                {group.items.map((item) => (
-                  <NavItem key={item.to} {...item} onClick={onClose} />
-                ))}
-              </div>
-            </div>
+          {NAV_ITEMS.map((item) => (
+            <NavItem key={item.to} {...item} onClick={onClose} />
           ))}
         </nav>
 
-        <div className="space-y-1 border-t border-white/10 px-3 py-3">
-          <SidebarThemeToggle />
-          <SidebarCurrencySelect />
+        <div className="px-3 pb-3">
+          <SidebarInsight expenseTrend={expenseTrend} />
+
+          <div className="flex items-center gap-2.5 rounded-xl border-t border-white/10 pt-3">
+            <Avatar src={user?.avatarUrl} name={user?.fullName} size="sm" />
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-white">{user?.fullName}</p>
+              <p className="truncate text-xs text-slate-500">{user?.email}</p>
+            </div>
+            <button
+              onClick={logout}
+              aria-label="Log out"
+              title="Log out"
+              className="shrink-0 rounded-lg p-2 text-slate-400 hover:bg-white/5 hover:text-white"
+            >
+              <LogOut size={16} />
+            </button>
+          </div>
         </div>
       </aside>
     </>
