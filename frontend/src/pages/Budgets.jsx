@@ -1,35 +1,45 @@
-import { Save } from 'lucide-react'
+import { CreditCard, Lightbulb, ListChecks, PieChart, Search, Sparkles, Target, TrendingUp, Wallet } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { budgetsApi, categoriesApi } from '../api/endpoints'
 import BudgetCard from '../components/BudgetCard'
 import BudgetOverviewCard from '../components/BudgetOverviewCard'
-import Button from '../components/Button'
-import Card from '../components/Card'
-import Input from '../components/Input'
 import LoadingState from '../components/LoadingState'
+import MonthYearPicker from '../components/MonthYearPicker'
 import PageHeader from '../components/PageHeader'
+import QuickAction from '../components/QuickAction'
 import Select from '../components/Select'
-import { getCategoryColor } from '../utils/categoryColors'
-import { getCategoryIcon } from '../utils/categoryIcons'
-import { MONTH_NAMES } from '../utils/format'
+import { useFormatCurrency } from '../hooks/useFormatCurrency'
 
 const now = new Date()
 
+const STATUS_OPTIONS = [
+  { value: 'all', label: 'All statuses' },
+  { value: 'on-track', label: 'On track' },
+  { value: 'near-limit', label: 'Near limit' },
+  { value: 'exceeded', label: 'Exceeded' },
+  { value: 'no-budget', label: 'No budget set' },
+]
+
+function statusOf(budget) {
+  if (!budget) return 'no-budget'
+  if (budget.percentUsed >= 100) return 'exceeded'
+  if (budget.percentUsed >= 80) return 'near-limit'
+  return 'on-track'
+}
+
 export default function Budgets() {
+  const formatCurrency = useFormatCurrency()
   const [month, setMonth] = useState(now.getMonth() + 1)
   const [year, setYear] = useState(now.getFullYear())
   const [categories, setCategories] = useState([])
   const [budgets, setBudgets] = useState([])
-  const [drafts, setDrafts] = useState({})
-  const [savingId, setSavingId] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
 
   const load = async () => {
     setLoading(true)
-    const [catRes, budRes] = await Promise.all([
-      categoriesApi.list('expense'),
-      budgetsApi.list({ month, year }),
-    ])
+    const [catRes, budRes] = await Promise.all([categoriesApi.list('expense'), budgetsApi.list({ month, year })])
     setCategories(catRes.data.categories)
     setBudgets(budRes.data.budgets)
     setLoading(false)
@@ -42,21 +52,76 @@ export default function Budgets() {
 
   const budgetFor = (categoryId) => budgets.find((b) => b.categoryId === categoryId)
 
-  const handleSave = async (categoryId) => {
-    const value = drafts[categoryId]
-    if (!value || Number(value) <= 0) return
-    setSavingId(categoryId)
-    try {
-      await budgetsApi.upsert({ categoryId, month, year, amountLimit: Number(value) })
-      setDrafts((d) => ({ ...d, [categoryId]: '' }))
-      load()
-    } finally {
-      setSavingId(null)
+  const totalBudget = budgets.reduce((sum, b) => sum + b.amountLimit, 0)
+  const totalSpent = budgets.reduce((sum, b) => sum + b.spent, 0)
+  const percentUsed = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 1000) / 10 : 0
+  const available = Math.max(0, totalBudget - totalSpent)
+
+  const filteredCategories = categories.filter((cat) => {
+    if (search && !cat.name.toLowerCase().includes(search.trim().toLowerCase())) return false
+    if (statusFilter !== 'all' && statusOf(budgetFor(cat.id)) !== statusFilter) return false
+    return true
+  })
+
+  // Real insights computed from this month's actual budgets - not AI-generated,
+  // just honest arithmetic over real data. Omitted entirely when there's
+  // nothing to say rather than inventing filler.
+  const insights = []
+  if (budgets.length > 0) {
+    const mostExceeded = [...budgets].filter((b) => b.percentUsed > 100).sort((a, b) => b.percentUsed - a.percentUsed)[0]
+    if (mostExceeded) {
+      const cat = categories.find((c) => c.id === mostExceeded.categoryId)
+      insights.push({
+        key: 'exceeded',
+        icon: TrendingUp,
+        text: (
+          <>
+            Your <span className="font-semibold">{cat?.name}</span> budget has been exceeded by{' '}
+            <span className="font-semibold">{formatCurrency(mostExceeded.spent - mostExceeded.amountLimit)}</span>.
+          </>
+        ),
+      })
+    }
+
+    const biggest = [...budgets].sort((a, b) => b.spent - a.spent)[0]
+    if (biggest?.spent > 0) {
+      const cat = categories.find((c) => c.id === biggest.categoryId)
+      const share = totalSpent > 0 ? Math.round((biggest.spent / totalSpent) * 1000) / 10 : 0
+      insights.push({
+        key: 'biggest',
+        icon: PieChart,
+        text: (
+          <>
+            <span className="font-semibold">{cat?.name}</span> is your biggest expense ({share}% of your budgeted spending).
+          </>
+        ),
+      })
+    }
+
+    insights.push({
+      key: 'remaining',
+      icon: Wallet,
+      text: (
+        <>
+          You have <span className="font-semibold">{formatCurrency(available)}</span> remaining across your monthly budgets.
+        </>
+      ),
+    })
+
+    const unused = budgets.find((b) => b.spent === 0)
+    if (unused) {
+      const cat = categories.find((c) => c.id === unused.categoryId)
+      insights.push({
+        key: 'unused',
+        icon: Sparkles,
+        text: (
+          <>
+            <span className="font-semibold">{cat?.name}</span> hasn't been used this month.
+          </>
+        ),
+      })
     }
   }
-
-  const totalBudget = budgets.reduce((sum, b) => sum + b.amountLimit, 0)
-  const percentSet = categories.length > 0 ? (budgets.length / categories.length) * 100 : 0
 
   return (
     <div>
@@ -65,87 +130,106 @@ export default function Budgets() {
         description="Set a monthly spending limit for each category and take control of your finances."
         actions={
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex gap-2">
-              <Select aria-label="Select month" value={month} onChange={(e) => setMonth(Number(e.target.value))}>
-                {MONTH_NAMES.map((name, i) => (
-                  <option key={name} value={i + 1}>
-                    {name}
-                  </option>
-                ))}
-              </Select>
-              <Select aria-label="Select year" value={year} onChange={(e) => setYear(Number(e.target.value))}>
-                {[year - 1, year, year + 1].map((y) => (
-                  <option key={y} value={y}>
-                    {y}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            {!loading && <BudgetOverviewCard totalBudget={totalBudget} percentSet={percentSet} />}
+            <MonthYearPicker month={month} year={year} onChange={({ month: m, year: y }) => { setMonth(m); setYear(y) }} />
+            {!loading && <BudgetOverviewCard totalBudget={totalBudget} percentUsed={percentUsed} />}
           </div>
         }
       />
 
       {loading ? (
-        <LoadingState variant="cards" cards={6} />
+        <LoadingState variant="cards" cards={6} cols={3} />
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {categories.map((cat) => {
-            const budget = budgetFor(cat.id)
-            const Icon = getCategoryIcon(cat.name)
-            const color = getCategoryColor(cat.name)
-            const saveRow = (
-              <div className="mt-3 flex gap-2">
-                <Input
-                  type="number"
-                  min="1"
-                  step="0.01"
-                  aria-label={`Set monthly limit for ${cat.name}`}
-                  placeholder={budget ? 'Update limit (GH₵)' : 'Set monthly limit (GH₵)'}
-                  value={drafts[cat.id] || ''}
-                  onChange={(e) => setDrafts({ ...drafts, [cat.id]: e.target.value })}
-                  className="flex-1"
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_300px]">
+          <div>
+            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="relative flex-1">
+                <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" />
+                <input
+                  type="search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search categories..."
+                  aria-label="Search budget categories"
+                  className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-indigo-900/40"
                 />
-                <Button
-                  variant="secondary"
-                  onClick={() => handleSave(cat.id)}
-                  loading={savingId === cat.id}
-                  aria-label={`Save budget for ${cat.name}`}
-                >
-                  <Save size={15} aria-hidden="true" />
-                </Button>
               </div>
-            )
+              <Select
+                aria-label="Filter by status"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="sm:w-48"
+              >
+                {STATUS_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </Select>
+            </div>
 
-            if (budget) {
-              return (
-                <BudgetCard
-                  key={cat.id}
-                  categoryName={cat.name}
-                  spent={budget.spent}
-                  amountLimit={budget.amountLimit}
-                  percentUsed={budget.percentUsed}
-                >
-                  {saveRow}
-                </BudgetCard>
-              )
-            }
+            {filteredCategories.length === 0 ? (
+              <p className="rounded-2xl border border-dashed border-slate-200 py-12 text-center text-sm text-slate-400 dark:border-slate-800 dark:text-slate-500">
+                No categories match your search/filter.
+              </p>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {filteredCategories.map((cat) => {
+                  const budget = budgetFor(cat.id)
+                  return (
+                    <BudgetCard
+                      key={cat.id}
+                      categoryId={cat.id}
+                      categoryName={cat.name}
+                      budgetId={budget?.id}
+                      spent={budget?.spent}
+                      amountLimit={budget?.amountLimit}
+                      percentUsed={budget?.percentUsed}
+                      month={month}
+                      year={year}
+                      onChanged={load}
+                    />
+                  )
+                })}
+              </div>
+            )}
+          </div>
 
-            return (
-              <Card key={cat.id}>
-                <div className="flex items-start gap-3">
-                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${color.bg} ${color.text}`} aria-hidden="true">
-                    <Icon size={18} />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold text-slate-900 dark:text-white">{cat.name}</h3>
-                    <p className="mt-0.5 text-sm text-slate-400 dark:text-slate-500">No budget set yet</p>
-                  </div>
+          <div className="space-y-6">
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+              <h2 className="mb-1 flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+                <Target size={16} className="text-indigo-500" aria-hidden="true" />
+                Quick Actions
+              </h2>
+              <p className="mb-4 text-xs text-slate-400 dark:text-slate-500">Manage your finances with ease</p>
+              <div className="space-y-2.5">
+                <QuickAction icon={CreditCard} label="Make a Payment" to="/pay" tone="success" />
+                <QuickAction icon={PieChart} label="View Reports" to="/reports" tone="warning" />
+                <QuickAction icon={ListChecks} label="All Transactions" to="/transactions" tone="neutral" />
+              </div>
+            </div>
+
+            <div className="rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 p-5 shadow-sm">
+              <h2 className="mb-1 flex items-center gap-2 font-semibold text-white">
+                <Lightbulb size={16} className="text-indigo-400" aria-hidden="true" />
+                Smart Insights
+              </h2>
+              <p className="mb-4 text-xs text-slate-400">Real insights from your budget data</p>
+              {insights.length === 0 ? (
+                <p className="text-sm text-slate-400">Set a budget to start seeing insights here.</p>
+              ) : (
+                <div className="space-y-2.5">
+                  {insights.map((insight) => (
+                    <div key={insight.key} className="flex items-start gap-2.5 rounded-xl bg-white/5 p-3">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-500/20 text-indigo-300" aria-hidden="true">
+                        <insight.icon size={13} />
+                      </span>
+                      <p className="text-sm text-slate-200">{insight.text}</p>
+                    </div>
+                  ))}
                 </div>
-                {saveRow}
-              </Card>
-            )
-          })}
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

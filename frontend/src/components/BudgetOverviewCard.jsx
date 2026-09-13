@@ -1,26 +1,33 @@
 import { useFormatCurrency } from '../hooks/useFormatCurrency'
 
-/** Real coverage: total GH₵ committed across this month's budgets, and what share of expense categories have one set. */
-export default function BudgetOverviewCard({ totalBudget, percentSet }) {
+/** Real total GH₵ committed across this month's budgets, and what share of it has actually been spent. */
+export default function BudgetOverviewCard({ totalBudget, percentUsed }) {
   const formatCurrency = useFormatCurrency()
-  const size = 72
-  const strokeWidth = 7
+  const size = 88
+  const strokeWidth = 8
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
-  const clamped = Math.min(Math.max(percentSet, 0), 100)
+  const clamped = Math.min(Math.max(percentUsed, 0), 100)
   const offset = circumference - (clamped / 100) * circumference
 
   return (
-    <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-3.5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-      <div>
-        <p className="text-xs font-medium text-slate-400 dark:text-slate-500">Monthly Budget Overview</p>
-        <p className="mt-1 text-xl font-bold tabular-nums text-slate-900 dark:text-white">{formatCurrency(totalBudget)}</p>
-        <p className="text-xs text-slate-400 dark:text-slate-500">Total Budget Set</p>
+    <div className="relative flex items-center gap-5 overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 px-6 py-5 text-white shadow-lg">
+      <div className="animate-glow-pulse pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/15 blur-2xl" aria-hidden="true" />
+
+      <div className="relative">
+        <p className="text-sm font-medium text-indigo-100">Monthly Budget Overview</p>
+        <p className="mt-1 text-3xl font-bold tabular-nums">{formatCurrency(totalBudget)}</p>
+        <p className="text-xs text-indigo-200">Total Budget Set</p>
       </div>
 
-      <div className="relative shrink-0" style={{ width: size, height: size }} role="img" aria-label={`${Math.round(clamped)}% of your categories have a budget set`}>
+      <div
+        className="relative ml-auto shrink-0"
+        style={{ width: size, height: size }}
+        role="img"
+        aria-label={`${Math.round(clamped)}% of your monthly budget has been used`}
+      >
         <svg width={size} height={size} className="-rotate-90" aria-hidden="true">
-          <circle cx={size / 2} cy={size / 2} r={radius} fill="none" strokeWidth={strokeWidth} className="stroke-slate-100 dark:stroke-slate-800" />
+          <circle cx={size / 2} cy={size / 2} r={radius} fill="none" strokeWidth={strokeWidth} className="stroke-white/20" />
           <circle
             cx={size / 2}
             cy={size / 2}
@@ -28,15 +35,15 @@ export default function BudgetOverviewCard({ totalBudget, percentSet }) {
             fill="none"
             strokeWidth={strokeWidth}
             strokeLinecap="round"
-            className="stroke-indigo-600 dark:stroke-indigo-400"
+            className="stroke-white"
             strokeDasharray={circumference}
             strokeDashoffset={offset}
             style={{ transition: 'stroke-dashoffset 0.6s ease-out' }}
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-sm font-bold tabular-nums text-slate-900 dark:text-white">{Math.round(clamped)}%</span>
-          <span className="text-[10px] text-slate-400 dark:text-slate-500">Set</span>
+          <span className="text-lg font-bold tabular-nums">{Math.round(clamped)}%</span>
+          <span className="text-[10px] text-indigo-100">Used</span>
         </div>
       </div>
     </div>

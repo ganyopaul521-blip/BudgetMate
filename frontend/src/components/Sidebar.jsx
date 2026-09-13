@@ -1,18 +1,32 @@
-import { CreditCard, ListChecks, LayoutDashboard, LogOut, PieChart, PiggyBank, Settings, Sparkles, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { CreditCard, Home, LayoutDashboard, ListChecks, LogOut, PieChart, PiggyBank, Settings, X } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
-import { reportsApi } from '../api/endpoints'
 import { useAuth } from '../context/AuthContext'
-import { trendFrom } from '../utils/trends'
 import Avatar from './Avatar'
 
-const NAV_ITEMS = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/transactions', label: 'Transactions', icon: ListChecks },
-  { to: '/budgets', label: 'Budgets', icon: PiggyBank },
-  { to: '/reports', label: 'Reports', icon: PieChart },
-  { to: '/pay', label: 'Pay', icon: CreditCard },
-  { to: '/settings', label: 'Settings', icon: Settings },
+const NAV_GROUPS = [
+  {
+    label: 'Overview',
+    items: [
+      { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
+      { to: '/', label: 'Home', icon: Home, end: true },
+    ],
+  },
+  {
+    label: 'Money',
+    items: [
+      { to: '/transactions', label: 'Transactions', icon: ListChecks },
+      { to: '/pay', label: 'Pay', icon: CreditCard },
+      { to: '/budgets', label: 'Budgets', icon: PiggyBank },
+    ],
+  },
+  {
+    label: 'Insights',
+    items: [{ to: '/reports', label: 'Reports', icon: PieChart }],
+  },
+  {
+    label: 'Account',
+    items: [{ to: '/settings', label: 'Settings', icon: Settings }],
+  },
 ]
 
 function NavItem({ to, label, icon: Icon, end, onClick }) {
@@ -33,40 +47,8 @@ function NavItem({ to, label, icon: Icon, end, onClick }) {
   )
 }
 
-/** Real month-over-month spending trend, reused from Dashboard's own comparison data. Renders nothing without enough real data to say something honest. */
-function SidebarInsight({ expenseTrend }) {
-  if (!expenseTrend) return null
-  const better = !expenseTrend.up
-
-  return (
-    <div className="mb-3 rounded-xl border border-white/10 bg-white/5 p-3.5">
-      <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
-        <Sparkles size={13} className="text-indigo-400" aria-hidden="true" />
-        Insight
-      </div>
-      <p className="text-sm text-slate-200">
-        You're spending <span className="font-semibold text-white">{expenseTrend.value}% {expenseTrend.up ? 'more' : 'less'}</span> than
-        last month. {better ? 'Great job!' : 'Keep an eye on it.'}
-      </p>
-    </div>
-  )
-}
-
 export default function Sidebar({ open, onClose }) {
   const { user, logout } = useAuth()
-  const [expenseTrend, setExpenseTrend] = useState(null)
-
-  useEffect(() => {
-    reportsApi
-      .monthlyComparison()
-      .then((res) => {
-        const months = res.data.data
-        if (months?.length >= 2) {
-          setExpenseTrend(trendFrom(months[months.length - 1].expense, months[months.length - 2].expense))
-        }
-      })
-      .catch(() => {})
-  }, [])
 
   return (
     <>
@@ -102,15 +84,20 @@ export default function Sidebar({ open, onClose }) {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-2" aria-label="Primary">
-          {NAV_ITEMS.map((item) => (
-            <NavItem key={item.to} {...item} onClick={onClose} />
+          {NAV_GROUPS.map((group) => (
+            <div key={group.label} className="pt-3 first:pt-0">
+              <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">{group.label}</p>
+              <div className="space-y-1">
+                {group.items.map((item) => (
+                  <NavItem key={item.to} {...item} onClick={onClose} />
+                ))}
+              </div>
+            </div>
           ))}
         </nav>
 
         <div className="px-3 pb-3">
-          <SidebarInsight expenseTrend={expenseTrend} />
-
-          <div className="flex items-center gap-2.5 rounded-xl border-t border-white/10 pt-3">
+          <div className="flex items-center gap-2.5 border-t border-white/10 pt-3">
             <Avatar src={user?.avatarUrl} name={user?.fullName} size="sm" />
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium text-white">{user?.fullName}</p>
