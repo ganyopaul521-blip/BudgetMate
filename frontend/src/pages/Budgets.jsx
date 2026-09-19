@@ -1,14 +1,24 @@
-import { CreditCard, Lightbulb, ListChecks, PieChart, Search, Sparkles, Target, TrendingUp, Wallet } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { CreditCard, Lightbulb, ListChecks, Minus, PieChart, PiggyBank, Plus, Search, Sparkles, Target, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { budgetsApi, categoriesApi } from '../api/endpoints'
 import BudgetCard from '../components/BudgetCard'
 import BudgetOverviewCard from '../components/BudgetOverviewCard'
+import KpiCard from '../components/KpiCard'
 import LoadingState from '../components/LoadingState'
 import MonthYearPicker from '../components/MonthYearPicker'
 import PageHeader from '../components/PageHeader'
 import QuickAction from '../components/QuickAction'
 import Select from '../components/Select'
+import TransactionForm from '../components/TransactionForm'
 import { useFormatCurrency } from '../hooks/useFormatCurrency'
+import { trendFrom } from '../utils/trends'
+
+const INSIGHT_TONES = {
+  exceeded: 'bg-rose-500/20 text-rose-300',
+  biggest: 'bg-amber-500/20 text-amber-300',
+  remaining: 'bg-blue-500/20 text-blue-300',
+  unused: 'bg-violet-500/20 text-violet-300',
+}
 
 const now = new Date()
 
@@ -33,15 +43,27 @@ export default function Budgets() {
   const [year, setYear] = useState(now.getFullYear())
   const [categories, setCategories] = useState([])
   const [budgets, setBudgets] = useState([])
+  // Real previous-month budgets, fetched purely to compute an honest
+  // month-over-month trend for the Total Spent / Remaining KPI tiles.
+  const [lastMonthBudgets, setLastMonthBudgets] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
+  const [formOpen, setFormOpen] = useState(false)
+  const [formType, setFormType] = useState('expense')
+  const searchRef = useRef(null)
 
   const load = async () => {
     setLoading(true)
-    const [catRes, budRes] = await Promise.all([categoriesApi.list('expense'), budgetsApi.list({ month, year })])
+    const prev = new Date(year, month - 2, 1)
+    const [catRes, budRes, lastBudRes] = await Promise.all([
+      categoriesApi.list('expense'),
+      budgetsApi.list({ month, year }),
+      budgetsApi.list({ month: prev.getMonth() + 1, year: prev.getFullYear() }),
+    ])
     setCategories(catRes.data.categories)
     setBudgets(budRes.data.budgets)
+    setLastMonthBudgets(lastBudRes.data.budgets)
     setLoading(false)
   }
 
@@ -52,10 +74,26 @@ export default function Budgets() {
 
   const budgetFor = (categoryId) => budgets.find((b) => b.categoryId === categoryId)
 
+  const openForm = (type) => {
+    setFormType(type)
+    setFormOpen(true)
+  }
+
+  const focusSearch = () => {
+    searchRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    searchRef.current?.focus()
+  }
+
   const totalBudget = budgets.reduce((sum, b) => sum + b.amountLimit, 0)
   const totalSpent = budgets.reduce((sum, b) => sum + b.spent, 0)
   const percentUsed = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 1000) / 10 : 0
   const available = Math.max(0, totalBudget - totalSpent)
+
+  const lastTotalBudget = lastMonthBudgets.reduce((sum, b) => sum + b.amountLimit, 0)
+  const lastTotalSpent = lastMonthBudgets.reduce((sum, b) => sum + b.spent, 0)
+  const lastAvailable = Math.max(0, lastTotalBudget - lastTotalSpent)
+  const spentTrend = trendFrom(totalSpent, lastTotalSpent)
+  const remainingTrend = trendFrom(available, lastAvailable)
 
   const filteredCategories = categories.filter((cat) => {
     if (search && !cat.name.toLowerCase().includes(search.trim().toLowerCase())) return false
@@ -128,23 +166,26 @@ export default function Budgets() {
       <PageHeader
         title="Budgets"
         description="Set a monthly spending limit for each category and take control of your finances."
-        actions={
-          <div className="flex flex-wrap items-center gap-3">
-            <MonthYearPicker month={month} year={year} onChange={({ month: m, year: y }) => { setMonth(m); setYear(y) }} />
-            {!loading && <BudgetOverviewCard totalBudget={totalBudget} percentUsed={percentUsed} />}
-          </div>
-        }
+        actions={<MonthYearPicker month={month} year={year} onChange={({ month: m, year: y }) => { setMonth(m); setYear(y) }} />}
       />
 
       {loading ? (
         <LoadingState variant="cards" cards={6} cols={3} />
       ) : (
-        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_300px]">
+        <>
+          <div className="mb-6 grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <BudgetOverviewCard totalBudget={totalBudget} percentUsed={percentUsed} subtitle={`Across ${categories.length} categories`} />
+            <KpiCard icon={TrendingUp} label="Total Spent" amount={totalSpent} trend={spentTrend} favorableWhenUp={false} tone="success" />
+            <KpiCard icon={TrendingDown} label="Remaining" amount={available} trend={remainingTrend} favorableWhenUp tone="danger" />
+          </div>
+
+          <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_300px]">
           <div>
             <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
               <div className="relative flex-1">
                 <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" />
                 <input
+                  ref={searchRef}
                   type="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -201,10 +242,13 @@ export default function Budgets() {
                 Quick Actions
               </h2>
               <p className="mb-4 text-xs text-slate-400 dark:text-slate-500">Manage your finances with ease</p>
-              <div className="space-y-2.5">
+              <div className="grid grid-cols-2 gap-2.5">
+                <QuickAction icon={PiggyBank} label="Create Budget" onClick={focusSearch} tone="brand" />
                 <QuickAction icon={CreditCard} label="Make a Payment" to="/pay" tone="success" />
                 <QuickAction icon={PieChart} label="View Reports" to="/reports" tone="warning" />
                 <QuickAction icon={ListChecks} label="All Transactions" to="/transactions" tone="neutral" />
+                <QuickAction icon={Plus} label="Add Income" onClick={() => openForm('income')} tone="success" />
+                <QuickAction icon={Minus} label="Add Expense" onClick={() => openForm('expense')} tone="danger" />
               </div>
             </div>
 
@@ -220,7 +264,10 @@ export default function Budgets() {
                 <div className="space-y-2.5">
                   {insights.map((insight) => (
                     <div key={insight.key} className="flex items-start gap-2.5 rounded-xl bg-white/5 p-3">
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-500/20 text-indigo-300" aria-hidden="true">
+                      <span
+                        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${INSIGHT_TONES[insight.key] || 'bg-indigo-500/20 text-indigo-300'}`}
+                        aria-hidden="true"
+                      >
                         <insight.icon size={13} />
                       </span>
                       <p className="text-sm text-slate-200">{insight.text}</p>
@@ -230,8 +277,11 @@ export default function Budgets() {
               )}
             </div>
           </div>
-        </div>
+          </div>
+        </>
       )}
+
+      {formOpen && <TransactionForm initialType={formType} onClose={() => setFormOpen(false)} onSaved={() => { setFormOpen(false); load() }} />}
     </div>
   )
 }
