@@ -1,4 +1,5 @@
 import { useAuth } from '../context/AuthContext'
+import accraSkyline from '../assets/images/accra-skyline.jpg'
 import Benefits from '../components/landing/Benefits'
 import CTASection from '../components/landing/CTASection'
 import DesignPhilosophy from '../components/landing/DesignPhilosophy'
@@ -20,7 +21,12 @@ export default function Landing() {
   const userFirstName = user?.fullName?.split(' ')[0]
 
   return (
-    <div className="bm-landing bg-white dark:bg-slate-950">
+    <div className="bm-landing relative overflow-hidden bg-white dark:bg-slate-950">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[26rem] overflow-hidden" aria-hidden="true">
+        <img src={accraSkyline} alt="" className="absolute right-0 top-0 h-full w-full max-w-4xl object-cover object-[65%_30%] opacity-[0.4] dark:opacity-[0.28]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-slate-950" />
+        <div className="absolute inset-0 bg-gradient-to-l from-transparent to-white dark:to-slate-950" />
+      </div>
       <LandingNavbar isAuthed={isAuthed} />
       <Hero isAuthed={isAuthed} />
       <TrustStrip />
