@@ -8,9 +8,9 @@ import Sidebar from './Sidebar'
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   return <div className="bm-app relative flex min-h-screen overflow-hidden">
-    <div className="pointer-events-none absolute inset-x-0 top-0 h-[22rem] overflow-hidden" aria-hidden="true">
-      <img src={accraSkyline} alt="" className="absolute right-0 top-0 h-full w-full max-w-3xl object-cover object-[70%_30%] opacity-[0.16] dark:opacity-[0.1]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[var(--bm-bg)]" />
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-[26rem] overflow-hidden" aria-hidden="true">
+      <img src={accraSkyline} alt="" className="absolute right-0 top-0 h-full w-full max-w-4xl object-cover object-[65%_30%] opacity-[0.4] dark:opacity-[0.28]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--bm-bg)]" />
       <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[var(--bm-bg)]" />
     </div>
     <Sidebar open={sidebarOpen} onClose={()=>setSidebarOpen(false)}/><div className="relative flex min-w-0 flex-1 flex-col"><Navbar onMenuClick={()=>setSidebarOpen(true)}/><main className="bm-main mx-auto w-full max-w-[1500px] flex-1 px-4 py-6 sm:px-6 lg:px-8"><Outlet/></main></div><AIChatWidget/></div>
