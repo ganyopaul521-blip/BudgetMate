@@ -1,122 +1,40 @@
 @import "tailwindcss";
-
-/* User-toggled dark mode: `dark:` variants apply when a `.dark` class is
-   present on <html> (set by ThemeContext), not just OS preference. */
 @custom-variant dark (&:where(.dark, .dark *));
 
-:root {
-  color-scheme: light;
-}
+:root{color-scheme:light;--bm-bg:#f4f7fb;--bm-ink:#0b1220;--bm-muted:#64748b;--bm-line:#e5eaf2;--bm-panel:#fff;--bm-brand:#5b5cf0;--bm-brand2:#7c3aed;--bm-green:#10b981;--bm-red:#f43f5e;--bm-shadow:0 18px 50px rgba(15,23,42,.07)}
+:root.dark{color-scheme:dark;--bm-bg:#070b14;--bm-ink:#f8fafc;--bm-muted:#94a3b8;--bm-line:#1d2635;--bm-panel:#0e1522;--bm-shadow:0 18px 50px rgba(0,0,0,.25)}
+html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bm-bg);color:var(--bm-ink);-webkit-font-smoothing:antialiased}.dark body{background:var(--bm-bg)}
+*{box-sizing:border-box}button,input,select,textarea{font:inherit}::selection{background:#c7d2fe;color:#312e81}:focus-visible{outline:2px solid #6366f1;outline-offset:2px}
+input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus{-webkit-text-fill-color:#0f172a;-webkit-box-shadow:0 0 0 1000px #fff inset;transition:background-color 9999s ease-in-out 0s}.dark input:-webkit-autofill,.dark input:-webkit-autofill:hover,.dark input:-webkit-autofill:focus{-webkit-text-fill-color:#f8fafc;-webkit-box-shadow:0 0 0 1000px #0e1522 inset}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 
-html {
-  scroll-behavior: smooth;
-}
+.bm-app{background:radial-gradient(circle at 75% -10%,rgba(99,102,241,.08),transparent 28%),var(--bm-bg)}
+.bm-sidebar{background:linear-gradient(180deg,#080d18 0%,#0b1020 55%,#080d17 100%);border-right:1px solid rgba(255,255,255,.06);box-shadow:16px 0 50px rgba(2,6,23,.12)}
+.bm-brand{position:relative}.bm-logo{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,#818cf8,#6d28d9);color:#fff;font-weight:900;box-shadow:0 10px 28px rgba(99,102,241,.35)}.bm-logo-light{background:linear-gradient(135deg,#6366f1,#7c3aed)}
+.bm-nav-label{font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#475569}.bm-nav-item{display:flex;align-items:center;gap:10px;border:1px solid transparent;border-radius:12px;padding:10px 11px;font-size:13px;font-weight:600;color:#94a3b8;transition:.18s ease}.bm-nav-item:hover{color:#fff;background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.06)}.bm-nav-item.is-active{color:#fff;background:linear-gradient(90deg,rgba(99,102,241,.24),rgba(124,58,237,.12));border-color:rgba(129,140,248,.2);box-shadow:inset 3px 0 0 #818cf8}.bm-nav-icon{width:29px;height:29px;display:grid;place-items:center;border-radius:9px;background:rgba(255,255,255,.035)}.bm-nav-item.is-active .bm-nav-icon{background:rgba(129,140,248,.17);color:#a5b4fc}.bm-nav-arrow{opacity:0;transform:translateX(-3px);transition:.18s ease}.bm-nav-item:hover .bm-nav-arrow,.bm-nav-item.is-active .bm-nav-arrow{opacity:.8;transform:none}.bm-ai-promo{border:1px solid rgba(129,140,248,.18);border-radius:15px;padding:12px;background:linear-gradient(135deg,rgba(79,70,229,.18),rgba(124,58,237,.08));color:#c7d2fe}.bm-ai-promo span{font-size:12px;font-weight:700}.bm-ai-promo p{margin:6px 0 0;font-size:11px;line-height:1.5;color:#94a3b8}.bm-user-card{display:flex;align-items:center;gap:10px;border-top:1px solid rgba(255,255,255,.08);padding:14px 6px 2px}
+.bm-navbar{border-bottom:1px solid var(--bm-line);background:color-mix(in srgb,var(--bm-panel) 88%,transparent);backdrop-filter:blur(18px)}.bm-search-shell{display:flex;align-items:center;gap:7px;max-width:520px;border:1px solid var(--bm-line);border-radius:13px;background:var(--bm-bg);padding:0 11px;color:#94a3b8;min-height:40px}.bm-search-shell input{background:transparent!important;border:0!important;box-shadow:none!important;outline:0!important}.bm-user-menu{display:flex;align-items:center;gap:8px;border:1px solid var(--bm-line);border-radius:999px;background:var(--bm-panel);padding:4px 10px 4px 4px;font-size:13px;color:var(--bm-ink);transition:.18s}.bm-user-menu:hover{box-shadow:0 8px 25px rgba(15,23,42,.08)}.bm-dropdown{border-color:var(--bm-line)}
+.bm-main{min-height:calc(100vh - 65px)}.bm-page{animation:bm-page-in .35s ease both}.bm-page-header{position:relative}.bm-page-header:after{content:"";position:absolute;left:0;right:0;bottom:-14px;height:1px;background:linear-gradient(90deg,var(--bm-line),transparent);opacity:.8}.bm-eyebrow{font-size:9px;letter-spacing:.18em;font-weight:800;color:#818cf8}.bm-page-actions{margin-top:4px}
+.bm-card{border-color:var(--bm-line)!important;background:var(--bm-panel)!important;box-shadow:var(--bm-shadow)!important;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}.bm-card:hover{border-color:rgba(99,102,241,.18)!important;box-shadow:0 20px 55px rgba(15,23,42,.09)!important}.dark .bm-card:hover{box-shadow:0 20px 55px rgba(0,0,0,.25)!important}
+.bm-page-dashboard .bm-card,.bm-page-reports .bm-card,.bm-page-transactions .bm-card,.bm-page-budgets .bm-card,.bm-page-pay .bm-card,.bm-page-settings .bm-card{border-radius:20px}
+.bm-page-dashboard .grid > .relative.flex.h-full.overflow-hidden.rounded-2xl{border-radius:20px;box-shadow:var(--bm-shadow)}
+.bm-page-dashboard .grid > .relative.flex.h-full.overflow-hidden.rounded-2xl:first-child{box-shadow:0 20px 55px rgba(79,70,229,.25)}
+.bm-page-dashboard .grid > .relative.flex.h-full.overflow-hidden.rounded-2xl{border:1px solid var(--bm-line)}
+.bm-page-dashboard h2,.bm-page-reports h2,.bm-page-transactions h2,.bm-page-budgets h2,.bm-page-pay h2,.bm-page-settings h2{letter-spacing:-.01em}
+.bm-page-transactions table thead{background:linear-gradient(90deg,#f8fafc,#f1f5f9)!important}.dark .bm-page-transactions table thead{background:#111a29!important}.bm-page-transactions tbody tr{transition:.15s}.bm-page-transactions tbody tr:hover{background:rgba(99,102,241,.035)}
+.bm-page-budgets .rounded-2xl.bg-gradient-to-br{box-shadow:0 20px 50px rgba(15,23,42,.18)}.bm-page-pay .rounded-2xl{transition:transform .18s ease,box-shadow .18s ease}.bm-page-pay .rounded-2xl:hover{transform:translateY(-2px)}
+.bm-landing{overflow:hidden}.bm-landing section{position:relative}.bm-landing .bm-hero-orb{filter:blur(8px)}
+.bm-auth{background:radial-gradient(circle at 80% 20%,rgba(99,102,241,.09),transparent 30%),var(--bm-bg)}.bm-auth-visual{background:radial-gradient(circle at 70% 30%,rgba(129,140,248,.2),transparent 25%),linear-gradient(145deg,#090e1b,#12152e 55%,#17113a)}.bm-auth-grid{position:absolute;inset:0;opacity:.22;background-image:linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent)}
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-}
+/* Ghanaian-inspired visual identity - abstract geometric motifs (not a
+   reproduction of any specific Adinkra symbol), used strictly as low-opacity
+   background texture per the brief: noticed subconsciously, never competing
+   with content. Flag colors (red #ce1126 / gold #fcd116 / green #006b3f)
+   appear only as thin accent details, never as fields of color. */
+.bm-gh-motif{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1'%3E%3Cpath d='M36 6 L66 36 L36 66 L6 36 Z'/%3E%3Ccircle cx='36' cy='36' r='11'/%3E%3Cpath d='M36 17 L55 36 L36 55 L17 36 Z'/%3E%3C/g%3E%3C/svg%3E");background-repeat:repeat;background-size:72px 72px}
+.bm-gh-motif-ink{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%230b1220' stroke-width='1'%3E%3Cpath d='M36 6 L66 36 L36 66 L6 36 Z'/%3E%3Ccircle cx='36' cy='36' r='11'/%3E%3Cpath d='M36 17 L55 36 L36 55 L17 36 Z'/%3E%3C/g%3E%3C/svg%3E");background-repeat:repeat;background-size:72px 72px}
+.bm-gh-edge{background-image:repeating-linear-gradient(115deg,#ce1126 0 4px,#fcd116 4px 8px,#006b3f 8px 12px,transparent 12px 20px)}
 
-:root.dark {
-  color-scheme: dark;
-}
-
-body {
-  margin: 0;
-  font-family: "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
-  background-color: #f8fafc;
-}
-
-.dark body {
-  background-color: #020617;
-}
-
-/* Neutralize the browser's forced yellow autofill highlight so filled
-   inputs stay on-brand instead of flashing a jarring yellow tint. */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #0f172a;
-  -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
-  box-shadow: 0 0 0px 1000px #ffffff inset;
-  transition: background-color 9999s ease-in-out 0s;
-}
-
-.dark input:-webkit-autofill,
-.dark input:-webkit-autofill:hover,
-.dark input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #f1f5f9;
-  -webkit-box-shadow: 0 0 0px 1000px #0f172a inset;
-  box-shadow: 0 0 0px 1000px #0f172a inset;
-}
-
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Safety-net focus ring for any interactive element that doesn't set its own
-   focus-visible styles (e.g. plain <a> links). Components with an explicit
-   focus-visible:ring-* class override this via specificity of their own rules. */
-:focus-visible {
-  outline: 2px solid #4f46e5;
-  outline-offset: 2px;
-}
-
-::selection {
-  background-color: #c7d2fe;
-  color: #1e1b4b;
-}
-
-.dark ::selection {
-  background-color: #3730a3;
-  color: #e0e7ff;
-}
-
-@keyframes toast-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes modal-in {
-  from { opacity: 0; transform: scale(0.96) translateY(4px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-@keyframes backdrop-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 0.65; transform: scale(1.06); }
-}
-
-.animate-float {
-  animation: float 4.5s ease-in-out infinite;
-}
-
-.animate-float-delayed {
-  animation: float 4.5s ease-in-out infinite;
-  animation-delay: 1.2s;
-}
-
-.animate-glow-pulse {
-  animation: glow-pulse 5s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-float,
-  .animate-float-delayed,
-  .animate-glow-pulse {
-    animation: none;
-  }
-}
+@keyframes bm-page-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@keyframes bm-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}.animate-float{animation:bm-float 4.5s ease-in-out infinite}.animate-float-delayed{animation:bm-float 4.5s 1.2s ease-in-out infinite}
+@media(max-width:1023px){.bm-main{padding-top:1.25rem}.bm-page-header:after{display:none}.bm-page-actions{width:100%}.bm-page-actions>*{flex:1 1 auto}.bm-search-shell{max-width:none}}
+@media(max-width:640px){.bm-page-header h1{font-size:1.55rem}.bm-page-actions>*{width:100%}.bm-page-actions .bm-page-actions>*{width:auto}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bm-page,.animate-float,.animate-float-delayed{animation:none!important}}

@@ -188,7 +188,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div>
+    <div className="bm-page bm-page-dashboard">
       <PageHeader
         title={`Welcome back${user?.fullName ? `, ${user.fullName.split(' ')[0]}` : ''} 👋`}
         description={`Here's your financial snapshot for ${MONTH_NAMES[viewMonth - 1]} ${viewYear}.`}

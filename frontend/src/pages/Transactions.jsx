@@ -111,7 +111,7 @@ export default function Transactions() {
   const totalPages = Math.max(Math.ceil(total / pageSize), 1)
 
   return (
-    <div>
+    <div className="bm-page bm-page-transactions">
       <PageHeader
         title="Transactions"
         description="Track, review and manage your income and expenses."

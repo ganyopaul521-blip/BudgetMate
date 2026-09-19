@@ -20,7 +20,7 @@ export default function Landing() {
   const userFirstName = user?.fullName?.split(' ')[0]
 
   return (
-    <div className="bg-white dark:bg-slate-950">
+    <div className="bm-landing bg-white dark:bg-slate-950">
       <LandingNavbar isAuthed={isAuthed} />
       <Hero isAuthed={isAuthed} />
       <TrustStrip />

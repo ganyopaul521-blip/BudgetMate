@@ -124,7 +124,7 @@ export default function Budgets() {
   }
 
   return (
-    <div>
+    <div className="bm-page bm-page-budgets">
       <PageHeader
         title="Budgets"
         description="Set a monthly spending limit for each category and take control of your finances."
