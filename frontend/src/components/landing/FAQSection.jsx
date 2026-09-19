@@ -1,14 +1,16 @@
 import { ChevronDown } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Reveal from '../Reveal'
+import SectionSkyline from './SectionSkyline'
 
 export default function FAQSection() {
   const { t } = useTranslation()
   const faqs = t('faq.items', { returnObjects: true })
 
   return (
-    <section id="faq" className="scroll-mt-20 py-16 sm:py-20 lg:py-24">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+    <section id="faq" className="relative scroll-mt-20 overflow-hidden py-16 sm:py-20 lg:py-24">
+      <SectionSkyline side="left" />
+      <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <Reveal className="text-center">
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{t('faq.heading')}</h2>
         </Reveal>

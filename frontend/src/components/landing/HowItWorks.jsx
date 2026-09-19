@@ -15,6 +15,7 @@ import Badge from '../Badge'
 import Card from '../Card'
 import ProgressBar from '../ProgressBar'
 import Reveal from '../Reveal'
+import SectionSkyline from './SectionSkyline'
 
 const TRANSACTION_AMOUNTS = [-45, -25, 350]
 
@@ -155,8 +156,9 @@ export default function HowItWorks() {
   const steps = t('howItWorks.steps', { returnObjects: true })
 
   return (
-    <section id="how-it-works" className="scroll-mt-20 py-16 sm:py-20 lg:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <section id="how-it-works" className="relative scroll-mt-20 overflow-hidden py-16 sm:py-20 lg:py-24">
+      <SectionSkyline side="left" />
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{t('howItWorks.heading')}</h2>
           <p className="mt-3 text-slate-500 dark:text-slate-400">{t('howItWorks.subheading')}</p>

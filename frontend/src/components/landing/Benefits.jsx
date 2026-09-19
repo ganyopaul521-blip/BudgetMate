@@ -2,6 +2,7 @@ import { Compass, Eye, ShieldCheck, TrendingUp } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Card from '../Card'
 import Reveal from '../Reveal'
+import SectionSkyline from './SectionSkyline'
 
 const ICONS = [Eye, ShieldCheck, TrendingUp, Compass]
 
@@ -10,8 +11,9 @@ export default function Benefits() {
   const items = t('benefits.items', { returnObjects: true })
 
   return (
-    <section id="benefits" className="scroll-mt-20 border-t border-slate-100 bg-slate-50/60 py-16 dark:border-slate-800 dark:bg-slate-900/40 sm:py-20 lg:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <section id="benefits" className="relative scroll-mt-20 overflow-hidden border-t border-slate-100 bg-slate-50/60 py-16 dark:border-slate-800 dark:bg-slate-900/40 sm:py-20 lg:py-24">
+      <SectionSkyline side="right" />
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{t('benefits.heading')}</h2>
         </Reveal>

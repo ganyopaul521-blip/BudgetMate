@@ -2,6 +2,7 @@ import { BellRing, FileBarChart2, MapPin, PieChart, PiggyBank, ReceiptText } fro
 import { useTranslation } from 'react-i18next'
 import Reveal from '../Reveal'
 import FeatureCard from './FeatureCard'
+import SectionSkyline from './SectionSkyline'
 
 const ICONS = [ReceiptText, PiggyBank, PieChart, BellRing, FileBarChart2, MapPin]
 
@@ -10,8 +11,9 @@ export default function FeaturesSection() {
   const items = t('features.items', { returnObjects: true })
 
   return (
-    <section id="features" className="scroll-mt-20 py-16 sm:py-20 lg:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <section id="features" className="relative scroll-mt-20 overflow-hidden py-16 sm:py-20 lg:py-24">
+      <SectionSkyline side="right" />
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{t('features.heading')}</h2>
           <p className="mt-3 text-slate-500 dark:text-slate-400">{t('features.subheading')}</p>
