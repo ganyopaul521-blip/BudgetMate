@@ -89,6 +89,7 @@ export default function KpiCard({
 
   return (
     <div className={`relative flex h-full flex-col overflow-hidden rounded-2xl p-5 shadow-sm ${t.card}`}>
+      {tone === 'hero' && <div className="bm-gh-motif pointer-events-none absolute inset-0 opacity-[0.06]" aria-hidden="true" />}
       {spark?.area && (
         <svg
           viewBox={`0 0 ${SPARK_WIDTH} ${SPARK_HEIGHT}`}

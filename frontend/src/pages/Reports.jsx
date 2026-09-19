@@ -77,7 +77,7 @@ export default function Reports() {
   }, [trendCategoryId])
 
   return (
-    <div>
+    <div className="bm-page bm-page-reports">
       <PageHeader
         title="Reports"
         description="Visualise your spending patterns and trends."

@@ -6,20 +6,5 @@ import Sidebar from './Sidebar'
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
-  return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
-      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
-      <div className="flex min-w-0 flex-1 flex-col">
-        <Navbar onMenuClick={() => setSidebarOpen(true)} />
-
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
-          <Outlet />
-        </main>
-      </div>
-
-      <AIChatWidget />
-    </div>
-  )
+  return <div className="bm-app flex min-h-screen"><Sidebar open={sidebarOpen} onClose={()=>setSidebarOpen(false)}/><div className="flex min-w-0 flex-1 flex-col"><Navbar onMenuClick={()=>setSidebarOpen(true)}/><main className="bm-main mx-auto w-full max-w-[1500px] flex-1 px-4 py-6 sm:px-6 lg:px-8"><Outlet/></main></div><AIChatWidget/></div>
 }

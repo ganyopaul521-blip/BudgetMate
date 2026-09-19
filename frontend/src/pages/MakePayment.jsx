@@ -139,7 +139,7 @@ export default function MakePayment() {
   const selectedCategory = categories.find((c) => c.id === form.categoryId)
 
   return (
-    <div>
+    <div className="bm-page bm-page-pay">
       <PageHeader title="Make a Payment" description="Pay bills and vendors securely through BudgetMate." />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

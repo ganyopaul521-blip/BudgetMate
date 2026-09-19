@@ -125,7 +125,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="max-w-2xl">
+    <div className="bm-page bm-page-settings max-w-4xl">
       <PageHeader title="Settings" description="Manage your profile, appearance, and custom categories." />
 
       <div className="space-y-6">
