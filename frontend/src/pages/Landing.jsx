@@ -22,10 +22,10 @@ export default function Landing() {
 
   return (
     <div className="bm-landing relative overflow-hidden bg-white dark:bg-slate-950">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[26rem] overflow-hidden" aria-hidden="true">
-        <img src={accraSkyline} alt="" className="absolute right-0 top-0 h-full w-full max-w-4xl object-cover object-[65%_30%] opacity-[0.4] dark:opacity-[0.28]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-slate-950" />
-        <div className="absolute inset-0 bg-gradient-to-l from-transparent to-white dark:to-slate-950" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[30rem] overflow-hidden" aria-hidden="true">
+        <img src={accraSkyline} alt="" className="absolute right-0 top-0 h-full w-full max-w-5xl object-cover object-[65%_30%] opacity-[0.85] dark:opacity-[0.65]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white dark:to-slate-950" />
+        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-white dark:to-slate-950" />
       </div>
       <LandingNavbar isAuthed={isAuthed} />
       <Hero isAuthed={isAuthed} />
