@@ -27,9 +27,9 @@ export default function Sidebar({ open, onClose }) {
     <>
       {open && <div className="fixed inset-0 z-40 bg-slate-950/70 backdrop-blur-sm lg:hidden" onClick={onClose} aria-hidden="true" />}
       <aside id="app-sidebar" className={`bm-sidebar fixed inset-y-0 left-0 z-50 flex w-72 shrink-0 -translate-x-full transform flex-col overflow-hidden transition-transform duration-200 lg:relative lg:z-auto lg:w-[270px] lg:translate-x-0 ${open ? 'translate-x-0' : ''}`} aria-label="Main navigation">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-56 overflow-hidden" aria-hidden="true">
-          <img src={accraSkyline} alt="" className="absolute inset-x-0 bottom-0 h-full w-full object-cover object-bottom opacity-40" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#080d18] via-[#080d18]/70 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-72 overflow-hidden" aria-hidden="true">
+          <img src={accraSkyline} alt="" className="absolute inset-x-0 bottom-0 h-full w-full object-cover object-bottom opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-transparent via-[#080d18]/60 to-[#080d18]" />
         </div>
         <div className="bm-gh-motif pointer-events-none absolute inset-0 opacity-[0.04]" aria-hidden="true" />
         <div className="bm-gh-edge pointer-events-none absolute inset-y-0 right-0 w-[3px] opacity-80" aria-hidden="true" />
