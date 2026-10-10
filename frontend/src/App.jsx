@@ -8,6 +8,7 @@ import ForgotPassword from './pages/ForgotPassword'
 import Landing from './pages/Landing'
 import Login from './pages/Login'
 import MakePayment from './pages/MakePayment'
+import Privacy from './pages/Privacy'
 import Register from './pages/Register'
 import ResetPassword from './pages/ResetPassword'
 import Reports from './pages/Reports'
@@ -43,6 +44,7 @@ export default function App() {
       />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/privacy" element={<Privacy />} />
 
       <Route
         element={

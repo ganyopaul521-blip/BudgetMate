@@ -1,5 +1,9 @@
 import { Wallet } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+
+const CONTACT_EMAIL = 'ganyopaul521@gmail.com'
+const WHATSAPP_LINK = 'https://wa.me/233245416445'
 
 export default function Footer() {
   const { t } = useTranslation()
@@ -17,7 +21,8 @@ export default function Footer() {
       heading: t('footer.company'),
       links: [
         { label: t('footer.about'), href: '#about' },
-        { label: t('footer.contact') },
+        { label: t('footer.email'), href: `mailto:${CONTACT_EMAIL}` },
+        { label: t('footer.whatsapp'), href: WHATSAPP_LINK, external: true },
       ],
     },
     {
@@ -25,7 +30,7 @@ export default function Footer() {
       links: [
         { label: t('footer.help'), href: '#faq' },
         { label: t('footer.faq'), href: '#faq' },
-        { label: t('footer.privacy') },
+        { label: t('footer.privacy'), to: '/privacy' },
       ],
     },
   ]
@@ -50,9 +55,17 @@ export default function Footer() {
               <ul className="mt-3 space-y-2">
                 {group.links.map((link) => (
                   <li key={link.label}>
-                    {link.href ? (
+                    {link.to ? (
+                      <Link
+                        to={link.to}
+                        className="text-sm text-slate-500 transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
+                      >
+                        {link.label}
+                      </Link>
+                    ) : link.href ? (
                       <a
                         href={link.href}
+                        {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                         className="text-sm text-slate-500 transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
                       >
                         {link.label}
