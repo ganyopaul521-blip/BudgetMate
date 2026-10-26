@@ -4,6 +4,19 @@ const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 const client = axios.create({ baseURL })
 
+// AuthContext registers a handler here so an expired/invalid token clears
+// React's signed-in state instead of forcing a hard page reload. This check
+// runs in the background on EVERY page (even public ones, to restore a
+// session silently) - a hard `window.location.href` jump on 401 used to fire
+// from wherever the user happened to be, including the public landing page,
+// whenever a stale leftover token's background validity check failed.
+// Clearing state and letting ProtectedRoute (which only wraps the signed-in
+// pages) redirect declaratively means a public page is never hijacked.
+let onUnauthorized = null
+export function setUnauthorizedHandler(handler) {
+  onUnauthorized = handler
+}
+
 client.interceptors.request.use((config) => {
   const token = localStorage.getItem('budgetmate_token')
   if (token) {
@@ -26,9 +39,7 @@ client.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('budgetmate_token')
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login'
-      }
+      onUnauthorized?.()
     }
     return Promise.reject(error)
   }

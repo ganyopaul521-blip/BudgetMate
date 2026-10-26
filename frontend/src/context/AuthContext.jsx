@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { authApi } from '../api/endpoints'
+import { setUnauthorizedHandler } from '../api/client'
 
 const AuthContext = createContext(null)
 const TOKEN_KEY = 'budgetmate_token'
@@ -19,6 +20,15 @@ export function AuthProvider({ children }) {
       .then((res) => setUser(res.data.user))
       .catch(() => localStorage.removeItem(TOKEN_KEY))
       .finally(() => setLoading(false))
+  }, [])
+
+  // A 401 from any request (including the silent "is my saved token still
+  // valid?" check above) clears the signed-in user here. Nothing navigates
+  // on its own: ProtectedRoute reacts to `user` becoming null and redirects
+  // only the signed-in pages it wraps, so a public page is never affected.
+  useEffect(() => {
+    setUnauthorizedHandler(() => setUser(null))
+    return () => setUnauthorizedHandler(null)
   }, [])
 
   const login = useCallback(async (email, password) => {
