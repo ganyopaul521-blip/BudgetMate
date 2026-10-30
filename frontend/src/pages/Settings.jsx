@@ -214,7 +214,7 @@ export default function Settings() {
           <h2 className="mb-4 flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
             <Sun size={17} className="text-indigo-600 dark:text-indigo-400" aria-hidden="true" /> Appearance
           </h2>
-          <p className="mb-3 text-sm text-slate-500 dark:text-slate-400">Choose how TheBudget looks on this device.</p>
+          <p className="mb-3 text-sm text-slate-500 dark:text-slate-400">Choose how BudgetEdge looks on this device.</p>
           <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Theme">
             <button
               type="button"

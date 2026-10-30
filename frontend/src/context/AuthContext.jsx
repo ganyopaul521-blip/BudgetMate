@@ -3,7 +3,7 @@ import { authApi } from '../api/endpoints'
 import { setUnauthorizedHandler } from '../api/client'
 
 const AuthContext = createContext(null)
-const TOKEN_KEY = 'thebudget_token'
+const TOKEN_KEY = 'budgetedge_token'
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)

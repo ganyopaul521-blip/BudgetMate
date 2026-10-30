@@ -36,7 +36,7 @@ export default function Sidebar({ open, onClose }) {
         <div className="bm-brand relative px-5 pb-5 pt-6">
           <div className="flex items-center gap-3">
             <div className="bm-logo">B</div>
-            <div><p className="text-[17px] font-bold tracking-tight text-white">TheBudget</p><p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">Smart money OS</p></div>
+            <div><p className="text-[17px] font-bold tracking-tight text-white">BudgetEdge</p><p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">Smart money OS</p></div>
           </div>
           <button onClick={onClose} aria-label="Close navigation menu" className="absolute right-4 top-5 rounded-lg p-2 text-slate-400 hover:bg-white/5 hover:text-white lg:hidden"><X size={18} /></button>
         </div>

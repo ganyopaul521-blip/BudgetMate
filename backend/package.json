@@ -1,5 +1,5 @@
 {
-  "name": "thebudget-backend",
+  "name": "budgetedge-backend",
   "version": "1.0.0",
   "description": "Personal Budget Tracker API - Express + Prisma (MongoDB)",
   "main": "src/server.js",

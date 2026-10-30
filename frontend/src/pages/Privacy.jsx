@@ -37,7 +37,7 @@ export default function Privacy() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
               <Wallet size={17} aria-hidden="true" />
             </div>
-            <span className="text-lg">TheBudget</span>
+            <span className="text-lg">BudgetEdge</span>
           </Link>
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
@@ -58,7 +58,7 @@ export default function Privacy() {
         <p className="mt-2 text-sm text-slate-400 dark:text-slate-500">Last updated: {LAST_UPDATED}</p>
 
         <p className="mt-6 text-[15px] leading-7 text-slate-600 dark:text-slate-300">
-          TheBudget is a personal budget tracker built for students and young professionals in Ghana, developed by
+          BudgetEdge is a personal budget tracker built for students and young professionals in Ghana, developed by
           Paul Ganyo. This page explains, in plain language, what information the application collects when you use
           it, why it is collected, who it is shared with, and how you can reach us with questions or requests.
         </p>
@@ -71,16 +71,16 @@ export default function Privacy() {
             no password is created. You may also add a profile picture and choose a preferred display currency.
           </p>
           <p>
-            <strong className="text-slate-800 dark:text-slate-100">Financial information you enter.</strong> TheBudget
+            <strong className="text-slate-800 dark:text-slate-100">Financial information you enter.</strong> BudgetEdge
             does not connect to your bank or mobile money account. Every transaction, budget and category you see in
             the app is information you typed in yourself, together with the date it was recorded.
           </p>
           <p>
             <strong className="text-slate-800 dark:text-slate-100">Payment records.</strong> If you make an in-app
-            payment, it is processed by Paystack. TheBudget keeps a record of the amount, category, channel (card or
+            payment, it is processed by Paystack. BudgetEdge keeps a record of the amount, category, channel (card or
             mobile money), status and Paystack's transaction reference. We do not collect or store your card number,
             card expiry date, CVV or mobile money PIN at any point — those details are entered directly into
-            Paystack's own secure checkout, not into TheBudget.
+            Paystack's own secure checkout, not into BudgetEdge.
           </p>
           <p>
             <strong className="text-slate-800 dark:text-slate-100">Assistant conversations.</strong> If you use the
@@ -90,7 +90,7 @@ export default function Privacy() {
           <p>
             <strong className="text-slate-800 dark:text-slate-100">Technical information.</strong> Your session token,
             and your chosen theme and language, are stored in your browser's local storage so you stay signed in and
-            your preferences are remembered. This stays on your device; it is not a tracking cookie, and TheBudget
+            your preferences are remembered. This stays on your device; it is not a tracking cookie, and BudgetEdge
             does not use advertising or analytics trackers.
           </p>
         </Section>
@@ -109,7 +109,7 @@ export default function Privacy() {
 
         <Section title="3. Who we share information with">
           <p>
-            TheBudget relies on a small number of trusted service providers to operate. Each sees only the
+            BudgetEdge relies on a small number of trusted service providers to operate. Each sees only the
             information it needs to do its specific job:
           </p>
           <ul className="list-disc space-y-2 pl-5">
@@ -119,7 +119,7 @@ export default function Privacy() {
             <li><strong className="text-slate-800 dark:text-slate-100">Vercel, Render and MongoDB Atlas</strong> — the cloud providers that host the application and its database.</li>
           </ul>
           <p>
-            Each of these providers has its own privacy policy governing the data it processes on TheBudget's behalf.
+            Each of these providers has its own privacy policy governing the data it processes on BudgetEdge's behalf.
             We do not share your information with anyone else, except where required by law.
           </p>
         </Section>
@@ -127,7 +127,7 @@ export default function Privacy() {
         <Section title="4. Data security">
           <p>
             Passwords are hashed with bcrypt before storage and are never stored or logged in plain text. All traffic
-            between your device and TheBudget's servers is encrypted (HTTPS/TLS). Sessions use signed tokens that
+            between your device and BudgetEdge's servers is encrypted (HTTPS/TLS). Sessions use signed tokens that
             automatically expire after 30 minutes of inactivity. While no system can guarantee absolute security, we
             take reasonable, industry-standard steps to protect your information.
           </p>
@@ -136,7 +136,7 @@ export default function Privacy() {
         <Section title="5. Data retention and deletion">
           <p>
             We keep your account and financial records for as long as your account remains active, so that your
-            history, budgets and reports stay available to you. TheBudget does not currently have a self-service
+            history, budgets and reports stay available to you. BudgetEdge does not currently have a self-service
             "delete my account" button in the app. If you would like your account and the data associated with it
             permanently deleted, contact us using the details below and we will act on your request.
           </p>
@@ -146,7 +146,7 @@ export default function Privacy() {
           <ul className="list-disc space-y-2 pl-5">
             <li>You can update your name, email address, display currency and profile picture at any time from Settings.</li>
             <li>You can delete individual transactions, budgets or custom categories you created.</li>
-            <li>You can choose not to use the in-app payment or assistant features; the rest of TheBudget works without them.</li>
+            <li>You can choose not to use the in-app payment or assistant features; the rest of BudgetEdge works without them.</li>
             <li>You can ask us, by email or WhatsApp, what information we hold about you, or to have it corrected or deleted.</li>
           </ul>
         </Section>

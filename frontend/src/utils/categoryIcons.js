@@ -16,7 +16,7 @@ import {
   Film,
 } from 'lucide-react'
 
-// Maps TheBudget's real seeded category names (backend/src/constants/categories.js)
+// Maps BudgetEdge's real seeded category names (backend/src/constants/categories.js)
 // to a representative icon. Unrecognized/custom category names fall back to a
 // generic icon rather than guessing.
 const ICON_BY_CATEGORY = {

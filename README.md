@@ -1,4 +1,4 @@
-# TheBudget
+# BudgetEdge
 
 Personal Budget Tracker web application for Ghanaian students and young professionals — record income/expenses in Ghana Cedi (GH₵), set category budgets, get real-time overspending alerts, and view visual spending reports.
 
@@ -23,7 +23,7 @@ frontend/   React SPA (dashboard, transactions, budgets, reports, settings)
 You need a MongoDB connection string. Easiest options:
 
 - **MongoDB Atlas (free):** create an M0 cluster at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas), add a database user, allow your IP, and copy the connection string.
-- **Local MongoDB:** install MongoDB Community Server and use `mongodb://localhost:27017/thebudget`.
+- **Local MongoDB:** install MongoDB Community Server and use `mongodb://localhost:27017/budgetedge`.
 
 ### 2. Paystack (for the Make Payment feature)
 

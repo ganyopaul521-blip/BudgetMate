@@ -9,7 +9,7 @@ export default function BrowserFrame({ children }) {
           <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
         </div>
         <div className="flex-1 rounded-md bg-slate-100 px-3 py-1 text-center text-[11px] text-slate-400 dark:bg-slate-800 dark:text-slate-500">
-          app.thebudget.com/dashboard
+          app.budgetedge.com/dashboard
         </div>
       </div>
       <div className="p-4 sm:p-6">{children}</div>
