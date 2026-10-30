@@ -8,7 +8,7 @@ export const SUPPORTED_LANGUAGES = [
   { code: 'fr', label: 'Français' },
 ]
 
-const STORAGE_KEY = 'budgetmate_language'
+const STORAGE_KEY = 'thebudget_language'
 
 function getInitialLanguage() {
   const stored = localStorage.getItem(STORAGE_KEY)

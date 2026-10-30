@@ -44,7 +44,7 @@ export default function Footer() {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
                 <Wallet size={17} aria-hidden="true" />
               </div>
-              <span className="text-lg">BudgetMate</span>
+              <span className="text-lg">TheBudget</span>
             </div>
             <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">{t('footer.tagline')}</p>
           </div>

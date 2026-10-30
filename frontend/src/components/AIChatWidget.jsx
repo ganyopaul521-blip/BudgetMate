@@ -7,7 +7,7 @@ import MarkdownText from './MarkdownText'
 const GREETING = {
   role: 'assistant',
   content:
-    "Hi! I'm your BudgetMate assistant. Ask me how to use any part of the app, or ask for a spending plan based on your income and expenses this month.",
+    "Hi! I'm your TheBudget assistant. Ask me how to use any part of the app, or ask for a spending plan based on your income and expenses this month.",
 }
 
 const QUICK_PROMPT = 'Based on my income and spending this month, how should I budget my money?'
@@ -59,13 +59,13 @@ export default function AIChatWidget() {
       {open && (
         <div
           role="dialog"
-          aria-label="BudgetMate assistant chat"
+          aria-label="TheBudget assistant chat"
           className="fixed bottom-24 right-4 z-40 flex h-[32rem] max-h-[calc(100vh-7rem)] w-[22rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900"
         >
           <div className="flex items-center justify-between border-b border-slate-100 bg-indigo-600 px-4 py-3 text-white">
             <div className="flex items-center gap-2">
               <Bot size={18} aria-hidden="true" />
-              <span className="font-semibold">BudgetMate Assistant</span>
+              <span className="font-semibold">TheBudget Assistant</span>
             </div>
             <button
               onClick={() => setOpen(false)}

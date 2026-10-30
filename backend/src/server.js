@@ -4,5 +4,5 @@ const app = require("./app");
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`BudgetMate API listening on http://localhost:${PORT}`);
+  console.log(`TheBudget API listening on http://localhost:${PORT}`);
 });

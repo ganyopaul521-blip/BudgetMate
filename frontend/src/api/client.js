@@ -18,7 +18,7 @@ export function setUnauthorizedHandler(handler) {
 }
 
 client.interceptors.request.use((config) => {
-  const token = localStorage.getItem('budgetmate_token')
+  const token = localStorage.getItem('thebudget_token')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
@@ -32,13 +32,13 @@ client.interceptors.response.use(
     // window keeps sliding forward instead of expiring on a flat timer.
     const refreshed = response.headers['x-refreshed-token']
     if (refreshed) {
-      localStorage.setItem('budgetmate_token', refreshed)
+      localStorage.setItem('thebudget_token', refreshed)
     }
     return response
   },
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('budgetmate_token')
+      localStorage.removeItem('thebudget_token')
       onUnauthorized?.()
     }
     return Promise.reject(error)

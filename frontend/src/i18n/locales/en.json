@@ -13,7 +13,7 @@
     "closeMenu": "Close menu"
   },
   "dashboardPreview": {
-    "ariaLabel": "Illustrative preview of the BudgetMate dashboard showing balance, income, expenses, and budget progress",
+    "ariaLabel": "Illustrative preview of the TheBudget dashboard showing balance, income, expenses, and budget progress",
     "thisMonth": "This Month",
     "preview": "Preview",
     "currentBalance": "Current balance",
@@ -41,15 +41,15 @@
     "badge": "Built for students & young professionals in Ghana",
     "headlineLine1": "Take control of your money.",
     "headlineLine2": "Build better financial habits.",
-    "description": "BudgetMate makes it simple to track your spending, manage your budget, and understand where your money goes — all in one place.",
+    "description": "TheBudget makes it simple to track your spending, manage your budget, and understand where your money goes — all in one place.",
     "getStarted": "Get Started",
-    "explore": "Explore BudgetMate",
+    "explore": "Explore TheBudget",
     "goToDashboard": "Go to Dashboard",
     "freeNoCard": "Free to use, no card required",
     "builtInGhs": "Built in Ghana Cedi (GH₵)"
   },
   "heroImage": {
-    "alt": "BudgetMate financial dashboard displayed on a tablet",
+    "alt": "TheBudget financial dashboard displayed on a tablet",
     "budgetHealth": "Budget Health",
     "onTrack": "82% · On track",
     "thisMonth": "This month",
@@ -69,7 +69,7 @@
   },
   "productShowcase": {
     "heading": "See your finances clearly",
-    "description": "BudgetMate turns raw transactions into information you can actually act on — a live balance, a breakdown of what you're spending on, and a clear view of how each budget is tracking, all in one screen.",
+    "description": "TheBudget turns raw transactions into information you can actually act on — a live balance, a breakdown of what you're spending on, and a clear view of how each budget is tracking, all in one screen.",
     "points": [
       "A running balance that updates as you log income and expenses",
       "Budgets broken down by category, with progress you can see at a glance",
@@ -113,7 +113,7 @@
   },
   "insights": {
     "heading": "Know where your money goes.",
-    "description": "BudgetMate summarises your income, expenses, and budget usage into reports you can actually read — so patterns in your spending stop being a mystery.",
+    "description": "TheBudget summarises your income, expenses, and budget usage into reports you can actually read — so patterns in your spending stop being a mystery.",
     "chartTitle": "Income vs. Expenses",
     "illustrative": "Illustrative",
     "chartAlt": "Sample chart comparing monthly income and expenses",
@@ -125,11 +125,11 @@
   },
   "ghana": {
     "heading": "Personal finance, made for Ghana.",
-    "description": "BudgetMate is built around how money actually moves for students and young professionals in Ghana — not a generic template adapted after the fact.",
+    "description": "TheBudget is built around how money actually moves for students and young professionals in Ghana — not a generic template adapted after the fact.",
     "methods": ["Ghana Cedi (GH₵)", "Mobile Money", "Bank transfers", "Cash transactions", "Debit / Credit cards"]
   },
   "benefits": {
-    "heading": "Why BudgetMate",
+    "heading": "Why TheBudget",
     "items": [
       { "title": "Spend with awareness", "description": "Understand your spending instead of wondering where your money went." },
       { "title": "Stay within your limits", "description": "Monitor your budget before overspending becomes a problem." },
@@ -148,7 +148,7 @@
   },
   "designPhilosophy": {
     "heading": "Designed around real budgeting challenges",
-    "description": "BudgetMate was built around problems students and young professionals actually run into when managing money day to day.",
+    "description": "TheBudget was built around problems students and young professionals actually run into when managing money day to day.",
     "items": [
       { "title": "Small expenses add up unnoticed", "description": "A few cedis here and there on data, transport, or food rarely feels significant in the moment." },
       { "title": "Overspending is realised too late", "description": "Without a running total, it's easy to only notice a budget is blown after the fact." },
@@ -158,10 +158,10 @@
   "faq": {
     "heading": "Frequently asked questions",
     "items": [
-      { "question": "Is BudgetMate free to use?", "answer": "Yes. Creating an account and using the core budgeting, tracking, and reporting features is free." },
+      { "question": "Is TheBudget free to use?", "answer": "Yes. Creating an account and using the core budgeting, tracking, and reporting features is free." },
       { "question": "Does it support Mobile Money?", "answer": "Yes — Mobile Money is one of the payment methods you can log transactions against, alongside cash, bank transfers, and cards." },
       { "question": "Is my financial data private?", "answer": "Your transactions, budgets, and reports are tied to your account and only accessible once you're signed in." },
-      { "question": "Can I use BudgetMate on my phone?", "answer": "Yes — the app is fully responsive and works in any modern mobile browser, no separate app install needed." }
+      { "question": "Can I use TheBudget on my phone?", "answer": "Yes — the app is fully responsive and works in any modern mobile browser, no separate app install needed." }
     ]
   },
   "cta": {
@@ -169,7 +169,7 @@
     "welcomeBackSubtitle": "Jump back in and see where your money stands this month.",
     "goToDashboard": "Go to Dashboard",
     "heading": "Ready to take control of your money?",
-    "subtitle": "Start tracking, budgeting, and understanding your finances with BudgetMate.",
+    "subtitle": "Start tracking, budgeting, and understanding your finances with TheBudget.",
     "getStarted": "Get Started — It's Simple",
     "login": "Log In"
   },
@@ -188,7 +188,7 @@
     "help": "Help",
     "faq": "FAQ",
     "privacy": "Privacy",
-    "copyright": "© {{year}} BudgetMate"
+    "copyright": "© {{year}} TheBudget"
   },
   "languageSwitcher": {
     "chooseLanguage": "Choose language",
@@ -200,13 +200,13 @@
       "headline": "Take control of your money, on your terms.",
       "description": "Track your spending, manage your budgets, and understand your financial habits — all in one place.",
       "benefits": ["Track income and expenses", "Monitor your budgets", "Understand your spending"],
-      "copyright": "© {{year}} BudgetMate."
+      "copyright": "© {{year}} TheBudget."
     },
     "orContinueWith": "or continue with",
     "signingIn": "Signing in...",
     "login": {
       "title": "Welcome back",
-      "subtitle": "Log in to your BudgetMate account",
+      "subtitle": "Log in to your TheBudget account",
       "email": "Email",
       "emailRequired": "Email is required.",
       "emailInvalid": "Enter a valid email address.",

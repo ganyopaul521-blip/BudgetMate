@@ -6,7 +6,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 // (gemini-3.7-flash returned 503 UNAVAILABLE under load during testing; 3.6 was stable.)
 const MODEL = "gemini-3.6-flash";
 
-const SYSTEM_PROMPT_BASE = `You are the in-app assistant for BudgetMate, a personal budget tracker built for students and young professionals in Ghana. You have two jobs:
+const SYSTEM_PROMPT_BASE = `You are the in-app assistant for TheBudget, a personal budget tracker built for students and young professionals in Ghana. You have two jobs:
 
 1. Help desk: help users understand how to use the app. Key features:
    - Dashboard: this month's income, expenses, net balance, budget status, and recent transactions.

@@ -140,7 +140,7 @@ export default function MakePayment() {
 
   return (
     <div className="bm-page bm-page-pay">
-      <PageHeader title="Make a Payment" description="Pay bills and vendors securely through BudgetMate." />
+      <PageHeader title="Make a Payment" description="Pay bills and vendors securely through TheBudget." />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div>

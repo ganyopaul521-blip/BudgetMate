@@ -25,7 +25,7 @@ export default function LandingNavbar({ isAuthed }) {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
             <Wallet size={17} aria-hidden="true" />
           </div>
-          <span className="text-lg">BudgetMate</span>
+          <span className="text-lg">TheBudget</span>
         </a>
 
         <nav className="hidden items-center gap-6 lg:flex" aria-label={t('nav.sectionsAriaLabel')}>

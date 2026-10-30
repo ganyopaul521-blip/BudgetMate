@@ -13,7 +13,7 @@
     "closeMenu": "Fermer le menu"
   },
   "dashboardPreview": {
-    "ariaLabel": "Aperçu illustratif du tableau de bord BudgetMate montrant le solde, les revenus, les dépenses et la progression du budget",
+    "ariaLabel": "Aperçu illustratif du tableau de bord TheBudget montrant le solde, les revenus, les dépenses et la progression du budget",
     "thisMonth": "Ce mois-ci",
     "preview": "Aperçu",
     "currentBalance": "Solde actuel",
@@ -41,15 +41,15 @@
     "badge": "Conçu pour les étudiants et jeunes professionnels du Ghana",
     "headlineLine1": "Prenez le contrôle de votre argent.",
     "headlineLine2": "Adoptez de meilleures habitudes financières.",
-    "description": "BudgetMate facilite le suivi de vos dépenses, la gestion de votre budget et la compréhension de l'utilisation de votre argent — le tout au même endroit.",
+    "description": "TheBudget facilite le suivi de vos dépenses, la gestion de votre budget et la compréhension de l'utilisation de votre argent — le tout au même endroit.",
     "getStarted": "Commencer",
-    "explore": "Découvrir BudgetMate",
+    "explore": "Découvrir TheBudget",
     "goToDashboard": "Accéder au tableau de bord",
     "freeNoCard": "Gratuit, sans carte bancaire",
     "builtInGhs": "Conçu pour le Cedi ghanéen (GH₵)"
   },
   "heroImage": {
-    "alt": "Tableau de bord financier BudgetMate affiché sur une tablette",
+    "alt": "Tableau de bord financier TheBudget affiché sur une tablette",
     "budgetHealth": "Santé du budget",
     "onTrack": "82 % · Sur la bonne voie",
     "thisMonth": "Ce mois-ci",
@@ -69,7 +69,7 @@
   },
   "productShowcase": {
     "heading": "Visualisez clairement vos finances",
-    "description": "BudgetMate transforme vos transactions brutes en informations exploitables — un solde en temps réel, une répartition de vos dépenses et une vue claire de l'état de chaque budget, le tout sur un seul écran.",
+    "description": "TheBudget transforme vos transactions brutes en informations exploitables — un solde en temps réel, une répartition de vos dépenses et une vue claire de l'état de chaque budget, le tout sur un seul écran.",
     "points": [
       "Un solde à jour dès que vous enregistrez un revenu ou une dépense",
       "Des budgets répartis par catégorie, avec une progression visible en un coup d'œil",
@@ -113,7 +113,7 @@
   },
   "insights": {
     "heading": "Sachez où va votre argent.",
-    "description": "BudgetMate résume vos revenus, dépenses et l'utilisation de votre budget dans des rapports vraiment lisibles — pour que vos habitudes de dépense n'aient plus de secret.",
+    "description": "TheBudget résume vos revenus, dépenses et l'utilisation de votre budget dans des rapports vraiment lisibles — pour que vos habitudes de dépense n'aient plus de secret.",
     "chartTitle": "Revenus vs dépenses",
     "illustrative": "Illustratif",
     "chartAlt": "Exemple de graphique comparant les revenus et dépenses mensuels",
@@ -125,11 +125,11 @@
   },
   "ghana": {
     "heading": "Des finances personnelles pensées pour le Ghana.",
-    "description": "BudgetMate est conçu autour de la façon dont l'argent circule réellement pour les étudiants et jeunes professionnels au Ghana — pas un modèle générique adapté après coup.",
+    "description": "TheBudget est conçu autour de la façon dont l'argent circule réellement pour les étudiants et jeunes professionnels au Ghana — pas un modèle générique adapté après coup.",
     "methods": ["Cedi ghanéen (GH₵)", "Mobile Money", "Virements bancaires", "Espèces", "Cartes de débit / crédit"]
   },
   "benefits": {
-    "heading": "Pourquoi BudgetMate",
+    "heading": "Pourquoi TheBudget",
     "items": [
       { "title": "Dépensez en toute conscience", "description": "Comprenez vos dépenses au lieu de vous demander où est passé votre argent." },
       { "title": "Restez dans vos limites", "description": "Surveillez votre budget avant que les dépassements ne deviennent un problème." },
@@ -148,7 +148,7 @@
   },
   "designPhilosophy": {
     "heading": "Conçu autour de vrais défis budgétaires",
-    "description": "BudgetMate a été conçu autour des problèmes que rencontrent réellement les étudiants et jeunes professionnels dans la gestion de leur argent au quotidien.",
+    "description": "TheBudget a été conçu autour des problèmes que rencontrent réellement les étudiants et jeunes professionnels dans la gestion de leur argent au quotidien.",
     "items": [
       { "title": "De petites dépenses s'accumulent sans qu'on s'en rende compte", "description": "Quelques cedis par-ci par-là en data, transport ou nourriture semblent rarement significatifs sur le moment." },
       { "title": "Les dépassements de budget sont remarqués trop tard", "description": "Sans total en temps réel, on ne réalise souvent qu'un budget est dépassé qu'après coup." },
@@ -158,10 +158,10 @@
   "faq": {
     "heading": "Questions fréquentes",
     "items": [
-      { "question": "BudgetMate est-il gratuit ?", "answer": "Oui. La création d'un compte et l'utilisation des fonctionnalités principales de budgétisation, de suivi et de rapports sont gratuites." },
+      { "question": "TheBudget est-il gratuit ?", "answer": "Oui. La création d'un compte et l'utilisation des fonctionnalités principales de budgétisation, de suivi et de rapports sont gratuites." },
       { "question": "L'application prend-elle en charge le Mobile Money ?", "answer": "Oui — le Mobile Money est l'un des moyens de paiement que vous pouvez utiliser pour vos transactions, au même titre que les espèces, les virements bancaires et les cartes." },
       { "question": "Mes données financières sont-elles privées ?", "answer": "Vos transactions, budgets et rapports sont liés à votre compte et accessibles uniquement une fois connecté." },
-      { "question": "Puis-je utiliser BudgetMate sur mon téléphone ?", "answer": "Oui — l'application est entièrement responsive et fonctionne dans tout navigateur mobile récent, sans installation séparée." }
+      { "question": "Puis-je utiliser TheBudget sur mon téléphone ?", "answer": "Oui — l'application est entièrement responsive et fonctionne dans tout navigateur mobile récent, sans installation séparée." }
     ]
   },
   "cta": {
@@ -169,7 +169,7 @@
     "welcomeBackSubtitle": "Reprenez où vous en étiez et consultez l'état de vos finances ce mois-ci.",
     "goToDashboard": "Accéder au tableau de bord",
     "heading": "Prêt à prendre le contrôle de votre argent ?",
-    "subtitle": "Commencez à suivre, budgétiser et comprendre vos finances avec BudgetMate.",
+    "subtitle": "Commencez à suivre, budgétiser et comprendre vos finances avec TheBudget.",
     "getStarted": "Commencer — c'est simple",
     "login": "Connexion"
   },
@@ -188,7 +188,7 @@
     "help": "Aide",
     "faq": "FAQ",
     "privacy": "Confidentialité",
-    "copyright": "© {{year}} BudgetMate"
+    "copyright": "© {{year}} TheBudget"
   },
   "languageSwitcher": {
     "chooseLanguage": "Choisir la langue",
@@ -200,13 +200,13 @@
       "headline": "Prenez le contrôle de votre argent, à votre façon.",
       "description": "Suivez vos dépenses, gérez vos budgets et comprenez vos habitudes financières — le tout au même endroit.",
       "benefits": ["Suivez vos revenus et dépenses", "Surveillez vos budgets", "Comprenez vos dépenses"],
-      "copyright": "© {{year}} BudgetMate."
+      "copyright": "© {{year}} TheBudget."
     },
     "orContinueWith": "ou continuer avec",
     "signingIn": "Connexion en cours...",
     "login": {
       "title": "Content de vous revoir",
-      "subtitle": "Connectez-vous à votre compte BudgetMate",
+      "subtitle": "Connectez-vous à votre compte TheBudget",
       "email": "E-mail",
       "emailRequired": "L'e-mail est requis.",
       "emailInvalid": "Saisissez une adresse e-mail valide.",
